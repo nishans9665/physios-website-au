@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import Logo from "@/assets/care-first-logo.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -37,13 +39,14 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
-            <span className="text-white font-bold text-xl">C</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-serif font-bold text-lg leading-none text-primary">The Care First</span>
-            <span className="text-xs font-semibold tracking-wider text-dark uppercase">Physiotherapy</span>
-          </div>
+          <Image 
+            src={Logo} 
+            alt="The Care First Physiotherapy" 
+            width={280} 
+            height={120} 
+            className="h-18 w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}

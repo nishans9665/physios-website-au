@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "The Care First Physiotherapy Service | Modern Physio & Aged Care Brisbane",
   description: "Professional physiotherapy and aged care services in Brisbane. Specialized in NDIS, elderly care, and rehabilitation with a client-centered approach.",
   keywords: ["Physiotherapy Brisbane", "Mobile Physiotherapy", "NDIS Physiotherapy Brisbane", "Aged Care Physiotherapy", "Strength and Balance Program"],
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

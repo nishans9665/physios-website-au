@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Mail, MapPin, Globe, Share2, MessageSquare } from "lucide-react";
+import Logo from "@/assets/care-first-logo.png";
 
 const Footer = () => {
   return (
@@ -9,13 +11,13 @@ const Footer = () => {
         {/* Brand Column */}
         <div className="space-y-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">C</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif font-bold text-lg leading-none text-white">The Care First</span>
-              <span className="text-xs font-semibold tracking-wider text-accent uppercase">Physiotherapy</span>
-            </div>
+            <Image 
+              src={Logo} 
+              alt="The Care First Physiotherapy" 
+              width={280} 
+              height={120} 
+              className="h-24 w-auto object-contain brightness-0 invert"
+            />
           </Link>
           <p className="text-gray-400 text-sm leading-relaxed">
             Providing convenient mobile and telehealth physiotherapy services across Brisbane with personalised care focused on recovery, mobility, strength, and independence.
