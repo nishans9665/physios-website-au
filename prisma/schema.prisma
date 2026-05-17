@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF_MANAGER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  PENDING
+  CONVERTED
+}
+
+enum AppointmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum GeneralStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactLead {
+  id              String     @id @default(uuid())
+  fullName        String
+  email           String
+  phoneNumber     String?
+  message         String     @db.Text
+  serviceInterest String?
+  status          LeadStatus @default(NEW)
+  submissionDate  DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Appointment {
+  id              String            @id @default(uuid())
+  patientName     String
+  contactNumber   String
+  email           String
+  selectedService String
+  preferredDate   DateTime
+  preferredTime   String
+  notes           String?           @db.Text
+  status          AppointmentStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Testimonial {
+  id           String        @id @default(uuid())
+  clientName   String
+  review       String        @db.Text
+  rating       Int           @default(5)
+  profileImage String?
+  status       GeneralStatus @default(ACTIVE)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Service {
+  id               String        @id @default(uuid())
+  title            String
+  slug             String        @unique
+  shortDescription String        @db.Text
+  fullDescription  String        @db.Text
+  serviceImage     String?
+  displayOrder     Int           @default(0)
+  status           GeneralStatus @default(ACTIVE)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model WebsiteContent {
+  id        String   @id @default(uuid())
+  section   String   @unique // e.g., "hero", "about", "footer"
+  content   String   @db.LongText // Stored as rich text or JSON string
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Faq {
+  id           String   @id @default(uuid())
+  question     String
+  answer       String   @db.Text
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Gallery {
+  id        String   @id @default(uuid())
+  title     String?
+  imageUrl  String
+  category  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String   @db.Text
+  type      String   // e.g., "LEAD", "APPOINTMENT", "SYSTEM"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
