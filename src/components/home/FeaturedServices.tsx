@@ -11,7 +11,8 @@ const services = [
     title: "Strength & Balance Program",
     description: "Our specialized group exercise program designed to improve mobility, prevent falls, and build confidence in older adults.",
     icon: Activity,
-    color: "bg-primary",
+    color: "bg-accent",
+    iconColor: "text-primary",
     href: "/programs",
     features: ["Fall Prevention", "Mobility Training", "Group Environment"],
   },
@@ -20,6 +21,7 @@ const services = [
     description: "Dedicated support for NDIS participants, focusing on personalized rehabilitation and enhancing independence at home.",
     icon: ShieldCheck,
     color: "bg-accent",
+    iconColor: "text-primary",
     href: "/services",
     features: ["Registered Provider", "In-home Care", "Goal Oriented"],
   },
@@ -59,7 +61,7 @@ const FeaturedServices = () => {
               viewport={{ once: true }}
               className="group p-8 md:p-12 rounded-[40px] bg-secondary/30 hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-accent"
             >
-              <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center text-white mb-8 transition-transform group-hover:scale-110", service.color)}>
+              <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110", service.color, service.iconColor)}>
                 <service.icon size={32} />
               </div>
               

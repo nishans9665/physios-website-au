@@ -5,6 +5,15 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, MessageSquare, Calendar, ShieldCheck, Truck, Video, UserRound } from "lucide-react";
 import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/autoplay";
+import hero1 from "@/assets/hero/hero-1.png";
+import hero2 from "@/assets/hero/hero-2.png";
+import hero3 from "@/assets/hero/hero-3.png";
+import hero4 from "@/assets/hero/gallery-home.png";
 
 const Hero = () => {
   const floatingBadges = [
@@ -77,13 +86,30 @@ const Hero = () => {
             className="relative z-10"
           >
             <div className="relative w-full aspect-square md:aspect-[4/5] max-w-lg mx-auto rounded-[40px] overflow-hidden shadow-2xl border-8 border-white">
-              <Image
-                src="/images/hero.png"
-                alt="Physiotherapist treating elderly patient"
-                fill
-                className="object-cover"
-                priority
-              />
+              <Swiper
+                modules={[Autoplay, EffectFade]}
+                effect="fade"
+                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                loop={true}
+                className="w-full h-full"
+              >
+                {[
+                  hero1,
+                  hero2,
+                  hero3,
+                  hero4
+                ].map((src, index) => (
+                  <SwiperSlide key={index} className="relative w-full h-full">
+                    <Image
+                      src={src}
+                      alt={`Physiotherapy service image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
 
             {/* Floating Contact Icons */}

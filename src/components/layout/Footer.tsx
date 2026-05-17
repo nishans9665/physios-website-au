@@ -27,6 +27,7 @@ const Footer = () => {
               <Link
                 key={i}
                 href="#"
+                
                 className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center hover:bg-primary hover:border-primary transition-all duration-300"
               >
                 <Icon size={18} />
