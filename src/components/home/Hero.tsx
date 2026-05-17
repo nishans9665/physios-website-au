@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, MessageSquare, Calendar, ShieldCheck, Truck, Video, UserRound } from "lucide-react";
@@ -16,6 +16,11 @@ import hero3 from "@/assets/hero/hero-3.png";
 import hero4 from "@/assets/hero/gallery-home.png";
 
 const Hero = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const floatingBadges = [
     { icon: ShieldCheck, text: "NDIS Support" },
     { icon: Truck, text: "Mobile Physio" },
@@ -86,30 +91,44 @@ const Hero = () => {
             className="relative z-10"
           >
             <div className="relative w-full aspect-square md:aspect-[4/5] max-w-lg mx-auto rounded-[40px] overflow-hidden shadow-2xl border-8 border-white">
-              <Swiper
-                modules={[Autoplay, EffectFade]}
-                effect="fade"
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                loop={true}
-                className="w-full h-full"
-              >
-                {[
-                  hero1,
-                  hero2,
-                  hero3,
-                  hero4
-                ].map((src, index) => (
-                  <SwiperSlide key={index} className="relative w-full h-full">
+              <div className="absolute inset-0">
+                {!mounted ? (
+                  <div className="w-full h-full relative">
                     <Image
-                      src={src}
-                      alt={`Physiotherapy service image ${index + 1}`}
+                      src={hero1}
+                      alt="Physiotherapy service"
                       fill
                       className="object-cover"
-                      priority={index === 0}
+                      priority
                     />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+                  </div>
+                ) : (
+                  <Swiper
+                    modules={[Autoplay, EffectFade]}
+                    effect="fade"
+                    autoplay={{ delay: 3000, disableOnInteraction: false }}
+                    loop={true}
+                    className="w-full h-full"
+                  >
+                    {[
+                      hero1,
+                      hero2,
+                      hero3,
+                      hero4
+                    ].map((src, index) => (
+                      <SwiperSlide key={index} className="w-full h-full relative">
+                        <Image
+                          src={src}
+                          alt={`Physiotherapy service image ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          priority={index === 0}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
+              </div>
             </div>
 
             {/* Floating Contact Icons */}
