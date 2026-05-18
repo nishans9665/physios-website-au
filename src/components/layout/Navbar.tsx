@@ -65,7 +65,7 @@ const Navbar = () => {
 
         {/* CTA Button */}
         <div className="hidden lg:block">
-          <Link href="/contact" className="btn-primary flex items-center gap-2 text-sm">
+          <Link href="/referral" className="btn-primary flex items-center gap-2 text-sm">
             <Phone size={16} />
             Book Appointment
           </Link>
@@ -102,7 +102,7 @@ const Navbar = () => {
                 </Link>
               ))}
               <Link
-                href="/contact"
+                href="/referral"
                 className="btn-primary text-center mt-2"
                 onClick={() => setIsOpen(false)}
               >

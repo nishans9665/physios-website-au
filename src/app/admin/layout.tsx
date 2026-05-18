@@ -6,14 +6,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, Users, Calendar, MessageSquare, 
   Settings, LogOut, Menu, X, FileText, Image as ImageIcon,
-  ShieldCheck, HelpCircle
+  ShieldCheck, HelpCircle, ClipboardList
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Leads", href: "/admin/leads", icon: Users },
-  { name: "Appointments", href: "/admin/appointments", icon: Calendar },
+  { name: "Appointments", href: "/admin/referrals", icon: Calendar },
   { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
   { name: "Services", href: "/admin/services", icon: FileText },
   { name: "FAQ", href: "/admin/faq", icon: HelpCircle },

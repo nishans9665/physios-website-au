@@ -121,7 +121,7 @@ export default function ServicesPage() {
           <p className="text-xl text-gray-400 mb-12">
             Book an initial assessment with our expert physiotherapists today.
           </p>
-          <Link href="/contact" className="btn-primary inline-block">
+          <Link href="/referral" className="btn-primary inline-block">
             Book Appointment
           </Link>
         </div>

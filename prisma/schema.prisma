@@ -128,3 +128,151 @@ model Notification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum ReferralStatus {
+  NEW
+  PENDING_REVIEW
+  CONTACTED
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Referral {
+  id                       String                  @id @default(uuid())
+  paymentType              String // Private, CHSP, NDIS, Medicare, CDM/EPC, Home Care Package, Other
+  providerName             String?
+  invoiceContactName       String?
+  coordinatorName          String?
+  invoiceEmail             String?
+  preferredAppointmentType String // Face to Face, Telehealth, No Preference
+  unavailability           String?                 @db.Text
+  preferredDays            String? // e.g. "Monday, Wednesday"
+  preferredTime            String? // e.g. "Morning, Afternoon"
+  status                   ReferralStatus          @default(NEW)
+  privacyConsent           Boolean                 @default(false)
+  contactConsent           Boolean                 @default(false)
+  medicalConsent           Boolean                 @default(false)
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
+
+  client                   ReferralClient?
+  contact                  ReferralContact?
+  referrer                 ReferrerDetails?
+  medicalHistory           ReferralMedicalHistory?
+  ndisDetails              NdisParticipantDetails?
+  supportWorkers           ReferralSupportWorker[]
+  goals                    ReferralGoals?
+  documents                UploadedDocument[]
+  adminNotes               AdminNotes[]
+}
+
+model ReferralClient {
+  id           String   @id @default(uuid())
+  referralId   String   @unique
+  referral     Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  fullName     String
+  email        String
+  address      String   @db.Text
+  phoneNumber  String
+  dob          DateTime
+  gender       String // Female, Male, Transgender / Non Binary / Gender Diverse, Prefer not to answer
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ReferralContact {
+  id          String   @id @default(uuid())
+  referralId  String   @unique
+  referral    Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  contactName String
+  email       String
+  address     String   @db.Text
+  phoneNumber String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ReferrerDetails {
+  id           String   @id @default(uuid())
+  referralId   String   @unique
+  referral     Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  referrerName String
+  companyName  String?
+  email        String
+  address      String   @db.Text
+  phoneNumber  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ReferralMedicalHistory {
+  id                      String   @id @default(uuid())
+  referralId              String   @unique
+  referral                Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  primaryDiagnosis        String   @db.Text
+  recentFallsSurgeryRisks String?  @db.Text
+  cognitiveDiagnosis      String?  @db.Text
+  specificPrecautions     String?  @db.Text
+  otherMedicalInfo        String?  @db.Text
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+model NdisParticipantDetails {
+  id                 String    @id @default(uuid())
+  referralId         String    @unique
+  referral           Referral  @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  managementType     String // Self Managed, Agency Managed, Plan Managed
+  planStartDate      DateTime?
+  participantId      String?
+  planEndDate        DateTime?
+  planManagerName    String?
+  planManagerContact String?   @db.Text
+  fundingArea        String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model ReferralSupportWorker {
+  id         String   @id @default(uuid())
+  referralId String
+  referral   Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  name       String
+  phoneNumber String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ReferralGoals {
+  id             String   @id @default(uuid())
+  referralId     String   @unique
+  referral       Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  clientGoals    String   @db.Text
+  additionalInfo String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model UploadedDocument {
+  id           String   @id @default(uuid())
+  referralId   String
+  referral     Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  fileName     String
+  fileType     String
+  fileSize     Int
+  fileUrl      String
+  documentType String // referral, medical, assessment, ndis
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AdminNotes {
+  id         String   @id @default(uuid())
+  referralId String
+  referral   Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  authorName String
+  noteText   String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

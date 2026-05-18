@@ -53,7 +53,7 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
-              <Link href="/contact" className="btn-primary flex items-center gap-2">
+              <Link href="/referral" className="btn-primary flex items-center gap-2">
                 <Calendar size={20} />
                 Book Appointment
               </Link>
