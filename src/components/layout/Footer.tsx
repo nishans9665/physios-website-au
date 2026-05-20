@@ -240,17 +240,17 @@ const Footer = ({ initialSettings }: FooterProps) => {
           <h3 className="font-serif text-xl font-bold mb-6 text-primary">Our Services</h3>
           <ul className="space-y-4 text-gray-400">
             {[
-              "NDIS Physiotherapy",
-              "Aged Care Physiotherapy",
-              "Strength & Balance",
-              "Mobile Physio Brisbane",
-              "Telehealth Services",
-              "Musculoskeletal Care"
+              { name: "NDIS Physiotherapy",       href: "/services#ndis-physiotherapy" },
+              { name: "Aged Care Physiotherapy",  href: "/services#aged-care-physiotherapy" },
+              { name: "Strength & Balance",        href: "/services#strength-balance" },
+              { name: "Mobile Physio Brisbane",    href: "/services#mobile-physiotherapy" },
+              { name: "Telehealth Services",       href: "/services#telehealth-physiotherapy" },
+              { name: "Musculoskeletal Care",      href: "/services#musculoskeletal-physiotherapy" },
             ].map((service) => (
-              <li key={service}>
-                <Link href="#" className="hover:text-primary transition-colors flex items-center gap-2">
+              <li key={service.name}>
+                <Link href={service.href} className="hover:text-primary transition-colors flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-                  {service}
+                  {service.name}
                 </Link>
               </li>
             ))}

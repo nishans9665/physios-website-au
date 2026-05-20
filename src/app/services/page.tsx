@@ -19,44 +19,58 @@ import Link from "next/link";
 
 const services = [
   {
+    id: "ndis-physiotherapy",
     title: "NDIS Physiotherapy",
     description: "Specialized rehabilitation and support for NDIS participants to achieve their physical goals.",
     icon: ShieldCheck,
   },
   {
+    id: "aged-care-physiotherapy",
     title: "Aged Care Physiotherapy",
     description: "Personalized care for elderly patients focused on maintaining mobility and independence.",
     icon: UserRound,
   },
   {
+    id: "musculoskeletal-physiotherapy",
     title: "Musculoskeletal Physiotherapy",
     description: "Treatment for muscle and joint conditions, including back pain, sports injuries, and arthritis.",
     icon: Activity,
   },
   {
+    id: "neurological-physiotherapy",
     title: "Neurological Physiotherapy",
     description: "Specialized support for conditions like stroke, Parkinson's, and multiple sclerosis.",
     icon: Brain,
   },
   {
+    id: "cardiovascular-physiotherapy",
     title: "Cardiovascular Physiotherapy",
     description: "Rehabilitation programs focusing on heart and lung health and recovery.",
     icon: HeartPulse,
   },
   {
-    title: "Women’s Health",
+    id: "womens-health",
+    title: "Women's Health",
     description: "Dedicated physiotherapy services for pelvic floor health, prenatal and postnatal care.",
     icon: PersonStanding,
   },
   {
+    id: "mobile-physiotherapy",
     title: "Mobile Physiotherapy",
     description: "We bring our expert clinic services directly to the comfort and safety of your home.",
     icon: Truck,
   },
   {
+    id: "telehealth-physiotherapy",
     title: "Telehealth Physiotherapy",
     description: "Professional consultations and exercise supervision via secure video platforms.",
     icon: Video,
+  },
+  {
+    id: "strength-balance",
+    title: "Strength & Balance Program",
+    description: "Targeted exercise programs designed to improve strength, stability and reduce falls risk.",
+    icon: Activity,
   },
 ];
 
@@ -88,12 +102,13 @@ export default function ServicesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, index) => (
               <motion.div
+                id={service.id}
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group p-8 rounded-[32px] bg-light hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-accent"
+                className="group p-8 rounded-[32px] bg-light hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-accent scroll-mt-32"
               >
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
                   <service.icon size={28} />
