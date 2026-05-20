@@ -4,28 +4,65 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
-const reviews = [
+const fallbackReviews = [
   {
     name: "John Smith",
     rating: 5,
     comment: "The home visit service was life-changing for my father. Udayamali is incredibly patient and professional. Highly recommend for aged care!",
     date: "2 months ago",
+    service: "Aged Care Physio",
+    profileImage: null,
   },
   {
     name: "Sarah Jenkins",
     rating: 5,
     comment: "Excellent NDIS support. They really took the time to understand my goals and create a plan that works for my daily routine.",
     date: "1 month ago",
+    service: "NDIS Physiotherapy",
+    profileImage: null,
   },
   {
     name: "Robert Taylor",
     rating: 5,
     comment: "Joining the Strength & Balance program was the best decision I've made. I feel so much more confident on my feet now.",
     date: "3 weeks ago",
+    service: "Strength & Balance",
+    profileImage: null,
   },
 ];
 
 const Testimonials = () => {
+  const [reviews, setReviews] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    const loadTestimonials = async () => {
+      try {
+        const res = await fetch("/api/testimonials");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            // Map DB schema properties to UI reviews properties
+            const mappedReviews = data.slice(0, 3).map((item: any) => ({
+              name: item.clientName,
+              rating: item.rating,
+              comment: item.review,
+              service: item.service || "Verified Client",
+              date: item.location || "Brisbane",
+              profileImage: item.profileImage,
+            }));
+            setReviews(mappedReviews);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load active testimonials from server:", error);
+      }
+      setReviews(fallbackReviews);
+    };
+
+    loadTestimonials();
+  }, []);
+
   return (
     <section className="section-padding bg-white">
       <div className="max-w-7xl mx-auto">
@@ -53,29 +90,43 @@ const Testimonials = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-secondary/20 p-8 rounded-[40px] relative hover:bg-white hover:shadow-xl transition-all duration-300"
+              className="bg-secondary/20 p-8 rounded-[40px] relative hover:bg-white hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="absolute top-8 right-8 text-primary/20">
-                <Quote size={48} fill="currentColor" />
-              </div>
-              
-              <div className="flex gap-1 mb-6">
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} size={18} className="fill-primary text-primary" />
-                ))}
-              </div>
-
-              <p className="text-gray-600 mb-8 italic leading-relaxed">
-                "{review.comment}"
-              </p>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                  {review.name[0]}
+              <div>
+                <div className="absolute top-8 right-8 text-primary/20">
+                  <Quote size={48} fill="currentColor" />
                 </div>
-                <div>
-                  <h4 className="font-bold text-dark">{review.name}</h4>
-                  <p className="text-xs text-gray-500 uppercase tracking-tighter">{review.date}</p>
+                
+                <div className="flex gap-1 mb-6">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <Star key={i} size={18} className="fill-primary text-primary" />
+                  ))}
+                </div>
+
+                <p className="text-gray-600 mb-8 italic leading-relaxed text-sm">
+                  "{review.comment}"
+                </p>
+              </div>
+
+              <div className="flex items-center gap-4 border-t border-secondary/10 pt-4 mt-4">
+                {review.profileImage ? (
+                  <img 
+                    src={review.profileImage} 
+                    alt={review.name} 
+                    className="w-12 h-12 rounded-full object-cover border border-secondary"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold shrink-0">
+                    {review.name[0]}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-dark truncate text-sm">{review.name}</h4>
+                  <div className="flex flex-wrap items-center gap-x-1.5 text-xs text-gray-400 mt-0.5">
+                    <span className="truncate">{review.date}</span>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-primary font-semibold truncate">{review.service}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>

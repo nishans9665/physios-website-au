@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -75,6 +76,8 @@ model Testimonial {
   review       String        @db.Text
   rating       Int           @default(5)
   profileImage String?
+  location     String?       // E.g., "Brisbane North"
+  service      String?       // E.g., "NDIS Physiotherapy"
   status       GeneralStatus @default(ACTIVE)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
