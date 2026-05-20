@@ -151,6 +151,45 @@ export default function ReferralPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [validationError, setValidationError] = useState("");
+
+  // Global support workers roster (loaded from admin DB)
+  const [globalWorkers, setGlobalWorkers] = useState<Array<{
+    id: string; name: string; phoneNumber: string;
+    role: string | null; organisation: string | null;
+  }>>([]);
+  const [workersLoading, setWorkersLoading] = useState(false);
+
+  useEffect(() => {
+    setWorkersLoading(true);
+    fetch("/api/support-workers")
+      .then((r) => r.json())
+      .then((data) => Array.isArray(data) ? setGlobalWorkers(data) : [])
+      .catch(() => {})
+      .finally(() => setWorkersLoading(false));
+  }, []);
+
+  // Check if a global worker is already selected
+  const isWorkerSelected = (name: string, phone: string) =>
+    formData.supportWorkers.some(
+      (w) => w.name === name && w.phoneNumber === phone
+    );
+
+  // Pick a global worker (toggle)
+  const toggleGlobalWorker = (w: { name: string; phoneNumber: string }) => {
+    setFormData((prev) => {
+      const already = prev.supportWorkers.some(
+        (x) => x.name === w.name && x.phoneNumber === w.phoneNumber
+      );
+      const updated = {
+        ...prev,
+        supportWorkers: already
+          ? prev.supportWorkers.filter((x) => !(x.name === w.name && x.phoneNumber === w.phoneNumber))
+          : [...prev.supportWorkers, { name: w.name, phoneNumber: w.phoneNumber }],
+      };
+      saveDraft(updated, currentStep);
+      return updated;
+    });
+  };
   const [draftRestored, setDraftRestored] = useState(false);
 
   // Load and save drafts (Auto-Save Draft premium feature)
@@ -991,64 +1030,149 @@ export default function ReferralPage() {
                     </div>
                   )}
 
-                  {/* STEP 8: Support Workers Details (DYNAMIC LIST) */}
+                  {/* STEP 8: Support Workers — Pick from roster OR add manually */}
                   {currentStep === 8 && (
                     <div className="space-y-6">
+
+                      {/* ── Section A: Global Roster Picker ── */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="text-sm font-bold text-dark">Select from Available Workers</h4>
+                            <p className="text-xs text-gray-400 mt-0.5">Click a worker to add them to this referral.</p>
+                          </div>
+                          {workersLoading && (
+                            <span className="text-[11px] text-gray-400 animate-pulse">Loading roster…</span>
+                          )}
+                        </div>
+
+                        {!workersLoading && globalWorkers.length === 0 && (
+                          <div className="text-center py-6 border border-dashed border-gray-200 rounded-2xl text-gray-400 bg-gray-50/50">
+                            <p className="text-xs">No support workers in the roster yet.</p>
+                            <p className="text-[11px] text-gray-400 mt-1">An admin can add them via the Support Workers management page.</p>
+                          </div>
+                        )}
+
+                        {globalWorkers.length > 0 && (
+                          <div className="grid sm:grid-cols-2 gap-3">
+                            {globalWorkers.map((gw) => {
+                              const selected = isWorkerSelected(gw.name, gw.phoneNumber);
+                              return (
+                                <button
+                                  key={gw.id}
+                                  type="button"
+                                  onClick={() => toggleGlobalWorker(gw)}
+                                  className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 text-left transition-all w-full cursor-pointer ${
+                                    selected
+                                      ? "border-[#799A29] bg-[#799A29]/5"
+                                      : "border-gray-200 bg-white hover:border-[#799A29]/40 hover:bg-gray-50/60"
+                                  }`}
+                                >
+                                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 transition-colors ${
+                                    selected ? "bg-[#799A29] text-white" : "bg-gray-100 text-gray-500"
+                                  }`}>
+                                    {selected ? <CheckCircle2 size={18} /> : gw.name.charAt(0).toUpperCase()}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className={`text-sm font-semibold truncate ${selected ? "text-[#799A29]" : "text-dark"}`}>{gw.name}</p>
+                                    <p className="text-[11px] text-gray-400 truncate">
+                                      {[gw.role, gw.organisation].filter(Boolean).join(" · ") || gw.phoneNumber}
+                                    </p>
+                                  </div>
+                                  {selected && (
+                                    <span className="text-[10px] font-bold text-[#799A29] shrink-0">✓ Added</span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ── Divider ── */}
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-px bg-gray-200" />
+                        <span className="text-xs text-gray-400 font-medium">or add manually</span>
+                        <div className="flex-1 h-px bg-gray-200" />
+                      </div>
+
+                      {/* ── Section B: Manual Add Button ── */}
                       <div className="flex justify-between items-center">
                         <p className="text-xs text-gray-500">
-                          Add details for support workers or case coordinators regularly assisting this client.
+                          Worker not in the roster? Enter their details manually below.
                         </p>
                         <button
                           type="button"
                           onClick={addSupportWorker}
                           className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#799A29] text-white font-bold rounded-xl text-xs hover:opacity-90 transition-all cursor-pointer border-none"
                         >
-                          <Plus size={14} /> Add Worker
+                          <Plus size={14} /> Add Manually
                         </button>
                       </div>
 
-                      {formData.supportWorkers.length === 0 ? (
-                        <div className="text-center py-10 border border-dashed border-gray-200 rounded-2xl text-gray-400 bg-gray-50/50">
-                          <User size={32} className="mx-auto mb-2 text-gray-300" />
-                          <p className="text-xs">No support workers added yet. Click "Add Worker" if applicable.</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          {formData.supportWorkers.map((worker, index) => (
-                            <div key={index} className="flex gap-4 items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                              <div className="grid grid-cols-2 gap-4 flex-grow">
-                                <div>
-                                  <label className="block text-[10px] font-bold uppercase text-gray-400 mb-1">Name</label>
-                                  <input 
-                                    type="text"
-                                    required
-                                    value={worker.name}
-                                    onChange={(e) => updateSupportWorker(index, "name", e.target.value)}
-                                    placeholder="Support worker name"
-                                    className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none bg-white"
-                                  />
+                      {/* ── Selected & Manual Workers List ── */}
+                      {formData.supportWorkers.length > 0 && (
+                        <div className="space-y-3">
+                          <p className="text-[11px] font-bold uppercase tracking-widest text-[#799A29]">Workers on this referral ({formData.supportWorkers.length})</p>
+                          {formData.supportWorkers.map((worker, index) => {
+                            const isFromRoster = globalWorkers.some(
+                              (gw) => gw.name === worker.name && gw.phoneNumber === worker.phoneNumber
+                            );
+                            return (
+                              <div key={index} className={`flex gap-3 items-start p-3.5 rounded-2xl border ${
+                                isFromRoster ? "border-[#799A29]/30 bg-[#799A29]/5" : "border-gray-100 bg-gray-50"
+                              }`}>
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${
+                                  isFromRoster ? "bg-[#799A29] text-white" : "bg-gray-200 text-gray-600"
+                                }`}>
+                                  {worker.name ? worker.name.charAt(0).toUpperCase() : "?"}
                                 </div>
-                                <div>
-                                  <label className="block text-[10px] font-bold uppercase text-gray-400 mb-1">Contact Number</label>
-                                  <input 
-                                    type="tel"
-                                    required
-                                    value={worker.phoneNumber}
-                                    onChange={(e) => updateSupportWorker(index, "phoneNumber", e.target.value)}
-                                    placeholder="Phone number"
-                                    className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none bg-white"
-                                  />
+                                <div className="grid grid-cols-2 gap-3 flex-grow">
+                                  <div>
+                                    <label className="block text-[10px] font-bold uppercase text-gray-400 mb-1">Name</label>
+                                    <input
+                                      type="text"
+                                      value={worker.name}
+                                      onChange={(e) => updateSupportWorker(index, "name", e.target.value)}
+                                      placeholder="Support worker name"
+                                      readOnly={isFromRoster}
+                                      className={`w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none ${
+                                        isFromRoster ? "bg-[#799A29]/5 text-[#799A29] font-semibold cursor-default" : "bg-white"
+                                      }`}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-bold uppercase text-gray-400 mb-1">Contact Number</label>
+                                    <input
+                                      type="tel"
+                                      value={worker.phoneNumber}
+                                      onChange={(e) => updateSupportWorker(index, "phoneNumber", e.target.value)}
+                                      placeholder="Phone number"
+                                      readOnly={isFromRoster}
+                                      className={`w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none ${
+                                        isFromRoster ? "bg-[#799A29]/5 text-[#799A29] font-semibold cursor-default" : "bg-white"
+                                      }`}
+                                    />
+                                  </div>
                                 </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removeSupportWorker(index)}
+                                  className="p-1.5 text-rose-400 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition-colors cursor-pointer border-none mt-1 shrink-0"
+                                >
+                                  <Trash2 size={15} />
+                                </button>
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => removeSupportWorker(index)}
-                                className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer border-none"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                          ))}
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {formData.supportWorkers.length === 0 && (
+                        <div className="text-center py-8 border border-dashed border-gray-200 rounded-2xl text-gray-400 bg-gray-50/50">
+                          <User size={28} className="mx-auto mb-2 text-gray-300" />
+                          <p className="text-xs">No support workers added to this referral yet.</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">Pick from the roster above or click "Add Manually".</p>
                         </div>
                       )}
                     </div>
