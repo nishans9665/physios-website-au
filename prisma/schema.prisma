@@ -279,3 +279,26 @@ model AdminNotes {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model SystemSetting {
+  id                 String   @id @default("settings")
+  maintenanceMode    Boolean  @default(false)
+  maintenanceMessage String?  @db.Text
+  googleTagHeader    String?  @db.Text
+  googleTagBody      String?  @db.Text
+  googleTagFooter    String?  @db.Text
+  
+  // Site Contact Details
+  phone              String?
+  email              String?
+  address            String?  @db.Text
+  clinicHours        String?  @db.Text
+  facebookUrl        String?
+  instagramUrl       String?
+  linkedinUrl        String?
+  youtubeUrl         String?
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+

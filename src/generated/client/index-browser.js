@@ -339,6 +339,25 @@ exports.Prisma.AdminNotesScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SystemSettingScalarFieldEnum = {
+  id: 'id',
+  maintenanceMode: 'maintenanceMode',
+  maintenanceMessage: 'maintenanceMessage',
+  googleTagHeader: 'googleTagHeader',
+  googleTagBody: 'googleTagBody',
+  googleTagFooter: 'googleTagFooter',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  clinicHours: 'clinicHours',
+  facebookUrl: 'facebookUrl',
+  instagramUrl: 'instagramUrl',
+  linkedinUrl: 'linkedinUrl',
+  youtubeUrl: 'youtubeUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -510,6 +529,22 @@ exports.Prisma.AdminNotesOrderByRelevanceFieldEnum = {
   authorName: 'authorName',
   noteText: 'noteText'
 };
+
+exports.Prisma.SystemSettingOrderByRelevanceFieldEnum = {
+  id: 'id',
+  maintenanceMessage: 'maintenanceMessage',
+  googleTagHeader: 'googleTagHeader',
+  googleTagBody: 'googleTagBody',
+  googleTagFooter: 'googleTagFooter',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  clinicHours: 'clinicHours',
+  facebookUrl: 'facebookUrl',
+  instagramUrl: 'instagramUrl',
+  linkedinUrl: 'linkedinUrl',
+  youtubeUrl: 'youtubeUrl'
+};
 exports.Role = exports.$Enums.Role = {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
@@ -564,7 +599,8 @@ exports.Prisma.ModelName = {
   ReferralSupportWorker: 'ReferralSupportWorker',
   ReferralGoals: 'ReferralGoals',
   UploadedDocument: 'UploadedDocument',
-  AdminNotes: 'AdminNotes'
+  AdminNotes: 'AdminNotes',
+  SystemSetting: 'SystemSetting'
 };
 
 /**

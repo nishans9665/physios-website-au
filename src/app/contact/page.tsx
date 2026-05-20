@@ -27,6 +27,18 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [settings, setSettings] = useState<any>(null);
+
+  React.useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && !data.error) {
+          setSettings(data);
+        }
+      })
+      .catch((err) => console.error("Error loading contact settings:", err));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -96,36 +108,47 @@ export default function ContactPage() {
             <h2 className="text-3xl font-serif font-bold text-dark mb-10">Contact Information</h2>
             
             <div className="grid sm:grid-cols-2 gap-8 mb-12">
-              <div className="bg-white p-8 rounded-3xl shadow-sm">
-                <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6">
+              <a 
+                href={`tel:${settings?.phone || ""}`}
+                className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow cursor-pointer block group"
+              >
+                <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
                   <Phone size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">Call Us</h3>
-                <p className="text-gray-500 text-sm">+61 (000) 000 000</p>
-              </div>
+                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.phone || "+61 (000) 000 000"}</p>
+              </a>
               
-              <div className="bg-white p-8 rounded-3xl shadow-sm">
-                <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6">
+              <a 
+                href={`mailto:${settings?.email || ""}`}
+                className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow cursor-pointer block group"
+              >
+                <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
                   <Mail size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">Email Us</h3>
-                <p className="text-gray-500 text-sm">info@carefirstphysio.com.au</p>
-              </div>
+                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.email || "info@carefirstphysio.com.au"}</p>
+              </a>
               
-              <div className="bg-white p-8 rounded-3xl shadow-sm">
-                <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6">
+              <a 
+                href={`https://wa.me/${(settings?.phone || "").replace(/[^0-9]/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow cursor-pointer block group"
+              >
+                <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
                   <MessageSquare size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">WhatsApp</h3>
-                <p className="text-gray-500 text-sm">+61 000 000 000</p>
-              </div>
+                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.phone || "+61 000 000 000"}</p>
+              </a>
               
               <div className="bg-white p-8 rounded-3xl shadow-sm">
                 <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6">
                   <Clock size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">Operating Hours</h3>
-                <p className="text-gray-500 text-xs uppercase font-bold text-primary">Mon - Fri: 8am - 6pm</p>
+                <p className="text-gray-500 text-xs font-bold text-primary whitespace-pre-line">{settings?.clinicHours || "Mon - Fri: 8am - 6pm"}</p>
               </div>
             </div>
 
@@ -135,8 +158,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-bold text-dark mb-2">Service Areas</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">
-                  We provide mobile physiotherapy across Brisbane, Queensland, and surrounding suburbs.
+                <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line">
+                  {settings?.address || "We provide mobile physiotherapy across Brisbane, Queensland, and surrounding suburbs."}
                 </p>
               </div>
             </div>
