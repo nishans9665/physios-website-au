@@ -7,13 +7,14 @@ import Footer from "@/components/layout/Footer";
 import { Star, Quote, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
-const allReviews = [
+const fallbackReviews = [
   {
     name: "John Smith",
     location: "Brisbane North",
     rating: 5,
     comment: "The home visit service was life-changing for my father. Udayamali is incredibly patient and professional. Highly recommend for aged care!",
     service: "Aged Care Physio",
+    profileImage: null,
   },
   {
     name: "Sarah Jenkins",
@@ -21,6 +22,7 @@ const allReviews = [
     rating: 5,
     comment: "Excellent NDIS support. They really took the time to understand my goals and create a plan that works for my daily routine.",
     service: "NDIS Physiotherapy",
+    profileImage: null,
   },
   {
     name: "Robert Taylor",
@@ -28,6 +30,7 @@ const allReviews = [
     rating: 5,
     comment: "Joining the Strength & Balance program was the best decision I've made. I feel so much more confident on my feet now.",
     service: "Strength & Balance",
+    profileImage: null,
   },
   {
     name: "Emma Wilson",
@@ -35,6 +38,7 @@ const allReviews = [
     rating: 5,
     comment: "Professional, caring, and very knowledgeable. The mobile service is so convenient for a busy professional like me.",
     service: "Mobile Physio",
+    profileImage: null,
   },
   {
     name: "Michael Brown",
@@ -42,6 +46,7 @@ const allReviews = [
     rating: 5,
     comment: "Telehealth sessions were surprisingly effective! I was able to get expert advice and exercise supervision without leaving my house.",
     service: "Telehealth",
+    profileImage: null,
   },
   {
     name: "Dorothy Miller",
@@ -49,10 +54,44 @@ const allReviews = [
     rating: 5,
     comment: "A wonderful experience. The team is so respectful and patient with elderly patients. My mobility has improved significantly.",
     service: "Aged Care Physio",
+    profileImage: null,
   },
 ];
 
 export default function TestimonialsPage() {
+  const [reviews, setReviews] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch("/api/testimonials");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            const mapped = data.map((item: any) => ({
+              name: item.clientName,
+              location: item.location || "Brisbane",
+              rating: item.rating,
+              comment: item.review,
+              service: item.service || "Verified Client",
+              profileImage: item.profileImage,
+            }));
+            setReviews(mapped);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load testimonials", err);
+      }
+      setReviews(fallbackReviews);
+      setLoading(false);
+    };
+
+    fetchReviews();
+  }, []);
+
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -95,7 +134,13 @@ export default function TestimonialsPage() {
       {/* Reviews Grid */}
       <section className="section-padding bg-light">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {allReviews.map((review, index) => (
+          {loading ? (
+            <div className="col-span-full py-20 text-center text-gray-500 flex flex-col items-center justify-center gap-3">
+              <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-sm font-semibold">Loading patient stories...</p>
+            </div>
+          ) : (
+            reviews.map((review, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -115,9 +160,18 @@ export default function TestimonialsPage() {
               </p>
               
               <div className="flex items-center justify-between border-t border-light pt-6">
-                <div>
-                  <h4 className="font-bold text-dark">{review.name}</h4>
-                  <p className="text-xs text-gray-400 font-semibold">{review.location}</p>
+                <div className="flex items-center gap-3">
+                  {review.profileImage ? (
+                    <img 
+                      src={review.profileImage} 
+                      alt={review.name} 
+                      className="w-10 h-10 rounded-full object-cover border border-secondary"
+                    />
+                  ) : null}
+                  <div>
+                    <h4 className="font-bold text-dark">{review.name}</h4>
+                    <p className="text-xs text-gray-400 font-semibold">{review.location}</p>
+                  </div>
                 </div>
                 <div className="flex flex-col items-end">
                    <span className="inline-block px-3 py-1 bg-secondary/50 text-[10px] font-bold text-primary rounded-full uppercase tracking-widest">
@@ -130,7 +184,8 @@ export default function TestimonialsPage() {
                 </div>
               </div>
             </motion.div>
-          ))}
+          ))
+        )}
         </div>
       </section>
 

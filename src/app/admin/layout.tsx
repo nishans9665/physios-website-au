@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, Users, Calendar, MessageSquare, 
   Settings, LogOut, Menu, X, FileText, Image as ImageIcon,
-  ShieldCheck, HelpCircle, ClipboardList
+  ShieldCheck, HelpCircle, ClipboardList, UserCog
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,10 +15,11 @@ const sidebarLinks = [
   { name: "Leads", href: "/admin/leads", icon: Users },
   { name: "Appointments", href: "/admin/referrals", icon: Calendar },
   { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
-  { name: "Services", href: "/admin/services", icon: FileText },
-  { name: "FAQ", href: "/admin/faq", icon: HelpCircle },
-  { name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
-  { name: "Website Content", href: "/admin/cms", icon: FileText },
+  // { name: "Services", href: "/admin/services", icon: FileText },
+  // { name: "FAQ", href: "/admin/faq", icon: HelpCircle },
+  // { name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
+  // { name: "Website Content", href: "/admin/cms", icon: FileText },
+  { name: "Users", href: "/admin/users", icon: UserCog },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
@@ -26,6 +27,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    if (pathname === "/admin/login") return;
+
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            setCurrentUser(data.user);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load logged-in user profile", err);
+      }
+    };
+    fetchUser();
+  }, [pathname]);
 
   // Don't show sidebar on login page
   if (pathname === "/admin/login") {
@@ -110,12 +131,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex-1" />
 
           <div className="flex items-center gap-4">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-              A
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold select-none uppercase">
+              {currentUser?.name ? currentUser.name.charAt(0) : "A"}
             </div>
             <div className="hidden sm:block text-sm">
-              <p className="font-semibold text-dark">Super Admin</p>
-              <p className="text-xs text-gray-500">admin@thecarefirst.com</p>
+              <p className="font-semibold text-dark leading-tight">{currentUser?.name || "Loading..."}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{currentUser?.email || "..."}</p>
             </div>
           </div>
         </header>

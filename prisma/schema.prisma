@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -75,6 +76,8 @@ model Testimonial {
   review       String        @db.Text
   rating       Int           @default(5)
   profileImage String?
+  location     String?       // E.g., "Brisbane North"
+  service      String?       // E.g., "NDIS Physiotherapy"
   status       GeneralStatus @default(ACTIVE)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -276,3 +279,26 @@ model AdminNotes {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model SystemSetting {
+  id                 String   @id @default("settings")
+  maintenanceMode    Boolean  @default(false)
+  maintenanceMessage String?  @db.Text
+  googleTagHeader    String?  @db.Text
+  googleTagBody      String?  @db.Text
+  googleTagFooter    String?  @db.Text
+  
+  // Site Contact Details
+  phone              String?
+  email              String?
+  address            String?  @db.Text
+  clinicHours        String?  @db.Text
+  facebookUrl        String?
+  instagramUrl       String?
+  linkedinUrl        String?
+  youtubeUrl         String?
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+

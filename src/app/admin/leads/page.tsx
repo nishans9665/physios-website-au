@@ -34,10 +34,26 @@ export default function LeadsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
+    fetchCurrentUser();
     fetchLeads();
   }, []);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          setCurrentUser(data.user);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch active login session", error);
+    }
+  };
 
   const fetchLeads = async () => {
     try {
@@ -217,13 +233,15 @@ export default function LeadsPage() {
                         >
                           <Eye size={18} />
                         </button>
-                        <button 
-                          onClick={() => deleteLead(lead.id)}
-                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200 opacity-60 hover:opacity-100"
-                          title="Delete Lead"
-                        >
-                          <Trash2 size={18} />
-                        </button>
+                        {currentUser?.role !== "STAFF_MANAGER" && (
+                          <button 
+                            onClick={() => deleteLead(lead.id)}
+                            className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200 opacity-60 hover:opacity-100"
+                            title="Delete Lead"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -345,13 +363,17 @@ export default function LeadsPage() {
 
               {/* Footer */}
               <div className="p-6 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                <button 
-                  onClick={handleModalDelete}
-                  className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-xl text-sm transition-colors flex items-center gap-1.5 cursor-pointer border-none outline-none"
-                >
-                  <Trash2 size={16} />
-                  Delete Lead
-                </button>
+                {currentUser?.role !== "STAFF_MANAGER" ? (
+                  <button 
+                    onClick={handleModalDelete}
+                    className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-xl text-sm transition-colors flex items-center gap-1.5 cursor-pointer border-none outline-none"
+                  >
+                    <Trash2 size={16} />
+                    Delete Lead
+                  </button>
+                ) : (
+                  <div />
+                )}
                 <div className="flex gap-3">
                   <button 
                     onClick={() => setSelectedLead(null)}

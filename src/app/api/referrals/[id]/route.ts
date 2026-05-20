@@ -9,19 +9,19 @@ async function verifyAuth() {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
-    if (!token) return false;
+    if (!token) return null;
     const secret = new TextEncoder().encode(JWT_SECRET);
-    await jwtVerify(token, secret);
-    return true;
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
   } catch (error) {
-    return false;
+    return null;
   }
 }
 
 // GET a single referral with all details (Protected)
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authenticated = await verifyAuth();
-  if (!authenticated) {
+  const user = await verifyAuth();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
@@ -58,8 +58,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 // PUT update status or add internal admin note (Protected)
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authenticated = await verifyAuth();
-  if (!authenticated) {
+  const user = await verifyAuth();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
@@ -98,9 +98,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
 // DELETE a referral (Protected)
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authenticated = await verifyAuth();
-  if (!authenticated) {
+  const user = await verifyAuth();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
+
+  // Restrict Staff Managers from deleting data
+  if (user.role === "STAFF_MANAGER") {
+    return NextResponse.json(
+      { error: "Staff Managers do not have permission to delete administrative records." },
+      { status: 403 }
+    );
   }
 
   try {
