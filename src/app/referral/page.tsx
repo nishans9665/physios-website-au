@@ -4,21 +4,21 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { 
-  User, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Calendar, 
-  Heart, 
-  Shield, 
-  Plus, 
-  Trash2, 
-  Upload, 
-  FileText, 
-  ArrowRight, 
-  ArrowLeft, 
-  CheckCircle2, 
+import {
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  Calendar,
+  Heart,
+  Shield,
+  Plus,
+  Trash2,
+  Upload,
+  FileText,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
   AlertCircle,
   Briefcase,
   Layers,
@@ -164,7 +164,7 @@ export default function ReferralPage() {
     fetch("/api/support-workers")
       .then((r) => r.json())
       .then((data) => Array.isArray(data) ? setGlobalWorkers(data) : [])
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setWorkersLoading(false));
   }, []);
 
@@ -437,7 +437,7 @@ export default function ReferralPage() {
       <Navbar />
 
       {/* Hero Banner header */}
-      <div className="bg-[#799A29] py-12 md:py-16 text-white text-center">
+      <div className="bg-[#799A29] py-12 mt-26 md:py-16 text-white text-center">
         <div className="max-w-4xl mx-auto px-6">
           <span className="bg-white/20 text-white font-bold text-xs uppercase px-3 py-1 rounded-full tracking-wider">
             Intake Portal
@@ -453,7 +453,7 @@ export default function ReferralPage() {
 
       {/* Main stepper and form cards */}
       <div className="flex-grow max-w-4xl w-full mx-auto px-4 py-8 md:py-12">
-        
+
         {/* Draft Restored Banner */}
         <AnimatePresence>
           {draftRestored && (
@@ -488,10 +488,10 @@ export default function ReferralPage() {
         {!success && (
           <div className="mb-8 md:mb-12 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm overflow-x-auto">
             <div className="flex items-center justify-between min-w-[600px] px-2 relative">
-              
+
               {/* Stepper active bar */}
               <div className="absolute top-[18px] left-8 right-8 h-[3px] bg-gray-100 z-0">
-                <div 
+                <div
                   className="h-full bg-[#799A29] transition-all duration-300"
                   style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
                 />
@@ -512,14 +512,13 @@ export default function ReferralPage() {
                       setCurrentStep(stepNum);
                     }
                   }}>
-                    <div 
-                      className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
-                        isActive 
-                          ? "bg-[#799A29] text-white ring-4 ring-[#799A29]/10" 
-                          : isCompleted
-                            ? "bg-[#799A29] text-white"
-                            : "bg-white border-2 border-gray-200 text-gray-400"
-                      }`}
+                    <div
+                      className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${isActive
+                        ? "bg-[#799A29] text-white ring-4 ring-[#799A29]/10"
+                        : isCompleted
+                          ? "bg-[#799A29] text-white"
+                          : "bg-white border-2 border-gray-200 text-gray-400"
+                        }`}
                     >
                       {isCompleted ? <CheckCircle2 size={16} /> : stepNum}
                     </div>
@@ -535,7 +534,7 @@ export default function ReferralPage() {
 
         {/* Form Core Contents */}
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-10 relative overflow-hidden min-h-[400px]">
-          
+
           <AnimatePresence mode="wait">
             {success ? (
               // STEP SUCCESS CONFIRMATION
@@ -562,7 +561,7 @@ export default function ReferralPage() {
                   </ul>
                 </div>
                 <div className="pt-4">
-                  <a 
+                  <a
                     href="/"
                     className="inline-flex items-center gap-1 px-6 py-3 bg-[#799A29] text-white font-bold rounded-xl text-sm hover:opacity-90 transition-all"
                   >
@@ -579,7 +578,7 @@ export default function ReferralPage() {
                 transition={{ duration: 0.2 }}
                 className="space-y-8"
               >
-                
+
                 {/* Heading */}
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold font-serif text-dark flex items-center gap-2">
@@ -608,7 +607,7 @@ export default function ReferralPage() {
                     <div className="grid md:grid-cols-2 gap-5">
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Full Name *</label>
-                        <input 
+                        <input
                           type="text"
                           required
                           value={formData.client.fullName}
@@ -619,7 +618,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Email Address *</label>
-                        <input 
+                        <input
                           type="email"
                           required
                           value={formData.client.email}
@@ -630,7 +629,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Phone Number *</label>
-                        <input 
+                        <input
                           type="tel"
                           required
                           value={formData.client.phoneNumber}
@@ -641,7 +640,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Date of Birth *</label>
-                        <input 
+                        <input
                           type="date"
                           required
                           value={formData.client.dob}
@@ -663,7 +662,7 @@ export default function ReferralPage() {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Home Address *</label>
-                        <textarea 
+                        <textarea
                           rows={3}
                           value={formData.client.address}
                           onChange={(e) => handleNestedChange("client", "address", e.target.value)}
@@ -679,7 +678,7 @@ export default function ReferralPage() {
                     <div className="grid md:grid-cols-2 gap-5">
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Alternative Contact / NOK Name</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.contact.contactName}
                           onChange={(e) => handleNestedChange("contact", "contactName", e.target.value)}
@@ -689,7 +688,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NOK Email Address</label>
-                        <input 
+                        <input
                           type="email"
                           value={formData.contact.email}
                           onChange={(e) => handleNestedChange("contact", "email", e.target.value)}
@@ -699,7 +698,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NOK Contact Number</label>
-                        <input 
+                        <input
                           type="tel"
                           value={formData.contact.phoneNumber}
                           onChange={(e) => handleNestedChange("contact", "phoneNumber", e.target.value)}
@@ -709,7 +708,7 @@ export default function ReferralPage() {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Postal Address</label>
-                        <textarea 
+                        <textarea
                           rows={2}
                           value={formData.contact.address}
                           onChange={(e) => handleNestedChange("contact", "address", e.target.value)}
@@ -725,7 +724,7 @@ export default function ReferralPage() {
                     <div className="grid md:grid-cols-2 gap-5">
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referrer Name (or Self Referral)</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.referrer.referrerName}
                           onChange={(e) => handleNestedChange("referrer", "referrerName", e.target.value)}
@@ -735,7 +734,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referring Clinic / Company</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.referrer.companyName}
                           onChange={(e) => handleNestedChange("referrer", "companyName", e.target.value)}
@@ -745,7 +744,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referrer Email</label>
-                        <input 
+                        <input
                           type="email"
                           value={formData.referrer.email}
                           onChange={(e) => handleNestedChange("referrer", "email", e.target.value)}
@@ -755,7 +754,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referrer Phone Number</label>
-                        <input 
+                        <input
                           type="tel"
                           value={formData.referrer.phoneNumber}
                           onChange={(e) => handleNestedChange("referrer", "phoneNumber", e.target.value)}
@@ -765,7 +764,7 @@ export default function ReferralPage() {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Postal Address</label>
-                        <textarea 
+                        <textarea
                           rows={2}
                           value={formData.referrer.address}
                           onChange={(e) => handleNestedChange("referrer", "address", e.target.value)}
@@ -793,7 +792,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Provider Name (e.g. Home Care / NDIS Plan Manager)</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.providerName}
                           onChange={(e) => handleSimpleChange("providerName", e.target.value)}
@@ -803,7 +802,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Invoice/Accounts Contact Name</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.invoiceContactName}
                           onChange={(e) => handleSimpleChange("invoiceContactName", e.target.value)}
@@ -813,7 +812,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Invoice Coordinator / Care Manager Name</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.coordinatorName}
                           onChange={(e) => handleSimpleChange("coordinatorName", e.target.value)}
@@ -823,7 +822,7 @@ export default function ReferralPage() {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Billing / Invoice Email Address</label>
-                        <input 
+                        <input
                           type="email"
                           value={formData.invoiceEmail}
                           onChange={(e) => handleSimpleChange("invoiceEmail", e.target.value)}
@@ -871,11 +870,10 @@ export default function ReferralPage() {
                                 type="button"
                                 key={day}
                                 onClick={() => togglePreferredDay(day)}
-                                className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                                  isSelected 
-                                    ? "bg-[#799A29]/10 border-[#799A29] text-[#799A29]" 
-                                    : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                                }`}
+                                className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
+                                  ? "bg-[#799A29]/10 border-[#799A29] text-[#799A29]"
+                                  : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                                  }`}
                               >
                                 {day}
                               </button>
@@ -885,7 +883,7 @@ export default function ReferralPage() {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Specific Unavailability Details</label>
-                        <textarea 
+                        <textarea
                           rows={3}
                           value={formData.unavailability}
                           onChange={(e) => handleSimpleChange("unavailability", e.target.value)}
@@ -901,7 +899,7 @@ export default function ReferralPage() {
                     <div className="space-y-5">
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Primary Diagnosis / Reasons for Referral *</label>
-                        <textarea 
+                        <textarea
                           rows={3}
                           required
                           value={formData.medicalHistory.primaryDiagnosis}
@@ -912,7 +910,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Recent Falls, Surgeries, or Balance Risks</label>
-                        <textarea 
+                        <textarea
                           rows={2}
                           value={formData.medicalHistory.recentFallsSurgeryRisks}
                           onChange={(e) => handleNestedChange("medicalHistory", "recentFallsSurgeryRisks", e.target.value)}
@@ -922,7 +920,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Cognitive Diagnosis (e.g. Dementia, Stroke, MCI)</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.medicalHistory.cognitiveDiagnosis}
                           onChange={(e) => handleNestedChange("medicalHistory", "cognitiveDiagnosis", e.target.value)}
@@ -932,7 +930,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Specific Safety Precautions / Contraindications</label>
-                        <textarea 
+                        <textarea
                           rows={2}
                           value={formData.medicalHistory.specificPrecautions}
                           onChange={(e) => handleNestedChange("medicalHistory", "specificPrecautions", e.target.value)}
@@ -942,7 +940,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Other Relevant Medical Conditions</label>
-                        <textarea 
+                        <textarea
                           rows={2}
                           value={formData.medicalHistory.otherMedicalInfo}
                           onChange={(e) => handleNestedChange("medicalHistory", "otherMedicalInfo", e.target.value)}
@@ -970,7 +968,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Participant NDIS Number *</label>
-                        <input 
+                        <input
                           type="text"
                           required
                           value={formData.ndisDetails.participantId}
@@ -981,7 +979,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NDIS Plan Start Date</label>
-                        <input 
+                        <input
                           type="date"
                           value={formData.ndisDetails.planStartDate}
                           onChange={(e) => handleNestedChange("ndisDetails", "planStartDate", e.target.value)}
@@ -990,7 +988,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NDIS Plan End Date</label>
-                        <input 
+                        <input
                           type="date"
                           value={formData.ndisDetails.planEndDate}
                           onChange={(e) => handleNestedChange("ndisDetails", "planEndDate", e.target.value)}
@@ -999,7 +997,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Plan Manager Name (if Plan Managed)</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.ndisDetails.planManagerName}
                           onChange={(e) => handleNestedChange("ndisDetails", "planManagerName", e.target.value)}
@@ -1009,7 +1007,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Plan Manager Contact details</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.ndisDetails.planManagerContact}
                           onChange={(e) => handleNestedChange("ndisDetails", "planManagerContact", e.target.value)}
@@ -1019,7 +1017,7 @@ export default function ReferralPage() {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Funding Area Allocation (e.g. CB Daily Activities)</label>
-                        <input 
+                        <input
                           type="text"
                           value={formData.ndisDetails.fundingArea}
                           onChange={(e) => handleNestedChange("ndisDetails", "fundingArea", e.target.value)}
@@ -1062,15 +1060,13 @@ export default function ReferralPage() {
                                   key={gw.id}
                                   type="button"
                                   onClick={() => toggleGlobalWorker(gw)}
-                                  className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 text-left transition-all w-full cursor-pointer ${
-                                    selected
-                                      ? "border-[#799A29] bg-[#799A29]/5"
-                                      : "border-gray-200 bg-white hover:border-[#799A29]/40 hover:bg-gray-50/60"
-                                  }`}
+                                  className={`flex items-center gap-3 p-3.5 rounded-2xl border-2 text-left transition-all w-full cursor-pointer ${selected
+                                    ? "border-[#799A29] bg-[#799A29]/5"
+                                    : "border-gray-200 bg-white hover:border-[#799A29]/40 hover:bg-gray-50/60"
+                                    }`}
                                 >
-                                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 transition-colors ${
-                                    selected ? "bg-[#799A29] text-white" : "bg-gray-100 text-gray-500"
-                                  }`}>
+                                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 transition-colors ${selected ? "bg-[#799A29] text-white" : "bg-gray-100 text-gray-500"
+                                    }`}>
                                     {selected ? <CheckCircle2 size={18} /> : gw.name.charAt(0).toUpperCase()}
                                   </div>
                                   <div className="min-w-0 flex-1">
@@ -1119,12 +1115,10 @@ export default function ReferralPage() {
                               (gw) => gw.name === worker.name && gw.phoneNumber === worker.phoneNumber
                             );
                             return (
-                              <div key={index} className={`flex gap-3 items-start p-3.5 rounded-2xl border ${
-                                isFromRoster ? "border-[#799A29]/30 bg-[#799A29]/5" : "border-gray-100 bg-gray-50"
-                              }`}>
-                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${
-                                  isFromRoster ? "bg-[#799A29] text-white" : "bg-gray-200 text-gray-600"
+                              <div key={index} className={`flex gap-3 items-start p-3.5 rounded-2xl border ${isFromRoster ? "border-[#799A29]/30 bg-[#799A29]/5" : "border-gray-100 bg-gray-50"
                                 }`}>
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${isFromRoster ? "bg-[#799A29] text-white" : "bg-gray-200 text-gray-600"
+                                  }`}>
                                   {worker.name ? worker.name.charAt(0).toUpperCase() : "?"}
                                 </div>
                                 <div className="grid grid-cols-2 gap-3 flex-grow">
@@ -1136,9 +1130,8 @@ export default function ReferralPage() {
                                       onChange={(e) => updateSupportWorker(index, "name", e.target.value)}
                                       placeholder="Support worker name"
                                       readOnly={isFromRoster}
-                                      className={`w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none ${
-                                        isFromRoster ? "bg-[#799A29]/5 text-[#799A29] font-semibold cursor-default" : "bg-white"
-                                      }`}
+                                      className={`w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none ${isFromRoster ? "bg-[#799A29]/5 text-[#799A29] font-semibold cursor-default" : "bg-white"
+                                        }`}
                                     />
                                   </div>
                                   <div>
@@ -1149,9 +1142,8 @@ export default function ReferralPage() {
                                       onChange={(e) => updateSupportWorker(index, "phoneNumber", e.target.value)}
                                       placeholder="Phone number"
                                       readOnly={isFromRoster}
-                                      className={`w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none ${
-                                        isFromRoster ? "bg-[#799A29]/5 text-[#799A29] font-semibold cursor-default" : "bg-white"
-                                      }`}
+                                      className={`w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-[#799A29] focus:outline-none ${isFromRoster ? "bg-[#799A29]/5 text-[#799A29] font-semibold cursor-default" : "bg-white"
+                                        }`}
                                     />
                                   </div>
                                 </div>
@@ -1183,7 +1175,7 @@ export default function ReferralPage() {
                     <div className="space-y-5">
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Client Therapy Goals *</label>
-                        <textarea 
+                        <textarea
                           rows={4}
                           required
                           value={formData.goals.clientGoals}
@@ -1194,7 +1186,7 @@ export default function ReferralPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Other Relevant Information</label>
-                        <textarea 
+                        <textarea
                           rows={3}
                           value={formData.goals.additionalInfo}
                           onChange={(e) => handleNestedChange("goals", "additionalInfo", e.target.value)}
@@ -1224,16 +1216,15 @@ export default function ReferralPage() {
                           { label: "Assessment Result", type: "assessment" },
                           { label: "NDIS Document", type: "ndis" }
                         ].map((category) => (
-                          <label 
+                          <label
                             key={category.type}
-                            className={`flex flex-col items-center justify-center p-4 border border-dashed border-gray-200 rounded-2xl bg-white hover:border-[#799A29] hover:bg-[#799A29]/5 cursor-pointer text-center transition-all ${
-                              uploading ? "opacity-55 pointer-events-none" : ""
-                            }`}
+                            className={`flex flex-col items-center justify-center p-4 border border-dashed border-gray-200 rounded-2xl bg-white hover:border-[#799A29] hover:bg-[#799A29]/5 cursor-pointer text-center transition-all ${uploading ? "opacity-55 pointer-events-none" : ""
+                              }`}
                           >
                             <Upload size={20} className="text-gray-400 mb-1.5" />
                             <span className="text-[10px] font-bold text-gray-600 block">{category.label}</span>
                             <span className="text-[8px] text-gray-400 block mt-0.5">PDF, DOCX, Images</span>
-                            <input 
+                            <input
                               type="file"
                               accept=".pdf,.docx,.doc,.jpg,.jpeg,.png"
                               onChange={(e) => handleFileUpload(e, category.type)}
@@ -1285,11 +1276,11 @@ export default function ReferralPage() {
                     <div className="space-y-6">
                       <div className="bg-[#FAFBF9] border border-gray-100 p-6 rounded-2xl space-y-4">
                         <h4 className="text-xs font-bold uppercase text-[#799A29] tracking-wider">Clinical Consent Agreements</h4>
-                        
+
                         {/* Consent Checkboxes */}
                         <div className="space-y-3">
                           <label className="flex items-start gap-3 cursor-pointer">
-                            <input 
+                            <input
                               type="checkbox"
                               checked={formData.privacyConsent}
                               onChange={(e) => handleSimpleChange("privacyConsent", e.target.checked)}
@@ -1301,7 +1292,7 @@ export default function ReferralPage() {
                           </label>
 
                           <label className="flex items-start gap-3 cursor-pointer">
-                            <input 
+                            <input
                               type="checkbox"
                               checked={formData.contactConsent}
                               onChange={(e) => handleSimpleChange("contactConsent", e.target.checked)}
@@ -1313,7 +1304,7 @@ export default function ReferralPage() {
                           </label>
 
                           <label className="flex items-start gap-3 cursor-pointer">
-                            <input 
+                            <input
                               type="checkbox"
                               checked={formData.medicalConsent}
                               onChange={(e) => handleSimpleChange("medicalConsent", e.target.checked)}
@@ -1336,7 +1327,7 @@ export default function ReferralPage() {
 
                   {/* NAVIGATION CONTROLS */}
                   <div className="pt-6 border-t border-gray-100 flex justify-between items-center">
-                    
+
                     {/* Back Button */}
                     {currentStep > 1 ? (
                       <button
@@ -1384,7 +1375,7 @@ export default function ReferralPage() {
               </motion.div>
             )}
           </AnimatePresence>
-          
+
         </div>
 
       </div>
