@@ -52,12 +52,12 @@ const Hero = () => {
               Provide convenient mobile and telehealth physiotherapy services across Brisbane with personalised care focused on recovery, mobility, strength, and independence.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
-              <Link href="/referral" className="btn-primary flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 w-full max-w-[280px] sm:max-w-none mx-auto lg:mx-0">
+              <Link href="/referral" className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
                 <Calendar size={20} />
                 Book Appointment
               </Link>
-              <Link href="/contact" className="btn-secondary">
+              <Link href="/contact" className="btn-secondary flex items-center justify-center w-full sm:w-auto text-center">
                 Contact Us
               </Link>
             </div>
