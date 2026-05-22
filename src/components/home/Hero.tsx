@@ -36,7 +36,7 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center gap-16">
         {/* Content */}
-        <div className="flex-1 text-center lg:text-left">
+        <div className="flex-1 w-full text-center lg:text-left order-2 lg:order-1">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -83,12 +83,12 @@ const Hero = () => {
         </div>
 
         {/* Hero Image Section */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative w-full mb-10 lg:mb-0 lg:mt-0 order-1 lg:order-2">
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative z-10"
+            className="relative z-10 w-full"
           >
             <div className="relative w-full aspect-square md:aspect-[4/5] max-w-lg mx-auto rounded-[40px] overflow-hidden shadow-2xl border-8 border-white">
               <div className="absolute inset-0">

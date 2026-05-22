@@ -11,17 +11,15 @@ import {
 import { cn } from "@/lib/utils";
 
 const sidebarLinks = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Leads", href: "/admin/leads", icon: Users },
-  { name: "Appointments", href: "/admin/referrals", icon: Calendar },
-  { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
-  // { name: "Services", href: "/admin/services", icon: FileText },
-  // { name: "FAQ", href: "/admin/faq", icon: HelpCircle },
-  // { name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
-  // { name: "Website Content", href: "/admin/cms", icon: FileText },
-  { name: "Users", href: "/admin/users", icon: UserCog },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Dashboard",        href: "/admin/dashboard",        icon: LayoutDashboard },
+  { name: "Leads",            href: "/admin/leads",            icon: Users },
+  { name: "Appointments",     href: "/admin/referrals",        icon: Calendar },
+  { name: "Testimonials",     href: "/admin/testimonials",     icon: MessageSquare },
+  { name: "Support Workers",  href: "/admin/support-workers",  icon: ClipboardList },
+  { name: "Users",            href: "/admin/users",            icon: UserCog },
+  { name: "Settings",         href: "/admin/settings",         icon: Settings },
 ];
+
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

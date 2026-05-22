@@ -6,15 +6,23 @@
   --color-accent: #DDE8BF;
   --color-dark: #1D1D1D;
   --color-light: #FAFAF7;
-  
+  --color-button: #40B6C0;
+
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
 
   --animate-float: float 3s ease-in-out infinite;
-  
+
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
 }
 
@@ -30,7 +38,12 @@ body {
   scroll-behavior: smooth;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif);
   font-weight: 700;
 }
@@ -46,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  @apply bg-primary text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:bg-primary/90 hover:scale-105 active:scale-95;
+  @apply bg-button text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:bg-primary/90 hover:scale-105 active:scale-95;
 }
 
 .btn-secondary {

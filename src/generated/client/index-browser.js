@@ -358,6 +358,19 @@ exports.Prisma.SystemSettingScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.GlobalSupportWorkerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phoneNumber: 'phoneNumber',
+  email: 'email',
+  role: 'role',
+  organisation: 'organisation',
+  isActive: 'isActive',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -545,6 +558,16 @@ exports.Prisma.SystemSettingOrderByRelevanceFieldEnum = {
   linkedinUrl: 'linkedinUrl',
   youtubeUrl: 'youtubeUrl'
 };
+
+exports.Prisma.GlobalSupportWorkerOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phoneNumber: 'phoneNumber',
+  email: 'email',
+  role: 'role',
+  organisation: 'organisation',
+  notes: 'notes'
+};
 exports.Role = exports.$Enums.Role = {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
@@ -600,7 +623,8 @@ exports.Prisma.ModelName = {
   ReferralGoals: 'ReferralGoals',
   UploadedDocument: 'UploadedDocument',
   AdminNotes: 'AdminNotes',
-  SystemSetting: 'SystemSetting'
+  SystemSetting: 'SystemSetting',
+  GlobalSupportWorker: 'GlobalSupportWorker'
 };
 
 /**

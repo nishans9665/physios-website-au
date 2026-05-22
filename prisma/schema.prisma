@@ -302,3 +302,18 @@ model SystemSetting {
   updatedAt          DateTime @updatedAt
 }
 
+// Global pool of support workers managed by admin,
+// selectable in the patient referral form Step 8.
+model GlobalSupportWorker {
+  id          String   @id @default(uuid())
+  name        String
+  phoneNumber String
+  email       String?
+  role        String?  // e.g. "Support Worker", "Case Coordinator"
+  organisation String? // e.g. "My Care Solutions"
+  isActive    Boolean  @default(true)
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

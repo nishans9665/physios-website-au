@@ -113,6 +113,11 @@ export type AdminNotes = $Result.DefaultSelection<Prisma.$AdminNotesPayload>
  * 
  */
 export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayload>
+/**
+ * Model GlobalSupportWorker
+ * 
+ */
+export type GlobalSupportWorker = $Result.DefaultSelection<Prisma.$GlobalSupportWorkerPayload>
 
 /**
  * Enums
@@ -506,6 +511,16 @@ export class PrismaClient<
     * ```
     */
   get systemSetting(): Prisma.SystemSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.globalSupportWorker`: Exposes CRUD operations for the **GlobalSupportWorker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GlobalSupportWorkers
+    * const globalSupportWorkers = await prisma.globalSupportWorker.findMany()
+    * ```
+    */
+  get globalSupportWorker(): Prisma.GlobalSupportWorkerDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -966,7 +981,8 @@ export namespace Prisma {
     ReferralGoals: 'ReferralGoals',
     UploadedDocument: 'UploadedDocument',
     AdminNotes: 'AdminNotes',
-    SystemSetting: 'SystemSetting'
+    SystemSetting: 'SystemSetting',
+    GlobalSupportWorker: 'GlobalSupportWorker'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -985,7 +1001,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "admin" | "contactLead" | "appointment" | "testimonial" | "service" | "websiteContent" | "faq" | "gallery" | "notification" | "referral" | "referralClient" | "referralContact" | "referrerDetails" | "referralMedicalHistory" | "ndisParticipantDetails" | "referralSupportWorker" | "referralGoals" | "uploadedDocument" | "adminNotes" | "systemSetting"
+      modelProps: "admin" | "contactLead" | "appointment" | "testimonial" | "service" | "websiteContent" | "faq" | "gallery" | "notification" | "referral" | "referralClient" | "referralContact" | "referrerDetails" | "referralMedicalHistory" | "ndisParticipantDetails" | "referralSupportWorker" | "referralGoals" | "uploadedDocument" | "adminNotes" | "systemSetting" | "globalSupportWorker"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2309,6 +2325,72 @@ export namespace Prisma {
           }
         }
       }
+      GlobalSupportWorker: {
+        payload: Prisma.$GlobalSupportWorkerPayload<ExtArgs>
+        fields: Prisma.GlobalSupportWorkerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GlobalSupportWorkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GlobalSupportWorkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>
+          }
+          findFirst: {
+            args: Prisma.GlobalSupportWorkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GlobalSupportWorkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>
+          }
+          findMany: {
+            args: Prisma.GlobalSupportWorkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>[]
+          }
+          create: {
+            args: Prisma.GlobalSupportWorkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>
+          }
+          createMany: {
+            args: Prisma.GlobalSupportWorkerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.GlobalSupportWorkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>
+          }
+          update: {
+            args: Prisma.GlobalSupportWorkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.GlobalSupportWorkerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GlobalSupportWorkerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GlobalSupportWorkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GlobalSupportWorkerPayload>
+          }
+          aggregate: {
+            args: Prisma.GlobalSupportWorkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGlobalSupportWorker>
+          }
+          groupBy: {
+            args: Prisma.GlobalSupportWorkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GlobalSupportWorkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GlobalSupportWorkerCountArgs<ExtArgs>
+            result: $Utils.Optional<GlobalSupportWorkerCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2425,6 +2507,7 @@ export namespace Prisma {
     uploadedDocument?: UploadedDocumentOmit
     adminNotes?: AdminNotesOmit
     systemSetting?: SystemSettingOmit
+    globalSupportWorker?: GlobalSupportWorkerOmit
   }
 
   /* Types for Logging */
@@ -21867,6 +21950,943 @@ export namespace Prisma {
 
 
   /**
+   * Model GlobalSupportWorker
+   */
+
+  export type AggregateGlobalSupportWorker = {
+    _count: GlobalSupportWorkerCountAggregateOutputType | null
+    _min: GlobalSupportWorkerMinAggregateOutputType | null
+    _max: GlobalSupportWorkerMaxAggregateOutputType | null
+  }
+
+  export type GlobalSupportWorkerMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    phoneNumber: string | null
+    email: string | null
+    role: string | null
+    organisation: string | null
+    isActive: boolean | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GlobalSupportWorkerMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    phoneNumber: string | null
+    email: string | null
+    role: string | null
+    organisation: string | null
+    isActive: boolean | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GlobalSupportWorkerCountAggregateOutputType = {
+    id: number
+    name: number
+    phoneNumber: number
+    email: number
+    role: number
+    organisation: number
+    isActive: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GlobalSupportWorkerMinAggregateInputType = {
+    id?: true
+    name?: true
+    phoneNumber?: true
+    email?: true
+    role?: true
+    organisation?: true
+    isActive?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GlobalSupportWorkerMaxAggregateInputType = {
+    id?: true
+    name?: true
+    phoneNumber?: true
+    email?: true
+    role?: true
+    organisation?: true
+    isActive?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GlobalSupportWorkerCountAggregateInputType = {
+    id?: true
+    name?: true
+    phoneNumber?: true
+    email?: true
+    role?: true
+    organisation?: true
+    isActive?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GlobalSupportWorkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GlobalSupportWorker to aggregate.
+     */
+    where?: GlobalSupportWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GlobalSupportWorkers to fetch.
+     */
+    orderBy?: GlobalSupportWorkerOrderByWithRelationInput | GlobalSupportWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GlobalSupportWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GlobalSupportWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GlobalSupportWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GlobalSupportWorkers
+    **/
+    _count?: true | GlobalSupportWorkerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GlobalSupportWorkerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GlobalSupportWorkerMaxAggregateInputType
+  }
+
+  export type GetGlobalSupportWorkerAggregateType<T extends GlobalSupportWorkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateGlobalSupportWorker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGlobalSupportWorker[P]>
+      : GetScalarType<T[P], AggregateGlobalSupportWorker[P]>
+  }
+
+
+
+
+  export type GlobalSupportWorkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GlobalSupportWorkerWhereInput
+    orderBy?: GlobalSupportWorkerOrderByWithAggregationInput | GlobalSupportWorkerOrderByWithAggregationInput[]
+    by: GlobalSupportWorkerScalarFieldEnum[] | GlobalSupportWorkerScalarFieldEnum
+    having?: GlobalSupportWorkerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GlobalSupportWorkerCountAggregateInputType | true
+    _min?: GlobalSupportWorkerMinAggregateInputType
+    _max?: GlobalSupportWorkerMaxAggregateInputType
+  }
+
+  export type GlobalSupportWorkerGroupByOutputType = {
+    id: string
+    name: string
+    phoneNumber: string
+    email: string | null
+    role: string | null
+    organisation: string | null
+    isActive: boolean
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: GlobalSupportWorkerCountAggregateOutputType | null
+    _min: GlobalSupportWorkerMinAggregateOutputType | null
+    _max: GlobalSupportWorkerMaxAggregateOutputType | null
+  }
+
+  type GetGlobalSupportWorkerGroupByPayload<T extends GlobalSupportWorkerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GlobalSupportWorkerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GlobalSupportWorkerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GlobalSupportWorkerGroupByOutputType[P]>
+            : GetScalarType<T[P], GlobalSupportWorkerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GlobalSupportWorkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    phoneNumber?: boolean
+    email?: boolean
+    role?: boolean
+    organisation?: boolean
+    isActive?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["globalSupportWorker"]>
+
+
+
+  export type GlobalSupportWorkerSelectScalar = {
+    id?: boolean
+    name?: boolean
+    phoneNumber?: boolean
+    email?: boolean
+    role?: boolean
+    organisation?: boolean
+    isActive?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GlobalSupportWorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phoneNumber" | "email" | "role" | "organisation" | "isActive" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["globalSupportWorker"]>
+
+  export type $GlobalSupportWorkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GlobalSupportWorker"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      phoneNumber: string
+      email: string | null
+      role: string | null
+      organisation: string | null
+      isActive: boolean
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["globalSupportWorker"]>
+    composites: {}
+  }
+
+  type GlobalSupportWorkerGetPayload<S extends boolean | null | undefined | GlobalSupportWorkerDefaultArgs> = $Result.GetResult<Prisma.$GlobalSupportWorkerPayload, S>
+
+  type GlobalSupportWorkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GlobalSupportWorkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GlobalSupportWorkerCountAggregateInputType | true
+    }
+
+  export interface GlobalSupportWorkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GlobalSupportWorker'], meta: { name: 'GlobalSupportWorker' } }
+    /**
+     * Find zero or one GlobalSupportWorker that matches the filter.
+     * @param {GlobalSupportWorkerFindUniqueArgs} args - Arguments to find a GlobalSupportWorker
+     * @example
+     * // Get one GlobalSupportWorker
+     * const globalSupportWorker = await prisma.globalSupportWorker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GlobalSupportWorkerFindUniqueArgs>(args: SelectSubset<T, GlobalSupportWorkerFindUniqueArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GlobalSupportWorker that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GlobalSupportWorkerFindUniqueOrThrowArgs} args - Arguments to find a GlobalSupportWorker
+     * @example
+     * // Get one GlobalSupportWorker
+     * const globalSupportWorker = await prisma.globalSupportWorker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GlobalSupportWorkerFindUniqueOrThrowArgs>(args: SelectSubset<T, GlobalSupportWorkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GlobalSupportWorker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerFindFirstArgs} args - Arguments to find a GlobalSupportWorker
+     * @example
+     * // Get one GlobalSupportWorker
+     * const globalSupportWorker = await prisma.globalSupportWorker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GlobalSupportWorkerFindFirstArgs>(args?: SelectSubset<T, GlobalSupportWorkerFindFirstArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GlobalSupportWorker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerFindFirstOrThrowArgs} args - Arguments to find a GlobalSupportWorker
+     * @example
+     * // Get one GlobalSupportWorker
+     * const globalSupportWorker = await prisma.globalSupportWorker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GlobalSupportWorkerFindFirstOrThrowArgs>(args?: SelectSubset<T, GlobalSupportWorkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GlobalSupportWorkers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GlobalSupportWorkers
+     * const globalSupportWorkers = await prisma.globalSupportWorker.findMany()
+     * 
+     * // Get first 10 GlobalSupportWorkers
+     * const globalSupportWorkers = await prisma.globalSupportWorker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const globalSupportWorkerWithIdOnly = await prisma.globalSupportWorker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GlobalSupportWorkerFindManyArgs>(args?: SelectSubset<T, GlobalSupportWorkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GlobalSupportWorker.
+     * @param {GlobalSupportWorkerCreateArgs} args - Arguments to create a GlobalSupportWorker.
+     * @example
+     * // Create one GlobalSupportWorker
+     * const GlobalSupportWorker = await prisma.globalSupportWorker.create({
+     *   data: {
+     *     // ... data to create a GlobalSupportWorker
+     *   }
+     * })
+     * 
+     */
+    create<T extends GlobalSupportWorkerCreateArgs>(args: SelectSubset<T, GlobalSupportWorkerCreateArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GlobalSupportWorkers.
+     * @param {GlobalSupportWorkerCreateManyArgs} args - Arguments to create many GlobalSupportWorkers.
+     * @example
+     * // Create many GlobalSupportWorkers
+     * const globalSupportWorker = await prisma.globalSupportWorker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GlobalSupportWorkerCreateManyArgs>(args?: SelectSubset<T, GlobalSupportWorkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a GlobalSupportWorker.
+     * @param {GlobalSupportWorkerDeleteArgs} args - Arguments to delete one GlobalSupportWorker.
+     * @example
+     * // Delete one GlobalSupportWorker
+     * const GlobalSupportWorker = await prisma.globalSupportWorker.delete({
+     *   where: {
+     *     // ... filter to delete one GlobalSupportWorker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GlobalSupportWorkerDeleteArgs>(args: SelectSubset<T, GlobalSupportWorkerDeleteArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GlobalSupportWorker.
+     * @param {GlobalSupportWorkerUpdateArgs} args - Arguments to update one GlobalSupportWorker.
+     * @example
+     * // Update one GlobalSupportWorker
+     * const globalSupportWorker = await prisma.globalSupportWorker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GlobalSupportWorkerUpdateArgs>(args: SelectSubset<T, GlobalSupportWorkerUpdateArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GlobalSupportWorkers.
+     * @param {GlobalSupportWorkerDeleteManyArgs} args - Arguments to filter GlobalSupportWorkers to delete.
+     * @example
+     * // Delete a few GlobalSupportWorkers
+     * const { count } = await prisma.globalSupportWorker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GlobalSupportWorkerDeleteManyArgs>(args?: SelectSubset<T, GlobalSupportWorkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GlobalSupportWorkers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GlobalSupportWorkers
+     * const globalSupportWorker = await prisma.globalSupportWorker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GlobalSupportWorkerUpdateManyArgs>(args: SelectSubset<T, GlobalSupportWorkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GlobalSupportWorker.
+     * @param {GlobalSupportWorkerUpsertArgs} args - Arguments to update or create a GlobalSupportWorker.
+     * @example
+     * // Update or create a GlobalSupportWorker
+     * const globalSupportWorker = await prisma.globalSupportWorker.upsert({
+     *   create: {
+     *     // ... data to create a GlobalSupportWorker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GlobalSupportWorker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GlobalSupportWorkerUpsertArgs>(args: SelectSubset<T, GlobalSupportWorkerUpsertArgs<ExtArgs>>): Prisma__GlobalSupportWorkerClient<$Result.GetResult<Prisma.$GlobalSupportWorkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GlobalSupportWorkers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerCountArgs} args - Arguments to filter GlobalSupportWorkers to count.
+     * @example
+     * // Count the number of GlobalSupportWorkers
+     * const count = await prisma.globalSupportWorker.count({
+     *   where: {
+     *     // ... the filter for the GlobalSupportWorkers we want to count
+     *   }
+     * })
+    **/
+    count<T extends GlobalSupportWorkerCountArgs>(
+      args?: Subset<T, GlobalSupportWorkerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GlobalSupportWorkerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GlobalSupportWorker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GlobalSupportWorkerAggregateArgs>(args: Subset<T, GlobalSupportWorkerAggregateArgs>): Prisma.PrismaPromise<GetGlobalSupportWorkerAggregateType<T>>
+
+    /**
+     * Group by GlobalSupportWorker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GlobalSupportWorkerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GlobalSupportWorkerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GlobalSupportWorkerGroupByArgs['orderBy'] }
+        : { orderBy?: GlobalSupportWorkerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GlobalSupportWorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGlobalSupportWorkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GlobalSupportWorker model
+   */
+  readonly fields: GlobalSupportWorkerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GlobalSupportWorker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GlobalSupportWorkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GlobalSupportWorker model
+   */
+  interface GlobalSupportWorkerFieldRefs {
+    readonly id: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly name: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly phoneNumber: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly email: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly role: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly organisation: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly isActive: FieldRef<"GlobalSupportWorker", 'Boolean'>
+    readonly notes: FieldRef<"GlobalSupportWorker", 'String'>
+    readonly createdAt: FieldRef<"GlobalSupportWorker", 'DateTime'>
+    readonly updatedAt: FieldRef<"GlobalSupportWorker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GlobalSupportWorker findUnique
+   */
+  export type GlobalSupportWorkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * Filter, which GlobalSupportWorker to fetch.
+     */
+    where: GlobalSupportWorkerWhereUniqueInput
+  }
+
+  /**
+   * GlobalSupportWorker findUniqueOrThrow
+   */
+  export type GlobalSupportWorkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * Filter, which GlobalSupportWorker to fetch.
+     */
+    where: GlobalSupportWorkerWhereUniqueInput
+  }
+
+  /**
+   * GlobalSupportWorker findFirst
+   */
+  export type GlobalSupportWorkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * Filter, which GlobalSupportWorker to fetch.
+     */
+    where?: GlobalSupportWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GlobalSupportWorkers to fetch.
+     */
+    orderBy?: GlobalSupportWorkerOrderByWithRelationInput | GlobalSupportWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GlobalSupportWorkers.
+     */
+    cursor?: GlobalSupportWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GlobalSupportWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GlobalSupportWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GlobalSupportWorkers.
+     */
+    distinct?: GlobalSupportWorkerScalarFieldEnum | GlobalSupportWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * GlobalSupportWorker findFirstOrThrow
+   */
+  export type GlobalSupportWorkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * Filter, which GlobalSupportWorker to fetch.
+     */
+    where?: GlobalSupportWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GlobalSupportWorkers to fetch.
+     */
+    orderBy?: GlobalSupportWorkerOrderByWithRelationInput | GlobalSupportWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GlobalSupportWorkers.
+     */
+    cursor?: GlobalSupportWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GlobalSupportWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GlobalSupportWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GlobalSupportWorkers.
+     */
+    distinct?: GlobalSupportWorkerScalarFieldEnum | GlobalSupportWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * GlobalSupportWorker findMany
+   */
+  export type GlobalSupportWorkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * Filter, which GlobalSupportWorkers to fetch.
+     */
+    where?: GlobalSupportWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GlobalSupportWorkers to fetch.
+     */
+    orderBy?: GlobalSupportWorkerOrderByWithRelationInput | GlobalSupportWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GlobalSupportWorkers.
+     */
+    cursor?: GlobalSupportWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GlobalSupportWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GlobalSupportWorkers.
+     */
+    skip?: number
+    distinct?: GlobalSupportWorkerScalarFieldEnum | GlobalSupportWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * GlobalSupportWorker create
+   */
+  export type GlobalSupportWorkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * The data needed to create a GlobalSupportWorker.
+     */
+    data: XOR<GlobalSupportWorkerCreateInput, GlobalSupportWorkerUncheckedCreateInput>
+  }
+
+  /**
+   * GlobalSupportWorker createMany
+   */
+  export type GlobalSupportWorkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GlobalSupportWorkers.
+     */
+    data: GlobalSupportWorkerCreateManyInput | GlobalSupportWorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GlobalSupportWorker update
+   */
+  export type GlobalSupportWorkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * The data needed to update a GlobalSupportWorker.
+     */
+    data: XOR<GlobalSupportWorkerUpdateInput, GlobalSupportWorkerUncheckedUpdateInput>
+    /**
+     * Choose, which GlobalSupportWorker to update.
+     */
+    where: GlobalSupportWorkerWhereUniqueInput
+  }
+
+  /**
+   * GlobalSupportWorker updateMany
+   */
+  export type GlobalSupportWorkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GlobalSupportWorkers.
+     */
+    data: XOR<GlobalSupportWorkerUpdateManyMutationInput, GlobalSupportWorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which GlobalSupportWorkers to update
+     */
+    where?: GlobalSupportWorkerWhereInput
+    /**
+     * Limit how many GlobalSupportWorkers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GlobalSupportWorker upsert
+   */
+  export type GlobalSupportWorkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * The filter to search for the GlobalSupportWorker to update in case it exists.
+     */
+    where: GlobalSupportWorkerWhereUniqueInput
+    /**
+     * In case the GlobalSupportWorker found by the `where` argument doesn't exist, create a new GlobalSupportWorker with this data.
+     */
+    create: XOR<GlobalSupportWorkerCreateInput, GlobalSupportWorkerUncheckedCreateInput>
+    /**
+     * In case the GlobalSupportWorker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GlobalSupportWorkerUpdateInput, GlobalSupportWorkerUncheckedUpdateInput>
+  }
+
+  /**
+   * GlobalSupportWorker delete
+   */
+  export type GlobalSupportWorkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+    /**
+     * Filter which GlobalSupportWorker to delete.
+     */
+    where: GlobalSupportWorkerWhereUniqueInput
+  }
+
+  /**
+   * GlobalSupportWorker deleteMany
+   */
+  export type GlobalSupportWorkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GlobalSupportWorkers to delete
+     */
+    where?: GlobalSupportWorkerWhereInput
+    /**
+     * Limit how many GlobalSupportWorkers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GlobalSupportWorker without action
+   */
+  export type GlobalSupportWorkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GlobalSupportWorker
+     */
+    select?: GlobalSupportWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GlobalSupportWorker
+     */
+    omit?: GlobalSupportWorkerOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -22177,6 +23197,22 @@ export namespace Prisma {
   export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
 
 
+  export const GlobalSupportWorkerScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    phoneNumber: 'phoneNumber',
+    email: 'email',
+    role: 'role',
+    organisation: 'organisation',
+    isActive: 'isActive',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GlobalSupportWorkerScalarFieldEnum = (typeof GlobalSupportWorkerScalarFieldEnum)[keyof typeof GlobalSupportWorkerScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -22429,6 +23465,19 @@ export namespace Prisma {
   };
 
   export type SystemSettingOrderByRelevanceFieldEnum = (typeof SystemSettingOrderByRelevanceFieldEnum)[keyof typeof SystemSettingOrderByRelevanceFieldEnum]
+
+
+  export const GlobalSupportWorkerOrderByRelevanceFieldEnum: {
+    id: 'id',
+    name: 'name',
+    phoneNumber: 'phoneNumber',
+    email: 'email',
+    role: 'role',
+    organisation: 'organisation',
+    notes: 'notes'
+  };
+
+  export type GlobalSupportWorkerOrderByRelevanceFieldEnum = (typeof GlobalSupportWorkerOrderByRelevanceFieldEnum)[keyof typeof GlobalSupportWorkerOrderByRelevanceFieldEnum]
 
 
   /**
@@ -24014,6 +25063,84 @@ export namespace Prisma {
     youtubeUrl?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SystemSetting"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SystemSetting"> | Date | string
+  }
+
+  export type GlobalSupportWorkerWhereInput = {
+    AND?: GlobalSupportWorkerWhereInput | GlobalSupportWorkerWhereInput[]
+    OR?: GlobalSupportWorkerWhereInput[]
+    NOT?: GlobalSupportWorkerWhereInput | GlobalSupportWorkerWhereInput[]
+    id?: StringFilter<"GlobalSupportWorker"> | string
+    name?: StringFilter<"GlobalSupportWorker"> | string
+    phoneNumber?: StringFilter<"GlobalSupportWorker"> | string
+    email?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    role?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    organisation?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    isActive?: BoolFilter<"GlobalSupportWorker"> | boolean
+    notes?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    createdAt?: DateTimeFilter<"GlobalSupportWorker"> | Date | string
+    updatedAt?: DateTimeFilter<"GlobalSupportWorker"> | Date | string
+  }
+
+  export type GlobalSupportWorkerOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    phoneNumber?: SortOrder
+    email?: SortOrderInput | SortOrder
+    role?: SortOrderInput | SortOrder
+    organisation?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: GlobalSupportWorkerOrderByRelevanceInput
+  }
+
+  export type GlobalSupportWorkerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GlobalSupportWorkerWhereInput | GlobalSupportWorkerWhereInput[]
+    OR?: GlobalSupportWorkerWhereInput[]
+    NOT?: GlobalSupportWorkerWhereInput | GlobalSupportWorkerWhereInput[]
+    name?: StringFilter<"GlobalSupportWorker"> | string
+    phoneNumber?: StringFilter<"GlobalSupportWorker"> | string
+    email?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    role?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    organisation?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    isActive?: BoolFilter<"GlobalSupportWorker"> | boolean
+    notes?: StringNullableFilter<"GlobalSupportWorker"> | string | null
+    createdAt?: DateTimeFilter<"GlobalSupportWorker"> | Date | string
+    updatedAt?: DateTimeFilter<"GlobalSupportWorker"> | Date | string
+  }, "id">
+
+  export type GlobalSupportWorkerOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    phoneNumber?: SortOrder
+    email?: SortOrderInput | SortOrder
+    role?: SortOrderInput | SortOrder
+    organisation?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GlobalSupportWorkerCountOrderByAggregateInput
+    _max?: GlobalSupportWorkerMaxOrderByAggregateInput
+    _min?: GlobalSupportWorkerMinOrderByAggregateInput
+  }
+
+  export type GlobalSupportWorkerScalarWhereWithAggregatesInput = {
+    AND?: GlobalSupportWorkerScalarWhereWithAggregatesInput | GlobalSupportWorkerScalarWhereWithAggregatesInput[]
+    OR?: GlobalSupportWorkerScalarWhereWithAggregatesInput[]
+    NOT?: GlobalSupportWorkerScalarWhereWithAggregatesInput | GlobalSupportWorkerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GlobalSupportWorker"> | string
+    name?: StringWithAggregatesFilter<"GlobalSupportWorker"> | string
+    phoneNumber?: StringWithAggregatesFilter<"GlobalSupportWorker"> | string
+    email?: StringNullableWithAggregatesFilter<"GlobalSupportWorker"> | string | null
+    role?: StringNullableWithAggregatesFilter<"GlobalSupportWorker"> | string | null
+    organisation?: StringNullableWithAggregatesFilter<"GlobalSupportWorker"> | string | null
+    isActive?: BoolWithAggregatesFilter<"GlobalSupportWorker"> | boolean
+    notes?: StringNullableWithAggregatesFilter<"GlobalSupportWorker"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GlobalSupportWorker"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GlobalSupportWorker"> | Date | string
   }
 
   export type AdminCreateInput = {
@@ -25702,6 +26829,97 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GlobalSupportWorkerCreateInput = {
+    id?: string
+    name: string
+    phoneNumber: string
+    email?: string | null
+    role?: string | null
+    organisation?: string | null
+    isActive?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GlobalSupportWorkerUncheckedCreateInput = {
+    id?: string
+    name: string
+    phoneNumber: string
+    email?: string | null
+    role?: string | null
+    organisation?: string | null
+    isActive?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GlobalSupportWorkerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    organisation?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GlobalSupportWorkerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    organisation?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GlobalSupportWorkerCreateManyInput = {
+    id?: string
+    name: string
+    phoneNumber: string
+    email?: string | null
+    role?: string | null
+    organisation?: string | null
+    isActive?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GlobalSupportWorkerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    organisation?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GlobalSupportWorkerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    organisation?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -26872,6 +28090,51 @@ export namespace Prisma {
     instagramUrl?: SortOrder
     linkedinUrl?: SortOrder
     youtubeUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GlobalSupportWorkerOrderByRelevanceInput = {
+    fields: GlobalSupportWorkerOrderByRelevanceFieldEnum | GlobalSupportWorkerOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type GlobalSupportWorkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    phoneNumber?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    organisation?: SortOrder
+    isActive?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GlobalSupportWorkerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    phoneNumber?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    organisation?: SortOrder
+    isActive?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GlobalSupportWorkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    phoneNumber?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    organisation?: SortOrder
+    isActive?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
