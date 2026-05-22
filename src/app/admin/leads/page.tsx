@@ -128,6 +128,30 @@ export default function LeadsPage() {
     }
   };
 
+  const exportToCSV = () => {
+    const headers = ["Name", "Email", "Phone Number", "Service Interest", "Message", "Status", "Submission Date"];
+    const rows = filteredLeads.map(lead => [
+      `"${lead.fullName.replace(/"/g, '""')}"`,
+      `"${lead.email.replace(/"/g, '""')}"`,
+      `"${(lead.phoneNumber || "").replace(/"/g, '""')}"`,
+      `"${(lead.serviceInterest || "").replace(/"/g, '""')}"`,
+      `"${lead.message.replace(/"/g, '""')}"`,
+      `"${lead.status}"`,
+      `"${format(new Date(lead.submissionDate), "yyyy-MM-dd HH:mm:ss")}"`
+    ]);
+    
+    const csvContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `leads_export_${format(new Date(), "yyyy-MM-dd")}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -135,7 +159,10 @@ export default function LeadsPage() {
           <h1 className="text-2xl font-bold text-dark font-serif">Contact Leads</h1>
           <p className="text-gray-500 text-sm mt-1">Manage all incoming website inquiries and form submissions.</p>
         </div>
-        <button className="bg-primary text-white px-4 py-2 rounded-xl font-medium shadow-sm hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={exportToCSV}
+          className="bg-primary text-white px-4 py-2 rounded-xl font-medium shadow-sm hover:bg-primary/90 transition-colors"
+        >
           Export CSV
         </button>
       </div>

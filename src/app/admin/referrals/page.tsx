@@ -465,11 +465,11 @@ export default function ReferralsPage() {
                       </div>
                       <div>
                         <label className="text-[9px] uppercase font-bold text-gray-400 block">Email Address</label>
-                        <a href={`mailto:${detailedReferral.client?.email}`} className="font-semibold text-primary hover:underline print:text-black">{detailedReferral.client?.email}</a>
+                        <a href={`mailto:${detailedReferral.client?.email}`} className="font-semibold text-primary hover:underline print:text-black break-all">{detailedReferral.client?.email}</a>
                       </div>
                       <div>
                         <label className="text-[9px] uppercase font-bold text-gray-400 block">Phone Number</label>
-                        <a href={`tel:${detailedReferral.client?.phoneNumber}`} className="font-semibold text-primary hover:underline print:text-black">{detailedReferral.client?.phoneNumber}</a>
+                        <a href={`tel:${detailedReferral.client?.phoneNumber}`} className="font-semibold text-primary hover:underline print:text-black break-all">{detailedReferral.client?.phoneNumber}</a>
                       </div>
                       <div className="col-span-2">
                         <label className="text-[9px] uppercase font-bold text-gray-400 block">Gender</label>
@@ -502,11 +502,11 @@ export default function ReferralsPage() {
                         </div>
                         <div>
                           <label className="text-[9px] uppercase font-bold text-gray-400 block">Email</label>
-                          <p className="font-semibold text-dark">{detailedReferral.referrer?.email || "-"}</p>
+                          <p className="font-semibold text-dark break-all">{detailedReferral.referrer?.email || "-"}</p>
                         </div>
                         <div>
                           <label className="text-[9px] uppercase font-bold text-gray-400 block">Phone</label>
-                          <p className="font-semibold text-dark">{detailedReferral.referrer?.phoneNumber || "-"}</p>
+                          <p className="font-semibold text-dark break-all">{detailedReferral.referrer?.phoneNumber || "-"}</p>
                         </div>
                       </div>
                     </div>
@@ -524,7 +524,7 @@ export default function ReferralsPage() {
                         </div>
                         <div>
                           <label className="text-[9px] uppercase font-bold text-gray-400 block">NOK Phone</label>
-                          <p className="font-semibold text-dark">{detailedReferral.contact?.phoneNumber || "-"}</p>
+                          <p className="font-semibold text-dark break-all">{detailedReferral.contact?.phoneNumber || "-"}</p>
                         </div>
                       </div>
                     </div>
@@ -655,7 +655,7 @@ export default function ReferralsPage() {
                       </div>
                       <div>
                         <label className="text-[9px] uppercase font-bold text-gray-400 block">Invoice Email Address</label>
-                        <p className="font-semibold text-dark mt-0.5">{detailedReferral.invoiceEmail || "-"}</p>
+                        <p className="font-semibold text-dark mt-0.5 break-all">{detailedReferral.invoiceEmail || "-"}</p>
                       </div>
                     </div>
                   </div>
