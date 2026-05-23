@@ -49,14 +49,6 @@ type Referrer = {
   address: string;
 };
 
-type MedicalHistory = {
-  primaryDiagnosis: string;
-  recentFallsSurgeryRisks: string | null;
-  cognitiveDiagnosis: string | null;
-  specificPrecautions: string | null;
-  otherMedicalInfo: string | null;
-};
-
 type NdisDetails = {
   managementType: string;
   planStartDate: string | null;
@@ -65,20 +57,6 @@ type NdisDetails = {
   planManagerName: string | null;
   planManagerContact: string | null;
   fundingArea: string | null;
-};
-
-type SupportWorker = {
-  name: string;
-  phoneNumber: string;
-};
-
-type Document = {
-  id: string;
-  fileName: string;
-  fileType: string;
-  fileSize: number;
-  fileUrl: string;
-  documentType: string;
 };
 
 type AdminNote = {
@@ -108,10 +86,7 @@ type Referral = {
   client?: Client;
   contact?: Contact;
   referrer?: Referrer;
-  medicalHistory?: MedicalHistory;
   ndisDetails?: NdisDetails | null;
-  supportWorkers?: SupportWorker[];
-  documents?: Document[];
   adminNotes?: AdminNote[];
 };
 
@@ -533,38 +508,6 @@ export default function ReferralsPage() {
 
                 </div>
 
-                {/* CLINICAL MEDICAL HISTORY */}
-                <div className="border border-gray-100 p-5 rounded-2xl space-y-4 bg-gray-50/50 print:bg-white print:p-0 print:border-none">
-                  <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider print:text-black">
-                    <Heart size={14} />
-                    <span>Medical Profile</span>
-                  </div>
-                  <div className="space-y-4 text-xs">
-                    <div>
-                      <label className="text-[9px] uppercase font-bold text-gray-400 block">Primary Diagnosis / Clinical Purpose</label>
-                      <p className="font-semibold text-dark bg-white border border-gray-100 p-3 rounded-xl mt-1 whitespace-pre-wrap print:p-0 print:border-none print:mt-0.5">{detailedReferral.medicalHistory?.primaryDiagnosis}</p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4 print:grid-cols-2">
-                      <div>
-                        <label className="text-[9px] uppercase font-bold text-gray-400 block">Falls, Surgery, or Balance Risks</label>
-                        <p className="font-semibold text-dark mt-0.5">{detailedReferral.medicalHistory?.recentFallsSurgeryRisks || "None Logged"}</p>
-                      </div>
-                      <div>
-                        <label className="text-[9px] uppercase font-bold text-gray-400 block">Cognitive Diagnosis</label>
-                        <p className="font-semibold text-dark mt-0.5">{detailedReferral.medicalHistory?.cognitiveDiagnosis || "None Logged"}</p>
-                      </div>
-                      <div>
-                        <label className="text-[9px] uppercase font-bold text-gray-400 block">Specific Safety Precautions</label>
-                        <p className="font-semibold text-dark mt-0.5">{detailedReferral.medicalHistory?.specificPrecautions || "None Logged"}</p>
-                      </div>
-                      <div>
-                        <label className="text-[9px] uppercase font-bold text-gray-400 block">Other Relevant Conditions</label>
-                        <p className="font-semibold text-dark mt-0.5">{detailedReferral.medicalHistory?.otherMedicalInfo || "None Logged"}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* NDIS DYNAMIC SPECS CARD */}
                 {detailedReferral.paymentType === "NDIS" && detailedReferral.ndisDetails && (
                   <div className="border border-[#799A29]/10 p-5 rounded-2xl space-y-4 bg-[#799A29]/5 print:bg-white print:p-0 print:border-none">
@@ -661,59 +604,6 @@ export default function ReferralsPage() {
                   </div>
 
                 </div>
-
-                {/* SUPPORT WORKERS DYNAMIC LIST */}
-                {detailedReferral.supportWorkers && detailedReferral.supportWorkers.length > 0 && (
-                  <div className="border border-gray-100 p-5 rounded-2xl space-y-4 bg-gray-50/50 print:bg-white print:p-0 print:border-none">
-                    <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider print:text-black">
-                      <User size={14} />
-                      <span>Assigned Support Workers ({detailedReferral.supportWorkers.length})</span>
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-4 text-xs print:grid-cols-2">
-                      {detailedReferral.supportWorkers.map((sw, idx) => (
-                        <div key={idx} className="bg-white p-3 rounded-xl border border-gray-100 flex items-center justify-between print:p-0 print:border-none">
-                          <div className="min-w-0">
-                            <p className="font-bold text-dark truncate">{sw.name}</p>
-                            <p className="text-[10px] text-gray-400 mt-0.5">Support Carer</p>
-                          </div>
-                          <a href={`tel:${sw.phoneNumber}`} className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 print:text-black">
-                            <Phone size={12} /> {sw.phoneNumber}
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* CLINICAL DOCUMENTS FILE ATTACHMENTS */}
-                {detailedReferral.documents && detailedReferral.documents.length > 0 && (
-                  <div className="border border-gray-100 p-5 rounded-2xl space-y-4 bg-gray-50/50 print:hidden">
-                    <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
-                      <FileText size={14} />
-                      <span>Uploaded Medical Attachments ({detailedReferral.documents.length})</span>
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-4 text-xs">
-                      {detailedReferral.documents.map((doc) => (
-                        <div key={doc.id} className="bg-white p-3.5 rounded-xl border border-gray-100 flex items-center justify-between">
-                          <div className="min-w-0">
-                            <p className="font-bold text-dark truncate" title={doc.fileName}>{doc.fileName}</p>
-                            <p className="text-[9px] text-[#799A29] font-semibold uppercase tracking-wider mt-0.5">{doc.documentType} Document</p>
-                          </div>
-                          <a 
-                            href={doc.fileUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            download={doc.fileName}
-                            className="p-2 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors shrink-0"
-                            title="Download attachment file"
-                          >
-                            <Download size={16} />
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
                 {/* AUDIT LOG NOTES SECTION */}
                 <div className="border border-gray-100 p-5 rounded-2xl space-y-4 bg-gray-50/50 print:hidden">
