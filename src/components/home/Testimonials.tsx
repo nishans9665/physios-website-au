@@ -90,7 +90,7 @@ const Testimonials = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-secondary/20 p-8 rounded-[40px] relative hover:bg-white hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+              className="bg-secondary/20 p-8 rounded-[40px] relative hover:bg-white hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full"
             >
               <div>
                 <div className="absolute top-8 right-8 text-primary/20">
