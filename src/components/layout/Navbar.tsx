@@ -12,7 +12,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
   { name: "Services", href: "/services" },
-  { name: "Strength & Balance", href: "/programs" },
+  { name: "Strength & Balance Program", href: "/programs" },
   { name: "Testimonials", href: "/testimonials" },
   { name: "Contact Us", href: "/contact" },
 ];
@@ -39,11 +39,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <Image 
-            src={Logo} 
-            alt="The Care First Physiotherapy" 
-            width={280} 
-            height={120} 
+          <Image
+            src={Logo}
+            alt="The Care First Physiotherapy"
+            width={280}
+            height={120}
             className="h-18 w-auto object-contain"
             priority
           />

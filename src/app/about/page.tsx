@@ -34,22 +34,22 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="pt-40 pb-20 bg-light relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-serif font-bold text-dark mb-6"
+            className="text-3xl md:text-5xl font-serif font-bold text-dark mb-6"
           >
-            About <span className="text-primary">Care First</span>
+            About The <span className="text-primary">Care First <br></br>Physiotherapy Service</span>
           </motion.h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Founded on the principle that healthcare should be accessible, compassionate, and personalized. We bring professional physiotherapy directly to you.
           </p>
-        </div>
-      </section>
+        </div> 
+      </section> 
 
       {/* Founder Section */}
       <section className="section-padding bg-white">
@@ -59,6 +59,7 @@ export default function AboutPage() {
               src="/images/about-physio.png"
               alt="Udayamali Pathirana"
               fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
           </div>
@@ -72,7 +73,7 @@ export default function AboutPage() {
                 With years of experience in various Australian healthcare settings, she realized that the most effective therapy often happens in the environment where the client feels most comfortable: their own home.
               </p>
               <p>
-                "My goal is to provide a service that doesn't just treat symptoms, but empowers people to regain their mobility, strength, and confidence to live their lives to the fullest."
+                &quot;My goal is to provide a service that doesn&apos;t just treat symptoms, but empowers people to regain their mobility, strength, and confidence to live their lives to the fullest.&quot;
               </p>
             </div>
             <div className="mt-10 p-8 bg-secondary/30 rounded-[40px] border border-accent">
@@ -132,7 +133,7 @@ export default function AboutPage() {
           <div className="bg-dark text-white p-12 rounded-[60px] shadow-xl">
             <h3 className="text-3xl font-serif font-bold mb-6 text-accent">Our Vision</h3>
             <p className="text-white/80 text-lg leading-relaxed">
-              To be Brisbane's leading mobile physiotherapy service, recognized for our commitment to excellence, client empowerment, and positive health outcomes in the community.
+              To be Brisbane&apos;s leading mobile physiotherapy service, recognized for our commitment to excellence, client empowerment, and positive health outcomes in the community.
             </p>
           </div>
         </div>
@@ -146,13 +147,13 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg">
-              <Image src="/images/hero.png" alt="Physio action" fill className="object-cover" />
+              <Image src="/images/hero.png" alt="Physio action" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg">
-              <Image src="/images/gallery-home.png" alt="Home visit" fill className="object-cover" />
+              <Image src="/images/gallery-home.png" alt="Home visit" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg">
-              <Image src="/images/gallery-telehealth.png" alt="Telehealth" fill className="object-cover" />
+              <Image src="/images/gallery-telehealth.png" alt="Telehealth" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
           </div>
         </div>

@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
   MessageSquare,
   Send,
   Loader2,
@@ -84,7 +84,7 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-light">
       <Navbar />
-      
+
       {/* Header */}
       <section className="pt-40 pb-20 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
@@ -106,9 +106,9 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div>
             <h2 className="text-3xl font-serif font-bold text-dark mb-10">Contact Information</h2>
-            
+
             <div className="grid sm:grid-cols-2 gap-8 mb-12">
-              <a 
+              <a
                 href={`tel:${settings?.phone || ""}`}
                 className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow cursor-pointer block group"
               >
@@ -116,10 +116,10 @@ export default function ContactPage() {
                   <Phone size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">Call Us</h3>
-                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.phone || "+61 (000) 000 000"}</p>
+                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.phone || "+61431949491"}</p>
               </a>
-              
-              <a 
+
+              <a
                 href={`mailto:${settings?.email || ""}`}
                 className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow cursor-pointer block group"
               >
@@ -127,10 +127,10 @@ export default function ContactPage() {
                   <Mail size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">Email Us</h3>
-                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.email || "info@carefirstphysio.com.au"}</p>
+                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.email || "info@thecarefirstphysiotherapyservice.com.au"}</p>
               </a>
-              
-              <a 
+
+              <a
                 href={`https://wa.me/${(settings?.phone || "").replace(/[^0-9]/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -140,15 +140,15 @@ export default function ContactPage() {
                   <MessageSquare size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">WhatsApp</h3>
-                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.phone || "+61 000 000 000"}</p>
+                <p className="text-gray-500 text-sm font-semibold truncate">{settings?.phone || "+61431949491"}</p>
               </a>
-              
+
               <div className="bg-white p-8 rounded-3xl shadow-sm">
                 <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-6">
                   <Clock size={24} />
                 </div>
                 <h3 className="font-bold text-dark mb-2">Operating Hours</h3>
-                <p className="text-gray-500 text-xs font-bold text-primary whitespace-pre-line">{settings?.clinicHours || "Mon - Fri: 8am - 6pm"}</p>
+                <p className="text-gray-500 text-xs font-bold text-primary whitespace-pre-line">{settings?.clinicHours || "Mon - Fri: 7:00am - 4:30pm Sat: 9:00 AM - 5:00 PM"}</p>
               </div>
             </div>
 
@@ -157,9 +157,9 @@ export default function ContactPage() {
                 <MapPin size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-dark mb-2">Service Areas</h3>
+                <h3 className="font-bold text-dark mb-2">Telehealth service</h3>
                 <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line">
-                  {settings?.address || "We provide mobile physiotherapy across Brisbane, Queensland, and surrounding suburbs."}
+                  {settings?.address || "Join via online from anywhere in Australia"}
                 </p>
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function ContactPage() {
           <div className="bg-white p-10 md:p-12 rounded-[60px] shadow-xl relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-primary" />
             <h2 className="text-3xl font-serif font-bold text-dark mb-8">Send Us a Message</h2>
-            
+
             {/* Status Messages */}
             <AnimatePresence mode="wait">
               {success && (
@@ -207,46 +207,46 @@ export default function ContactPage() {
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Full Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
-                    placeholder="John Doe" 
+                    placeholder="John Doe"
                     required
                     className="w-full px-6 py-4 rounded-2xl bg-light border-none focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Phone Number</label>
-                  <input 
-                    type="tel" 
+                  <input
+                    type="tel"
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
-                    placeholder="+61 000 000 000" 
+                    placeholder="+61 000 000 000"
                     className="w-full px-6 py-4 rounded-2xl bg-light border-none focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Email Address</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="john@example.com" 
+                  placeholder="john@example.com"
                   required
                   className="w-full px-6 py-4 rounded-2xl bg-light border-none focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Service Required</label>
                 <div className="relative">
-                  <select 
+                  <select
                     name="serviceInterest"
                     value={formData.serviceInterest}
                     onChange={handleChange}
@@ -260,22 +260,22 @@ export default function ContactPage() {
                   </select>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Your Message</label>
-                <textarea 
-                  rows={4} 
+                <textarea
+                  rows={4}
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="How can we help you?" 
+                  placeholder="How can we help you?"
                   required
                   className="w-full px-6 py-4 rounded-2xl bg-light border-none focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
                 />
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={loading}
                 className="btn-primary w-full flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-75 disabled:cursor-not-allowed"
               >
