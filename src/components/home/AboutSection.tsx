@@ -60,7 +60,7 @@ const AboutSection = () => {
               With extensive experience in the Australian healthcare system, Udayamali Pathirana founded The Care First Physiotherapy Service with a simple mission: to provide compassionate, high-quality care that truly puts the client first.
             </p>
             <p>
-              Her approach combines clinical excellence with a friendly, compassionate touch, ensuring that every patient—from elderly individuals to NDIS participants—receives the personalized attention they deserve.
+              Her approach combines clinical excellence with a friendly, compassionate touch, ensuring that every patient receives the personalized attention they deserve.
             </p>
           </div>
 

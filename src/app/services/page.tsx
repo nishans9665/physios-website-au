@@ -17,7 +17,22 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const services = [
+const mainServices = [
+  {
+    id: "mobile-physiotherapy",
+    title: "Mobile Physiotherapy",
+    description: "We bring our expert clinic services directly to the comfort and safety of your home.",
+    icon: Truck,
+  },
+  {
+    id: "telehealth-physiotherapy",
+    title: "Telehealth Physiotherapy",
+    description: "Professional consultations and exercise supervision via secure video platforms.",
+    icon: Video,
+  }
+];
+
+const subServices = [
   {
     id: "ndis-physiotherapy",
     title: "NDIS Physiotherapy",
@@ -55,18 +70,6 @@ const services = [
     icon: PersonStanding,
   },
   {
-    id: "mobile-physiotherapy",
-    title: "Mobile Physiotherapy",
-    description: "We bring our expert clinic services directly to the comfort and safety of your home.",
-    icon: Truck,
-  },
-  {
-    id: "telehealth-physiotherapy",
-    title: "Telehealth Physiotherapy",
-    description: "Professional consultations and exercise supervision via secure video platforms.",
-    icon: Video,
-  },
-  {
     id: "strength-balance",
     title: "Strength & Balance Program",
     description: "Targeted exercise programs designed to improve strength, stability and reduce falls risk.",
@@ -96,11 +99,11 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="section-padding bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service, index) => (
+      {/* Main Services */}
+      <section className="section-padding bg-white pb-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="grid md:grid-cols-2 gap-8">
+            {mainServices.map((service, index) => (
               <motion.div
                 id={service.id}
                 key={index}
@@ -108,13 +111,52 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group p-8 rounded-[32px] bg-light hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-accent scroll-mt-32"
+                className="group p-10 rounded-[32px] bg-light hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl scroll-mt-32 border border-transparent"
               >
-                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
-                  <service.icon size={28} />
+                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-primary mb-8 shadow-sm group-hover:text-primary transition-all">
+                  <service.icon size={40} />
                 </div>
-                <h3 className="text-xl font-bold text-dark mb-4 leading-tight">{service.title}</h3>
-                <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+                <h2 className="text-3xl font-bold text-dark group-hover:text-white mb-6 leading-tight">{service.title}</h2>
+                <p className="text-gray-600 group-hover:text-white/90 text-lg mb-8 leading-relaxed">
+                  {service.description}
+                </p>
+                <Link
+                  href="/contact"
+                  className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary group-hover:text-white hover:gap-4 transition-all"
+                >
+                  Learn More <ArrowRight size={18} />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sub Services */}
+      <section className="section-padding bg-light pt-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-serif font-bold text-dark mb-4">Our Specialties</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              These specialized services are available through both our Mobile and Telehealth delivery methods.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {subServices.map((service, index) => (
+              <motion.div
+                id={service.id}
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group p-6 rounded-2xl bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-accent scroll-mt-32"
+              >
+                <div className="w-12 h-12 bg-light rounded-xl flex items-center justify-center text-primary mb-4 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                  <service.icon size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-dark mb-3 leading-tight">{service.title}</h3>
+                <p className="text-gray-500 text-sm mb-4 leading-relaxed">
                   {service.description}
                 </p>
                 <Link
