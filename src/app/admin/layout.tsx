@@ -15,7 +15,6 @@ const sidebarLinks = [
   { name: "Leads",            href: "/admin/leads",            icon: Users },
   { name: "Appointments",     href: "/admin/referrals",        icon: Calendar },
   { name: "Testimonials",     href: "/admin/testimonials",     icon: MessageSquare },
-  { name: "Support Workers",  href: "/admin/support-workers",  icon: ClipboardList },
   { name: "Users",            href: "/admin/users",            icon: UserCog },
   { name: "Settings",         href: "/admin/settings",         icon: Settings },
 ];
