@@ -6,26 +6,26 @@ import { Star, Quote } from "lucide-react";
 
 const fallbackReviews = [
   {
-    name: "John Smith",
+    name: "Sophie Goddard",
+    location: "Brisbane North",
     rating: 5,
-    comment: "The home visit service was life-changing for my father. Udayamali is incredibly patient and professional. Highly recommend for aged care!",
-    date: "2 months ago",
+    comment: "Mali is a great Physiotherapist. She listens to concerns and then creates individualised exercise plans. Very reassuring, compassionate, professional and reliable. Would highly recommend!",
     service: "Aged Care Physio",
     profileImage: null,
   },
   {
-    name: "Sarah Jenkins",
+    name: "Ehleeza",
+    location: "South Brisbane",
     rating: 5,
-    comment: "Excellent NDIS support. They really took the time to understand my goals and create a plan that works for my daily routine.",
-    date: "1 month ago",
+    comment: "Mali demonstrates outstanding clinical skills, professionalism, and genuine compassion in her physiotherapy practice. She engages patients with empathy, provides individualized treatment plans, and ensures a supportive and positive rehabilitation experience. Highly recommended.",
     service: "NDIS Physiotherapy",
     profileImage: null,
   },
   {
-    name: "Robert Taylor",
+    name: "Isabell Leftwich",
+    location: "Indooroopilly",
     rating: 5,
-    comment: "Joining the Strength & Balance program was the best decision I've made. I feel so much more confident on my feet now.",
-    date: "3 weeks ago",
+    comment: "Prompt efficient service that’s pleasant & quick results Mali came to my home & gave me treatment & a copy of exercises to do every day very grateful for good results.",
     service: "Strength & Balance",
     profileImage: null,
   },
@@ -96,7 +96,7 @@ const Testimonials = () => {
                 <div className="absolute top-8 right-8 text-primary/20">
                   <Quote size={48} fill="currentColor" />
                 </div>
-                
+
                 <div className="flex gap-1 mb-6">
                   {[...Array(review.rating)].map((_, i) => (
                     <Star key={i} size={18} className="fill-primary text-primary" />
@@ -110,9 +110,9 @@ const Testimonials = () => {
 
               <div className="flex items-center gap-4 border-t border-secondary/10 pt-4 mt-4">
                 {review.profileImage ? (
-                  <img 
-                    src={review.profileImage} 
-                    alt={review.name} 
+                  <img
+                    src={review.profileImage}
+                    alt={review.name}
                     className="w-12 h-12 rounded-full object-cover border border-secondary"
                   />
                 ) : (
