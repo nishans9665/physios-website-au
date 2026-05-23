@@ -147,19 +147,19 @@ export default function TestimonialsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white p-10 rounded-[48px] shadow-sm relative hover:shadow-xl transition-all duration-300"
+              className="bg-white p-10 rounded-[48px] shadow-sm relative hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
-              <div className="flex gap-1 mb-6">
+              <div className="flex gap-1 mb-6 shrink-0">
                 {[...Array(review.rating)].map((_, i) => (
                   <Star key={i} size={18} className="fill-primary text-primary" />
                 ))}
               </div>
               
-              <p className="text-gray-600 mb-8 italic leading-relaxed text-lg">
+              <p className="text-gray-600 mb-8 italic leading-relaxed text-lg grow">
                 "{review.comment}"
               </p>
               
-              <div className="flex items-center justify-between border-t border-light pt-6">
+              <div className="flex items-center justify-between border-t border-light pt-6 mt-auto shrink-0">
                 <div className="flex items-center gap-3">
                   {review.profileImage ? (
                     <img 
