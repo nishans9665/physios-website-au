@@ -142,8 +142,8 @@ export default function AdminDashboardPage() {
       color: "bg-blue-500",
       href: "/admin/leads",
     },
-    {
-      title: "Referrals",
+    { 
+      title: "Total Appointments",
       value: stats?.totalReferrals ?? 0,
       trend: stats?.referralsTrend ?? "0%",
       icon: ClipboardList,
@@ -159,7 +159,7 @@ export default function AdminDashboardPage() {
       href: "/admin/testimonials",
     },
     {
-      title: "New This Month",
+      title: "New Leads This Month",
       value: stats?.pendingLeads ?? 0,
       trend: stats?.pendingTrend ?? "0%",
       icon: ArrowUpRight,
@@ -219,7 +219,7 @@ export default function AdminDashboardPage() {
                   <h3 className="text-3xl font-bold text-dark mt-0.5 tabular-nums">
                     {stat.value.toLocaleString()}
                   </h3>
-                  <TrendBadge trend={stat.trend} />
+                  {/* <TrendBadge trend={stat.trend} /> */}
                 </div>
               </Link>
             ))}
