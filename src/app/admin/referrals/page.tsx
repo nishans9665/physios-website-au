@@ -32,6 +32,7 @@ type Client = {
   dob: string;
   gender: string;
   address: string;
+  reasonForReferral?: string | null;
 };
 
 type Contact = {
@@ -295,7 +296,6 @@ export default function ReferralsPage() {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider font-bold">
                   <th className="p-4">Client Name</th>
-                  <th className="p-4">Referrer</th>
                   <th className="p-4">Payment Method</th>
                   <th className="p-4">Status</th>
                   <th className="p-4">Submitted On</th>
@@ -309,14 +309,6 @@ export default function ReferralsPage() {
                       <div>
                         <p className="font-bold text-dark">{ref.client?.fullName}</p>
                         <p className="text-xs text-gray-400">{ref.client?.email}</p>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div>
-                        <p className="text-dark">{ref.referrer?.referrerName}</p>
-                        {ref.referrer?.companyName && (
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">{ref.referrer.companyName}</p>
-                        )}
                       </div>
                     </td>
                     <td className="p-4">
@@ -454,40 +446,19 @@ export default function ReferralsPage() {
                         <label className="text-[9px] uppercase font-bold text-gray-400 block">Home Address</label>
                         <p className="font-semibold text-dark whitespace-pre-line">{detailedReferral.client?.address}</p>
                       </div>
+                      <div className="col-span-2">
+                        <label className="text-[9px] uppercase font-bold text-gray-400 block">Reason for Referral</label>
+                        <p className="font-semibold text-dark whitespace-pre-line">{detailedReferral.client?.reasonForReferral || "Not Specified"}</p>
+                      </div>
                     </div>
                   </div>
 
                   {/* NEXT OF KIN & REFERRER SPECIFICATION */}
                   <div className="border border-gray-100 p-5 rounded-2xl space-y-4 bg-gray-50/50 print:bg-white print:p-0 print:border-none">
                     
-                    {/* Referrer info */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider print:text-black">
-                        <Briefcase size={14} />
-                        <span>Referrer Details</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
-                        <div>
-                          <label className="text-[9px] uppercase font-bold text-gray-400 block">Referrer Name</label>
-                          <p className="font-semibold text-dark">{detailedReferral.referrer?.referrerName}</p>
-                        </div>
-                        <div>
-                          <label className="text-[9px] uppercase font-bold text-gray-400 block">Clinic/Company</label>
-                          <p className="font-semibold text-dark">{detailedReferral.referrer?.companyName || "Self-Referral"}</p>
-                        </div>
-                        <div>
-                          <label className="text-[9px] uppercase font-bold text-gray-400 block">Email</label>
-                          <p className="font-semibold text-dark break-all">{detailedReferral.referrer?.email || "-"}</p>
-                        </div>
-                        <div>
-                          <label className="text-[9px] uppercase font-bold text-gray-400 block">Phone</label>
-                          <p className="font-semibold text-dark break-all">{detailedReferral.referrer?.phoneNumber || "-"}</p>
-                        </div>
-                      </div>
-                    </div>
 
                     {/* NOK info */}
-                    <div className="space-y-3 pt-3 border-t border-gray-200/60 print:border-t-0">
+                    <div className="space-y-3">
                       <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider print:text-black">
                         <User size={14} />
                         <span>Alternative / NOK Contact</span>

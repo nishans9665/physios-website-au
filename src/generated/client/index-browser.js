@@ -247,6 +247,7 @@ exports.Prisma.ReferralClientScalarFieldEnum = {
   phoneNumber: 'phoneNumber',
   dob: 'dob',
   gender: 'gender',
+  reasonForReferral: 'reasonForReferral',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -471,7 +472,8 @@ exports.Prisma.ReferralClientOrderByRelevanceFieldEnum = {
   email: 'email',
   address: 'address',
   phoneNumber: 'phoneNumber',
-  gender: 'gender'
+  gender: 'gender',
+  reasonForReferral: 'reasonForReferral'
 };
 
 exports.Prisma.ReferralContactOrderByRelevanceFieldEnum = {

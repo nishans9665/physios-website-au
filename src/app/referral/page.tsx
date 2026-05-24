@@ -22,24 +22,23 @@ import {
   AlertCircle,
   Briefcase,
   Layers,
-  FileCheck
+  FileCheck,
 } from "lucide-react";
 
 const STEPS = [
   "Client Details",
   "Next of Kin",
-  "Referrer Info",
   "Payment Details",
   "Appointment Prefs",
   "NDIS Details",
-  "Consent & Submit"
+  "Consent & Submit",
 ];
 
 const GENDER_OPTIONS = [
   "Female",
   "Male",
   "Transgender / Non Binary / Gender Diverse",
-  "Prefer not to answer"
+  "Prefer not to answer",
 ];
 
 const PAYMENT_OPTIONS = [
@@ -49,14 +48,10 @@ const PAYMENT_OPTIONS = [
   "Medicare",
   "CDM/EPC",
   "Home Care Package",
-  "Other"
+  "Other",
 ];
 
-const APPOINTMENT_TYPES = [
-  "Face to Face",
-  "Telehealth",
-  "No Preference"
-];
+const APPOINTMENT_TYPES = ["Face to Face", "Telehealth", "No Preference"];
 
 export default function ReferralPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -68,23 +63,17 @@ export default function ReferralPage() {
       address: "",
       phoneNumber: "",
       dob: "",
-      gender: "Prefer not to answer"
+      gender: "Prefer not to answer",
+      reasonForReferral: "",
     },
     // Step 2: Next of Kin
     contact: {
       contactName: "",
       email: "",
       address: "",
-      phoneNumber: ""
+      phoneNumber: "",
     },
-    // Step 3: Referrer
-    referrer: {
-      referrerName: "",
-      companyName: "",
-      email: "",
-      address: "",
-      phoneNumber: ""
-    },
+
     // Step 4: Payment
     paymentType: "Private",
     invoiceContactName: "",
@@ -102,12 +91,12 @@ export default function ReferralPage() {
       planEndDate: "",
       planManagerName: "",
       planManagerContact: "",
-      fundingArea: ""
+      fundingArea: "",
     },
     // Step 7: Consent
     privacyConsent: false,
     contactConsent: false,
-    medicalConsent: false
+    medicalConsent: false,
   });
 
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -134,7 +123,10 @@ export default function ReferralPage() {
   }, []);
 
   const saveDraft = (updatedForm: typeof formData, step: number) => {
-    localStorage.setItem("physio_referral_draft", JSON.stringify({ formData: updatedForm, currentStep: step }));
+    localStorage.setItem(
+      "physio_referral_draft",
+      JSON.stringify({ formData: updatedForm, currentStep: step }),
+    );
   };
 
   const clearDraft = () => {
@@ -142,17 +134,17 @@ export default function ReferralPage() {
   };
 
   const handleNestedChange = (
-    section: "client" | "contact" | "referrer" | "ndisDetails",
+    section: "client" | "contact" | "ndisDetails",
     field: string,
-    value: any
+    value: any,
   ) => {
     setFormData((prev) => {
       const updated = {
         ...prev,
         [section]: {
           ...(prev[section] as any),
-          [field]: value
-        }
+          [field]: value,
+        },
       };
       saveDraft(updated, currentStep);
       return updated;
@@ -185,22 +177,34 @@ export default function ReferralPage() {
 
     switch (step) {
       case 1:
-        if (!formData.client.fullName.trim()) return failValidation("Full Name is required.");
-        if (!formData.client.email.trim()) return failValidation("Email address is required.");
-        if (!formData.client.phoneNumber.trim()) return failValidation("Phone number is required.");
-        if (!formData.client.dob) return failValidation("Date of Birth is required.");
+        if (!formData.client.fullName.trim())
+          return failValidation("Full Name is required.");
+        if (!formData.client.email.trim())
+          return failValidation("Email address is required.");
+        if (!formData.client.phoneNumber.trim())
+          return failValidation("Phone number is required.");
+        if (!formData.client.dob)
+          return failValidation("Date of Birth is required.");
         break;
-      case 4:
-        if (!formData.paymentType) return failValidation("Please select a Payment Type.");
+      case 3:
+        if (!formData.paymentType)
+          return failValidation("Please select a Payment Type.");
         break;
-      case 6:
+      case 5:
         if (formData.paymentType === "NDIS") {
-          if (!formData.ndisDetails.participantId?.trim()) return failValidation("NDIS Participant ID is required.");
+          if (!formData.ndisDetails.participantId?.trim())
+            return failValidation("NDIS Participant ID is required.");
         }
         break;
-      case 7:
-        if (!formData.privacyConsent || !formData.contactConsent || !formData.medicalConsent) {
-          return failValidation("You must check all consents to submit the referral.");
+      case 6:
+        if (
+          !formData.privacyConsent ||
+          !formData.contactConsent ||
+          !formData.medicalConsent
+        ) {
+          return failValidation(
+            "You must check all consents to submit the referral.",
+          );
         }
         break;
     }
@@ -216,8 +220,8 @@ export default function ReferralPage() {
     if (validateStep(currentStep)) {
       // NDIS Details conditional step skipping logic
       let next = currentStep + 1;
-      if (currentStep === 5 && formData.paymentType !== "NDIS") {
-        next = 7; // skip Step 6
+      if (currentStep === 4 && formData.paymentType !== "NDIS") {
+        next = 6; // skip Step 5 (NDIS)
       }
       setCurrentStep(next);
       saveDraft(formData, next);
@@ -226,8 +230,8 @@ export default function ReferralPage() {
 
   const handlePrev = () => {
     let prev = currentStep - 1;
-    if (currentStep === 7 && formData.paymentType !== "NDIS") {
-      prev = 5; // skip Step 6 back
+    if (currentStep === 6 && formData.paymentType !== "NDIS") {
+      prev = 4; // skip Step 5 back
     }
     setCurrentStep(prev);
     saveDraft(formData, prev);
@@ -236,7 +240,7 @@ export default function ReferralPage() {
   // Master form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep(7)) return;
+    if (!validateStep(6)) return;
 
     setSubmitLoading(true);
     setError("");
@@ -245,7 +249,7 @@ export default function ReferralPage() {
       const res = await fetch("/api/referrals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -276,14 +280,14 @@ export default function ReferralPage() {
             Online Booking & Referral System
           </h1>
           <p className="text-white/80 text-sm md:text-base mt-2 max-w-xl mx-auto">
-            Please fill out this form to coordinate home care visits, NDIS support sessions, and mobile clinical onboarding.
+            Please fill out this form to coordinate home care visits, NDIS
+            support sessions, and mobile clinical onboarding.
           </p>
         </div>
       </div>
 
       {/* Main stepper and form cards */}
       <div className="flex-grow max-w-4xl w-full mx-auto px-4 py-8 md:py-12">
-
         {/* Draft Restored Banner */}
         <AnimatePresence>
           {draftRestored && (
@@ -294,7 +298,10 @@ export default function ReferralPage() {
               className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl mb-6 flex items-center gap-2 text-sm"
             >
               <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-              <span>We found and automatically restored your unfinished referral draft!</span>
+              <span>
+                We found and automatically restored your unfinished referral
+                draft!
+              </span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -318,14 +325,16 @@ export default function ReferralPage() {
         {!success && (
           <div className="mb-8 md:mb-12 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm overflow-x-auto">
             <div className="flex items-center justify-between min-w-[600px] px-2 relative">
-
               {(() => {
                 const visibleSteps = STEPS.filter((_, idx) => {
                   const stepNum = idx + 1;
-                  return !(stepNum === 6 && formData.paymentType !== "NDIS");
+                  return !(stepNum === 5 && formData.paymentType !== "NDIS");
                 });
-                const currentVisibleIndex = visibleSteps.indexOf(STEPS[currentStep - 1]);
-                const progressPercentage = (currentVisibleIndex / (visibleSteps.length - 1)) * 100;
+                const currentVisibleIndex = visibleSteps.indexOf(
+                  STEPS[currentStep - 1],
+                );
+                const progressPercentage =
+                  (currentVisibleIndex / (visibleSteps.length - 1)) * 100;
 
                 return (
                   <>
@@ -344,23 +353,34 @@ export default function ReferralPage() {
                       const isCompleted = currentStep > actualStepNum;
 
                       return (
-                        <div key={label} className="flex flex-col items-center z-10 relative cursor-pointer" onClick={() => {
-                          // Allow clicking back to already completed steps
-                          if (actualStepNum < currentStep) {
-                            setCurrentStep(actualStepNum);
-                          }
-                        }}>
+                        <div
+                          key={label}
+                          className="flex flex-col items-center z-10 relative cursor-pointer"
+                          onClick={() => {
+                            // Allow clicking back to already completed steps
+                            if (actualStepNum < currentStep) {
+                              setCurrentStep(actualStepNum);
+                            }
+                          }}
+                        >
                           <div
-                            className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${isActive
-                              ? "bg-[#799A29] text-white ring-4 ring-[#799A29]/10"
-                              : isCompleted
-                                ? "bg-[#799A29] text-white"
-                                : "bg-white border-2 border-gray-200 text-gray-400"
-                              }`}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
+                              isActive
+                                ? "bg-[#799A29] text-white ring-4 ring-[#799A29]/10"
+                                : isCompleted
+                                  ? "bg-[#799A29] text-white"
+                                  : "bg-white border-2 border-gray-200 text-gray-400"
+                            }`}
                           >
-                            {isCompleted ? <CheckCircle2 size={16} /> : displayStepNum}
+                            {isCompleted ? (
+                              <CheckCircle2 size={16} />
+                            ) : (
+                              displayStepNum
+                            )}
                           </div>
-                          <span className={`text-[10px] mt-2 font-semibold tracking-wide uppercase ${isActive ? "text-[#799A29]" : "text-gray-400"}`}>
+                          <span
+                            className={`text-[10px] mt-2 font-semibold tracking-wide uppercase ${isActive ? "text-[#799A29]" : "text-gray-400"}`}
+                          >
                             {label.split(" ")[0]}
                           </span>
                         </div>
@@ -375,7 +395,6 @@ export default function ReferralPage() {
 
         {/* Form Core Contents */}
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-10 relative overflow-hidden min-h-[400px]">
-
           <AnimatePresence mode="wait">
             {success ? (
               // STEP SUCCESS CONFIRMATION
@@ -388,17 +407,25 @@ export default function ReferralPage() {
                   <CheckCircle2 size={42} />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-2xl md:text-3xl font-bold font-serif text-dark">Referral Submitted Successfully!</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold font-serif text-dark">
+                    Referral Submitted Successfully!
+                  </h2>
                   <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
-                    Thank you! Your booking details have been stored securely in our system. A confirmation receipt has been sent to the client’s email inbox.
+                    Thank you! Your booking details have been stored securely in
+                    our system. A confirmation receipt has been sent to the
+                    client’s email inbox.
                   </p>
                 </div>
                 <div className="bg-[#FAFBF9] border border-gray-100 p-6 rounded-2xl max-w-md mx-auto space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#799A29]">What Happens Next?</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#799A29]">
+                    What Happens Next?
+                  </h4>
                   <ul className="text-left text-xs text-gray-600 space-y-2 list-disc list-inside">
                     <li>Our coordinator reviews NDIS/plan funding details</li>
                     <li>Clinical team maps precautions & medical diagnosis</li>
-                    <li>Intake worker calls you within 1-2 business days to book</li>
+                    <li>
+                      Intake worker calls you within 1-2 business days to book
+                    </li>
                   </ul>
                 </div>
                 <div className="pt-4">
@@ -419,97 +446,173 @@ export default function ReferralPage() {
                 transition={{ duration: 0.2 }}
                 className="space-y-8"
               >
-
                 {/* Heading */}
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold font-serif text-dark flex items-center gap-2">
-                    {currentStep === 1 && <User className="text-[#799A29]" size={22} />}
-                    {currentStep === 2 && <User className="text-[#799A29]" size={22} />}
-                    {currentStep === 3 && <User className="text-[#799A29]" size={22} />}
-                    {currentStep === 4 && <Briefcase className="text-[#799A29]" size={22} />}
-                    {currentStep === 5 && <Calendar className="text-[#799A29]" size={22} />}
-                    {currentStep === 6 && <Shield className="text-[#799A29]" size={22} />}
-                    {currentStep === 7 && <FileCheck className="text-[#799A29]" size={22} />}
+                    {currentStep === 1 && (
+                      <User className="text-[#799A29]" size={22} />
+                    )}
+                    {currentStep === 2 && (
+                      <User className="text-[#799A29]" size={22} />
+                    )}
+                    {currentStep === 3 && (
+                      <Briefcase className="text-[#799A29]" size={22} />
+                    )}
+                    {currentStep === 4 && (
+                      <Calendar className="text-[#799A29]" size={22} />
+                    )}
+                    {currentStep === 5 && (
+                      <Shield className="text-[#799A29]" size={22} />
+                    )}
+                    {currentStep === 6 && (
+                      <FileCheck className="text-[#799A29]" size={22} />
+                    )}
                     {STEPS[currentStep - 1]}
                   </h3>
                   <p className="text-xs text-gray-400 mt-1">
                     {(() => {
                       const visibleSteps = STEPS.filter((_, idx) => {
-                        return !(idx + 1 === 6 && formData.paymentType !== "NDIS");
+                        return !(
+                          idx + 1 === 5 && formData.paymentType !== "NDIS"
+                        );
                       });
-                      const displayNum = visibleSteps.indexOf(STEPS[currentStep - 1]) + 1;
+                      const displayNum =
+                        visibleSteps.indexOf(STEPS[currentStep - 1]) + 1;
                       return `Progress: Step ${displayNum} of ${visibleSteps.length}`;
                     })()}
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-
                   {/* STEP 1: Client Details */}
                   {currentStep === 1 && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Full Name *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Full Name *
+                        </label>
                         <input
                           type="text"
                           required
                           value={formData.client.fullName}
-                          onChange={(e) => handleNestedChange("client", "fullName", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "client",
+                              "fullName",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. John Citizen"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Email Address *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Email Address *
+                        </label>
                         <input
                           type="email"
                           required
                           value={formData.client.email}
-                          onChange={(e) => handleNestedChange("client", "email", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "client",
+                              "email",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. john@example.com"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Phone Number *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Phone Number *
+                        </label>
                         <input
                           type="tel"
                           required
                           value={formData.client.phoneNumber}
-                          onChange={(e) => handleNestedChange("client", "phoneNumber", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "client",
+                              "phoneNumber",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. 0400 000 000"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Date of Birth *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Date of Birth *
+                        </label>
                         <input
                           type="date"
                           required
                           value={formData.client.dob}
-                          onChange={(e) => handleNestedChange("client", "dob", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange("client", "dob", e.target.value)
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Gender Selection *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Gender Selection *
+                        </label>
                         <select
                           value={formData.client.gender}
-                          onChange={(e) => handleNestedChange("client", "gender", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "client",
+                              "gender",
+                              e.target.value,
+                            )
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         >
-                          {GENDER_OPTIONS.map(opt => (
-                            <option key={opt} value={opt}>{opt}</option>
+                          {GENDER_OPTIONS.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
                           ))}
                         </select>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Home Address *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Home Address *
+                        </label>
                         <textarea
                           rows={3}
                           value={formData.client.address}
-                          onChange={(e) => handleNestedChange("client", "address", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "client",
+                              "address",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Please enter street, suburb, and postal code"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors resize-none"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Reason for Referral
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={formData.client.reasonForReferral}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "client",
+                              "reasonForReferral",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="Please briefly describe the reason for this referral"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors resize-none"
                         />
                       </div>
@@ -520,41 +623,73 @@ export default function ReferralPage() {
                   {currentStep === 2 && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Alternative Contact / NOK Name</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Alternative Contact / NOK Name
+                        </label>
                         <input
                           type="text"
                           value={formData.contact.contactName}
-                          onChange={(e) => handleNestedChange("contact", "contactName", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "contact",
+                              "contactName",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. Mary Citizen"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NOK Email Address</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          NOK Email Address
+                        </label>
                         <input
                           type="email"
                           value={formData.contact.email}
-                          onChange={(e) => handleNestedChange("contact", "email", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "contact",
+                              "email",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. mary@example.com"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NOK Contact Number</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          NOK Contact Number
+                        </label>
                         <input
                           type="tel"
                           value={formData.contact.phoneNumber}
-                          onChange={(e) => handleNestedChange("contact", "phoneNumber", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "contact",
+                              "phoneNumber",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. 0411 111 111"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Postal Address</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Postal Address
+                        </label>
                         <textarea
                           rows={2}
                           value={formData.contact.address}
-                          onChange={(e) => handleNestedChange("contact", "address", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "contact",
+                              "address",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Postal details"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors resize-none"
                         />
@@ -562,95 +697,56 @@ export default function ReferralPage() {
                     </div>
                   )}
 
-                  {/* STEP 3: Referring Person Details */}
+                  {/* STEP 3: Payment Type & Invoicing */}
                   {currentStep === 3 && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referrer Name (or Self Referral)</label>
-                        <input
-                          type="text"
-                          value={formData.referrer.referrerName}
-                          onChange={(e) => handleNestedChange("referrer", "referrerName", e.target.value)}
-                          placeholder="e.g. Dr. Jane Smith"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referring Clinic / Company</label>
-                        <input
-                          type="text"
-                          value={formData.referrer.companyName}
-                          onChange={(e) => handleNestedChange("referrer", "companyName", e.target.value)}
-                          placeholder="e.g. Brisbane North GP Clinic"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referrer Email</label>
-                        <input
-                          type="email"
-                          value={formData.referrer.email}
-                          onChange={(e) => handleNestedChange("referrer", "email", e.target.value)}
-                          placeholder="e.g. referrals@company.com"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Referrer Phone Number</label>
-                        <input
-                          type="tel"
-                          value={formData.referrer.phoneNumber}
-                          onChange={(e) => handleNestedChange("referrer", "phoneNumber", e.target.value)}
-                          placeholder="e.g. 07 3333 4444"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Postal Address</label>
-                        <textarea
-                          rows={2}
-                          value={formData.referrer.address}
-                          onChange={(e) => handleNestedChange("referrer", "address", e.target.value)}
-                          placeholder="Referring center postal coordinates"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors resize-none"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* STEP 4: Payment Type & Invoicing */}
-                  {currentStep === 4 && (
-                    <div className="grid md:grid-cols-2 gap-5">
-                      <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Payment Option *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Payment Option *
+                        </label>
                         <select
                           value={formData.paymentType}
-                          onChange={(e) => handleSimpleChange("paymentType", e.target.value)}
+                          onChange={(e) =>
+                            handleSimpleChange("paymentType", e.target.value)
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         >
-                          {PAYMENT_OPTIONS.map(opt => (
-                            <option key={opt} value={opt}>{opt}</option>
+                          {PAYMENT_OPTIONS.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
                           ))}
                         </select>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Invoice/Accounts Contact Name</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Invoice/Accounts Contact Name
+                        </label>
                         <input
                           type="text"
                           value={formData.invoiceContactName}
-                          onChange={(e) => handleSimpleChange("invoiceContactName", e.target.value)}
+                          onChange={(e) =>
+                            handleSimpleChange(
+                              "invoiceContactName",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. Accounts Department"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Billing / Invoice Email Address</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Billing / Invoice Email Address
+                        </label>
                         <input
                           type="email"
                           value={formData.invoiceEmail}
-                          onChange={(e) => handleSimpleChange("invoiceEmail", e.target.value)}
+                          onChange={(e) =>
+                            handleSimpleChange("invoiceEmail", e.target.value)
+                          }
                           placeholder="e.g. accounts@mycaresolution.com.au"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
@@ -658,47 +754,74 @@ export default function ReferralPage() {
                     </div>
                   )}
 
-                  {/* STEP 5: Appointment Preferences */}
-                  {currentStep === 5 && (
+                  {/* STEP 4: Appointment Preferences */}
+                  {currentStep === 4 && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Preferred Appointment Method</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Preferred Appointment Method
+                        </label>
                         <select
                           value={formData.preferredAppointmentType}
-                          onChange={(e) => handleSimpleChange("preferredAppointmentType", e.target.value)}
+                          onChange={(e) =>
+                            handleSimpleChange(
+                              "preferredAppointmentType",
+                              e.target.value,
+                            )
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         >
-                          {APPOINTMENT_TYPES.map(opt => (
-                            <option key={opt} value={opt}>{opt}</option>
+                          {APPOINTMENT_TYPES.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
                           ))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Preferred Consult Time</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Preferred Consult Time
+                        </label>
                         <select
                           value={formData.preferredTime}
-                          onChange={(e) => handleSimpleChange("preferredTime", e.target.value)}
+                          onChange={(e) =>
+                            handleSimpleChange("preferredTime", e.target.value)
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         >
                           <option value="Morning">Morning (8am - 12pm)</option>
-                          <option value="Afternoon">Afternoon (12pm - 4pm)</option>
+                          <option value="Afternoon">
+                            Afternoon (12pm - 4pm)
+                          </option>
                           <option value="Evening">Evening (4pm - 7pm)</option>
                         </select>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Preferred Days (Select Multiple)</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Preferred Days (Select Multiple)
+                        </label>
                         <div className="flex flex-wrap gap-2.5">
-                          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(day => {
-                            const isSelected = formData.preferredDays.includes(day);
+                          {[
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday",
+                            "Sunday",
+                          ].map((day) => {
+                            const isSelected =
+                              formData.preferredDays.includes(day);
                             return (
                               <button
                                 type="button"
                                 key={day}
                                 onClick={() => togglePreferredDay(day)}
-                                className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
-                                  ? "bg-[#799A29]/10 border-[#799A29] text-[#799A29]"
-                                  : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                                  }`}
+                                className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                                  isSelected
+                                    ? "bg-[#799A29]/10 border-[#799A29] text-[#799A29]"
+                                    : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                                }`}
                               >
                                 {day}
                               </button>
@@ -707,11 +830,15 @@ export default function ReferralPage() {
                         </div>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Specific Unavailability Details</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Specific Unavailability Details
+                        </label>
                         <textarea
                           rows={3}
                           value={formData.unavailability}
-                          onChange={(e) => handleSimpleChange("unavailability", e.target.value)}
+                          onChange={(e) =>
+                            handleSimpleChange("unavailability", e.target.value)
+                          }
                           placeholder="e.g. Cannot attend Tuesdays before 11am due to community center visit"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors resize-none"
                         />
@@ -719,14 +846,22 @@ export default function ReferralPage() {
                     </div>
                   )}
 
-                  {/* STEP 6: NDIS Participant Details (CONDITIONAL) */}
-                  {currentStep === 6 && formData.paymentType === "NDIS" && (
+                  {/* STEP 5: NDIS Participant Details (CONDITIONAL) */}
+                  {currentStep === 5 && formData.paymentType === "NDIS" && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NDIS Management Type *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          NDIS Management Type *
+                        </label>
                         <select
                           value={formData.ndisDetails.managementType}
-                          onChange={(e) => handleNestedChange("ndisDetails", "managementType", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "managementType",
+                              e.target.value,
+                            )
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         >
                           <option value="Self Managed">Self Managed</option>
@@ -735,60 +870,108 @@ export default function ReferralPage() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Participant NDIS Number *</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Participant NDIS Number *
+                        </label>
                         <input
                           type="text"
                           required
                           value={formData.ndisDetails.participantId}
-                          onChange={(e) => handleNestedChange("ndisDetails", "participantId", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "participantId",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. 430000000"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NDIS Plan Start Date</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          NDIS Plan Start Date
+                        </label>
                         <input
                           type="date"
                           value={formData.ndisDetails.planStartDate}
-                          onChange={(e) => handleNestedChange("ndisDetails", "planStartDate", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "planStartDate",
+                              e.target.value,
+                            )
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">NDIS Plan End Date</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          NDIS Plan End Date
+                        </label>
                         <input
                           type="date"
                           value={formData.ndisDetails.planEndDate}
-                          onChange={(e) => handleNestedChange("ndisDetails", "planEndDate", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "planEndDate",
+                              e.target.value,
+                            )
+                          }
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors text-gray-700 bg-white"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Plan Manager Name (if Plan Managed)</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Plan Manager Name (if Plan Managed)
+                        </label>
                         <input
                           type="text"
                           value={formData.ndisDetails.planManagerName}
-                          onChange={(e) => handleNestedChange("ndisDetails", "planManagerName", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "planManagerName",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. Plan Partners"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Plan Manager Contact details</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Plan Manager Contact details
+                        </label>
                         <input
                           type="text"
                           value={formData.ndisDetails.planManagerContact}
-                          onChange={(e) => handleNestedChange("ndisDetails", "planManagerContact", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "planManagerContact",
+                              e.target.value,
+                            )
+                          }
                           placeholder="e.g. email or phone number"
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Funding Area Allocation (e.g. CB Daily Activities)</label>
+                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">
+                          Funding Area Allocation (e.g. CB Daily Activities)
+                        </label>
                         <input
                           type="text"
                           value={formData.ndisDetails.fundingArea}
-                          onChange={(e) => handleNestedChange("ndisDetails", "fundingArea", e.target.value)}
+                          onChange={(e) =>
+                            handleNestedChange(
+                              "ndisDetails",
+                              "fundingArea",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Therapeutic Supports, Improved Daily Living, etc."
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-[#799A29] focus:outline-none transition-colors"
                         />
@@ -796,11 +979,13 @@ export default function ReferralPage() {
                     </div>
                   )}
 
-                  {/* STEP 7: Consent & Submission */}
-                  {currentStep === 7 && (
+                  {/* STEP 6: Consent & Submission */}
+                  {currentStep === 6 && (
                     <div className="space-y-6">
                       <div className="bg-[#FAFBF9] border border-gray-100 p-6 rounded-2xl space-y-4">
-                        <h4 className="text-xs font-bold uppercase text-[#799A29] tracking-wider">Clinical Consent Agreements</h4>
+                        <h4 className="text-xs font-bold uppercase text-[#799A29] tracking-wider">
+                          Clinical Consent Agreements
+                        </h4>
 
                         {/* Consent Checkboxes */}
                         <div className="space-y-3">
@@ -808,11 +993,20 @@ export default function ReferralPage() {
                             <input
                               type="checkbox"
                               checked={formData.privacyConsent}
-                              onChange={(e) => handleSimpleChange("privacyConsent", e.target.checked)}
+                              onChange={(e) =>
+                                handleSimpleChange(
+                                  "privacyConsent",
+                                  e.target.checked,
+                                )
+                              }
                               className="mt-1 w-4 h-4 rounded text-[#799A29] border-gray-300 focus:ring-[#799A29] cursor-pointer"
                             />
                             <span className="text-xs text-gray-600 leading-relaxed">
-                              I agree to the <strong>Privacy Policy</strong>. I understand that the personal, contact, and medical details entered above are treated in strict confidence according to Australian health privacy standards. *
+                              I agree to the <strong>Privacy Policy</strong>. I
+                              understand that the personal, contact, and medical
+                              details entered above are treated in strict
+                              confidence according to Australian health privacy
+                              standards. *
                             </span>
                           </label>
 
@@ -820,11 +1014,20 @@ export default function ReferralPage() {
                             <input
                               type="checkbox"
                               checked={formData.contactConsent}
-                              onChange={(e) => handleSimpleChange("contactConsent", e.target.checked)}
+                              onChange={(e) =>
+                                handleSimpleChange(
+                                  "contactConsent",
+                                  e.target.checked,
+                                )
+                              }
                               className="mt-1 w-4 h-4 rounded text-[#799A29] border-gray-300 focus:ring-[#799A29] cursor-pointer"
                             />
                             <span className="text-xs text-gray-600 leading-relaxed">
-                              I consent to clinical staff <strong>contacting</strong> the client, alternative contact (Next of Kin), or referring medical practitioners directly to schedule booking appointments. *
+                              I consent to clinical staff{" "}
+                              <strong>contacting</strong> the client,
+                              alternative contact (Next of Kin), or referring
+                              medical practitioners directly to schedule booking
+                              appointments. *
                             </span>
                           </label>
 
@@ -832,11 +1035,19 @@ export default function ReferralPage() {
                             <input
                               type="checkbox"
                               checked={formData.medicalConsent}
-                              onChange={(e) => handleSimpleChange("medicalConsent", e.target.checked)}
+                              onChange={(e) =>
+                                handleSimpleChange(
+                                  "medicalConsent",
+                                  e.target.checked,
+                                )
+                              }
                               className="mt-1 w-4 h-4 rounded text-[#799A29] border-gray-300 focus:ring-[#799A29] cursor-pointer"
                             />
                             <span className="text-xs text-gray-600 leading-relaxed">
-                              I confirm that all entered <strong>medical history</strong>, diagnoses, and safety precaution items are true and correct to the best of my knowledge. *
+                              I confirm that all entered{" "}
+                              <strong>medical history</strong>, diagnoses, and
+                              safety precaution items are true and correct to
+                              the best of my knowledge. *
                             </span>
                           </label>
                         </div>
@@ -844,7 +1055,8 @@ export default function ReferralPage() {
 
                       <div className="text-center py-4 bg-gray-50 border border-gray-100 rounded-2xl">
                         <p className="text-[11px] text-gray-500 font-semibold">
-                          Click "Submit Referral" below to sync records with the Care First database and alert the clinical team.
+                          Click "Submit Referral" below to sync records with the
+                          Care First database and alert the clinical team.
                         </p>
                       </div>
                     </div>
@@ -852,7 +1064,6 @@ export default function ReferralPage() {
 
                   {/* NAVIGATION CONTROLS */}
                   <div className="pt-6 border-t border-gray-100 flex justify-between items-center">
-
                     {/* Back Button */}
                     {currentStep > 1 ? (
                       <button
@@ -867,7 +1078,7 @@ export default function ReferralPage() {
                     )}
 
                     {/* Next / Submit Button */}
-                    {currentStep < 7 ? (
+                    {currentStep < 6 ? (
                       <button
                         type="button"
                         onClick={handleNext}
@@ -893,16 +1104,12 @@ export default function ReferralPage() {
                         )}
                       </button>
                     )}
-
                   </div>
-
                 </form>
               </motion.div>
             )}
           </AnimatePresence>
-
         </div>
-
       </div>
 
       <Footer />

@@ -12251,6 +12251,7 @@ export namespace Prisma {
     phoneNumber: string | null
     dob: Date | null
     gender: string | null
+    reasonForReferral: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -12264,6 +12265,7 @@ export namespace Prisma {
     phoneNumber: string | null
     dob: Date | null
     gender: string | null
+    reasonForReferral: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -12277,6 +12279,7 @@ export namespace Prisma {
     phoneNumber: number
     dob: number
     gender: number
+    reasonForReferral: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -12292,6 +12295,7 @@ export namespace Prisma {
     phoneNumber?: true
     dob?: true
     gender?: true
+    reasonForReferral?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -12305,6 +12309,7 @@ export namespace Prisma {
     phoneNumber?: true
     dob?: true
     gender?: true
+    reasonForReferral?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -12318,6 +12323,7 @@ export namespace Prisma {
     phoneNumber?: true
     dob?: true
     gender?: true
+    reasonForReferral?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -12404,6 +12410,7 @@ export namespace Prisma {
     phoneNumber: string
     dob: Date
     gender: string
+    reasonForReferral: string | null
     createdAt: Date
     updatedAt: Date
     _count: ReferralClientCountAggregateOutputType | null
@@ -12434,6 +12441,7 @@ export namespace Prisma {
     phoneNumber?: boolean
     dob?: boolean
     gender?: boolean
+    reasonForReferral?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     referral?: boolean | ReferralDefaultArgs<ExtArgs>
@@ -12450,11 +12458,12 @@ export namespace Prisma {
     phoneNumber?: boolean
     dob?: boolean
     gender?: boolean
+    reasonForReferral?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ReferralClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referralId" | "fullName" | "email" | "address" | "phoneNumber" | "dob" | "gender" | "createdAt" | "updatedAt", ExtArgs["result"]["referralClient"]>
+  export type ReferralClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referralId" | "fullName" | "email" | "address" | "phoneNumber" | "dob" | "gender" | "reasonForReferral" | "createdAt" | "updatedAt", ExtArgs["result"]["referralClient"]>
   export type ReferralClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     referral?: boolean | ReferralDefaultArgs<ExtArgs>
   }
@@ -12473,6 +12482,7 @@ export namespace Prisma {
       phoneNumber: string
       dob: Date
       gender: string
+      reasonForReferral: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["referralClient"]>
@@ -12853,6 +12863,7 @@ export namespace Prisma {
     readonly phoneNumber: FieldRef<"ReferralClient", 'String'>
     readonly dob: FieldRef<"ReferralClient", 'DateTime'>
     readonly gender: FieldRef<"ReferralClient", 'String'>
+    readonly reasonForReferral: FieldRef<"ReferralClient", 'String'>
     readonly createdAt: FieldRef<"ReferralClient", 'DateTime'>
     readonly updatedAt: FieldRef<"ReferralClient", 'DateTime'>
   }
@@ -23056,6 +23067,7 @@ export namespace Prisma {
     phoneNumber: 'phoneNumber',
     dob: 'dob',
     gender: 'gender',
+    reasonForReferral: 'reasonForReferral',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -23349,7 +23361,8 @@ export namespace Prisma {
     email: 'email',
     address: 'address',
     phoneNumber: 'phoneNumber',
-    gender: 'gender'
+    gender: 'gender',
+    reasonForReferral: 'reasonForReferral'
   };
 
   export type ReferralClientOrderByRelevanceFieldEnum = (typeof ReferralClientOrderByRelevanceFieldEnum)[keyof typeof ReferralClientOrderByRelevanceFieldEnum]
@@ -24318,6 +24331,7 @@ export namespace Prisma {
     phoneNumber?: StringFilter<"ReferralClient"> | string
     dob?: DateTimeFilter<"ReferralClient"> | Date | string
     gender?: StringFilter<"ReferralClient"> | string
+    reasonForReferral?: StringNullableFilter<"ReferralClient"> | string | null
     createdAt?: DateTimeFilter<"ReferralClient"> | Date | string
     updatedAt?: DateTimeFilter<"ReferralClient"> | Date | string
     referral?: XOR<ReferralScalarRelationFilter, ReferralWhereInput>
@@ -24332,6 +24346,7 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     dob?: SortOrder
     gender?: SortOrder
+    reasonForReferral?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     referral?: ReferralOrderByWithRelationInput
@@ -24350,6 +24365,7 @@ export namespace Prisma {
     phoneNumber?: StringFilter<"ReferralClient"> | string
     dob?: DateTimeFilter<"ReferralClient"> | Date | string
     gender?: StringFilter<"ReferralClient"> | string
+    reasonForReferral?: StringNullableFilter<"ReferralClient"> | string | null
     createdAt?: DateTimeFilter<"ReferralClient"> | Date | string
     updatedAt?: DateTimeFilter<"ReferralClient"> | Date | string
     referral?: XOR<ReferralScalarRelationFilter, ReferralWhereInput>
@@ -24364,6 +24380,7 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     dob?: SortOrder
     gender?: SortOrder
+    reasonForReferral?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ReferralClientCountOrderByAggregateInput
@@ -24383,6 +24400,7 @@ export namespace Prisma {
     phoneNumber?: StringWithAggregatesFilter<"ReferralClient"> | string
     dob?: DateTimeWithAggregatesFilter<"ReferralClient"> | Date | string
     gender?: StringWithAggregatesFilter<"ReferralClient"> | string
+    reasonForReferral?: StringNullableWithAggregatesFilter<"ReferralClient"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ReferralClient"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ReferralClient"> | Date | string
   }
@@ -26006,6 +26024,7 @@ export namespace Prisma {
     phoneNumber: string
     dob: Date | string
     gender: string
+    reasonForReferral?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     referral: ReferralCreateNestedOneWithoutClientInput
@@ -26020,6 +26039,7 @@ export namespace Prisma {
     phoneNumber: string
     dob: Date | string
     gender: string
+    reasonForReferral?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26032,6 +26052,7 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     dob?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: StringFieldUpdateOperationsInput | string
+    reasonForReferral?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     referral?: ReferralUpdateOneRequiredWithoutClientNestedInput
@@ -26046,6 +26067,7 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     dob?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: StringFieldUpdateOperationsInput | string
+    reasonForReferral?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26059,6 +26081,7 @@ export namespace Prisma {
     phoneNumber: string
     dob: Date | string
     gender: string
+    reasonForReferral?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26071,6 +26094,7 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     dob?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: StringFieldUpdateOperationsInput | string
+    reasonForReferral?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26084,6 +26108,7 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     dob?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: StringFieldUpdateOperationsInput | string
+    reasonForReferral?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27656,6 +27681,7 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     dob?: SortOrder
     gender?: SortOrder
+    reasonForReferral?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -27669,6 +27695,7 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     dob?: SortOrder
     gender?: SortOrder
+    reasonForReferral?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -27682,6 +27709,7 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     dob?: SortOrder
     gender?: SortOrder
+    reasonForReferral?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -28902,6 +28930,7 @@ export namespace Prisma {
     phoneNumber: string
     dob: Date | string
     gender: string
+    reasonForReferral?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28914,6 +28943,7 @@ export namespace Prisma {
     phoneNumber: string
     dob: Date | string
     gender: string
+    reasonForReferral?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29157,6 +29187,7 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     dob?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: StringFieldUpdateOperationsInput | string
+    reasonForReferral?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29169,6 +29200,7 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     dob?: DateTimeFieldUpdateOperationsInput | Date | string
     gender?: StringFieldUpdateOperationsInput | string
+    reasonForReferral?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

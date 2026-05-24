@@ -118,6 +118,7 @@ export async function POST(req: Request) {
           phoneNumber: data.client.phoneNumber,
           dob: new Date(data.client.dob),
           gender: data.client.gender || "Prefer not to answer",
+          reasonForReferral: data.client.reasonForReferral || null,
         },
       });
 
