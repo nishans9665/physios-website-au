@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { prisma } from "@/lib/prisma";
 
 export async function sendReferralEmails({
   referralId,
@@ -11,23 +12,26 @@ export async function sendReferralEmails({
   const clientEmail = data.client?.email || "";
   const referrerName = data.referrer?.referrerName || "Self Referral";
   const paymentType = data.paymentType || "Unknown";
-  const host = process.env.SMTP_HOST || "mail.smtp2go.com";
+  
+  const settings = await prisma.systemSetting.findUnique({ where: { id: "settings" } });
+  
+  const host = process.env.SMTP_HOST || "mail-au.smtp2go.com";
   const port = parseInt(process.env.SMTP_PORT || "2525");
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const fromEmail = process.env.SMTP_FROM_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
   const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
-  const adminEmail = "community@thecarefirstphysiotherapyservice.com.au";
+  const adminEmail = settings?.referralEmail || process.env.SMTP_ADMIN_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
 
   const emailDetailsHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
       <div style="background-color: #799A29; padding: 24px; text-align: center; color: white;">
-        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">New Referral Received</h1>
-        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Referral ID: ${referralId}</p>
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">New Appointment Received</h1>
+        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Appointment ID: ${referralId}</p>
       </div>
       <div style="padding: 24px;">
         <p style="margin: 0 0 16px 0;">Hello Intake Team,</p>
-        <p style="margin: 0 0 20px 0;">A new physiotherapy referral has been successfully submitted online and is awaiting clinical review in the Admin Dashboard.</p>
+        <p style="margin: 0 0 20px 0;">A new physiotherapy appointment has been successfully submitted online and is awaiting clinical review in the Admin Dashboard.</p>
         
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
           <tr>
@@ -127,11 +131,11 @@ export async function sendReferralEmails({
   const clientConfirmationHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
       <div style="background-color: #799A29; padding: 24px; text-align: center; color: white;">
-        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">Booking Referral Submitted</h1>
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">Booking Appointment Submitted</h1>
       </div>
       <div style="padding: 24px;">
         <p style="margin: 0 0 16px 0;">Dear ${clientName},</p>
-        <p style="margin: 0 0 16px 0;">Thank you for submitting your physiotherapy referral booking request. We have successfully received your form details.</p>
+        <p style="margin: 0 0 16px 0;">Thank you for submitting your physiotherapy appointment booking request. We have successfully received your form details.</p>
         <p style="margin: 0 0 20px 0;">Our clinical intake coordinator is currently reviewing your medical information and preferences. We will contact you shortly to coordinate your first consultation.</p>
         
         <div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
@@ -200,13 +204,15 @@ export async function sendContactLeadEmail({
   message: string;
   serviceInterest?: string | null;
 }) {
+  const settings = await prisma.systemSetting.findUnique({ where: { id: "settings" } });
+
   const host = process.env.SMTP_HOST || "mail.smtp2go.com";
   const port = parseInt(process.env.SMTP_PORT || "2525");
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const fromEmail = process.env.SMTP_FROM_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
   const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
-  const adminEmail = "community@thecarefirstphysiotherapyservice.com.au";
+  const adminEmail = settings?.contactLeadEmail || process.env.SMTP_ADMIN_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
 
   const emailDetailsHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">

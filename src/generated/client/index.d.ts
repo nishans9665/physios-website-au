@@ -20974,6 +20974,8 @@ export namespace Prisma {
     googleTagHeader: string | null
     googleTagBody: string | null
     googleTagFooter: string | null
+    contactLeadEmail: string | null
+    referralEmail: string | null
     phone: string | null
     email: string | null
     address: string | null
@@ -20993,6 +20995,8 @@ export namespace Prisma {
     googleTagHeader: string | null
     googleTagBody: string | null
     googleTagFooter: string | null
+    contactLeadEmail: string | null
+    referralEmail: string | null
     phone: string | null
     email: string | null
     address: string | null
@@ -21012,6 +21016,8 @@ export namespace Prisma {
     googleTagHeader: number
     googleTagBody: number
     googleTagFooter: number
+    contactLeadEmail: number
+    referralEmail: number
     phone: number
     email: number
     address: number
@@ -21033,6 +21039,8 @@ export namespace Prisma {
     googleTagHeader?: true
     googleTagBody?: true
     googleTagFooter?: true
+    contactLeadEmail?: true
+    referralEmail?: true
     phone?: true
     email?: true
     address?: true
@@ -21052,6 +21060,8 @@ export namespace Prisma {
     googleTagHeader?: true
     googleTagBody?: true
     googleTagFooter?: true
+    contactLeadEmail?: true
+    referralEmail?: true
     phone?: true
     email?: true
     address?: true
@@ -21071,6 +21081,8 @@ export namespace Prisma {
     googleTagHeader?: true
     googleTagBody?: true
     googleTagFooter?: true
+    contactLeadEmail?: true
+    referralEmail?: true
     phone?: true
     email?: true
     address?: true
@@ -21163,6 +21175,8 @@ export namespace Prisma {
     googleTagHeader: string | null
     googleTagBody: string | null
     googleTagFooter: string | null
+    contactLeadEmail: string | null
+    referralEmail: string | null
     phone: string | null
     email: string | null
     address: string | null
@@ -21199,6 +21213,8 @@ export namespace Prisma {
     googleTagHeader?: boolean
     googleTagBody?: boolean
     googleTagFooter?: boolean
+    contactLeadEmail?: boolean
+    referralEmail?: boolean
     phone?: boolean
     email?: boolean
     address?: boolean
@@ -21220,6 +21236,8 @@ export namespace Prisma {
     googleTagHeader?: boolean
     googleTagBody?: boolean
     googleTagFooter?: boolean
+    contactLeadEmail?: boolean
+    referralEmail?: boolean
     phone?: boolean
     email?: boolean
     address?: boolean
@@ -21232,7 +21250,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SystemSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maintenanceMode" | "maintenanceMessage" | "googleTagHeader" | "googleTagBody" | "googleTagFooter" | "phone" | "email" | "address" | "clinicHours" | "facebookUrl" | "instagramUrl" | "linkedinUrl" | "youtubeUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSetting"]>
+  export type SystemSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maintenanceMode" | "maintenanceMessage" | "googleTagHeader" | "googleTagBody" | "googleTagFooter" | "contactLeadEmail" | "referralEmail" | "phone" | "email" | "address" | "clinicHours" | "facebookUrl" | "instagramUrl" | "linkedinUrl" | "youtubeUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSetting"]>
 
   export type $SystemSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSetting"
@@ -21244,6 +21262,8 @@ export namespace Prisma {
       googleTagHeader: string | null
       googleTagBody: string | null
       googleTagFooter: string | null
+      contactLeadEmail: string | null
+      referralEmail: string | null
       phone: string | null
       email: string | null
       address: string | null
@@ -21629,6 +21649,8 @@ export namespace Prisma {
     readonly googleTagHeader: FieldRef<"SystemSetting", 'String'>
     readonly googleTagBody: FieldRef<"SystemSetting", 'String'>
     readonly googleTagFooter: FieldRef<"SystemSetting", 'String'>
+    readonly contactLeadEmail: FieldRef<"SystemSetting", 'String'>
+    readonly referralEmail: FieldRef<"SystemSetting", 'String'>
     readonly phone: FieldRef<"SystemSetting", 'String'>
     readonly email: FieldRef<"SystemSetting", 'String'>
     readonly address: FieldRef<"SystemSetting", 'String'>
@@ -23194,6 +23216,8 @@ export namespace Prisma {
     googleTagHeader: 'googleTagHeader',
     googleTagBody: 'googleTagBody',
     googleTagFooter: 'googleTagFooter',
+    contactLeadEmail: 'contactLeadEmail',
+    referralEmail: 'referralEmail',
     phone: 'phone',
     email: 'email',
     address: 'address',
@@ -23467,6 +23491,8 @@ export namespace Prisma {
     googleTagHeader: 'googleTagHeader',
     googleTagBody: 'googleTagBody',
     googleTagFooter: 'googleTagFooter',
+    contactLeadEmail: 'contactLeadEmail',
+    referralEmail: 'referralEmail',
     phone: 'phone',
     email: 'email',
     address: 'address',
@@ -24985,6 +25011,8 @@ export namespace Prisma {
     googleTagHeader?: StringNullableFilter<"SystemSetting"> | string | null
     googleTagBody?: StringNullableFilter<"SystemSetting"> | string | null
     googleTagFooter?: StringNullableFilter<"SystemSetting"> | string | null
+    contactLeadEmail?: StringNullableFilter<"SystemSetting"> | string | null
+    referralEmail?: StringNullableFilter<"SystemSetting"> | string | null
     phone?: StringNullableFilter<"SystemSetting"> | string | null
     email?: StringNullableFilter<"SystemSetting"> | string | null
     address?: StringNullableFilter<"SystemSetting"> | string | null
@@ -25004,6 +25032,8 @@ export namespace Prisma {
     googleTagHeader?: SortOrderInput | SortOrder
     googleTagBody?: SortOrderInput | SortOrder
     googleTagFooter?: SortOrderInput | SortOrder
+    contactLeadEmail?: SortOrderInput | SortOrder
+    referralEmail?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
@@ -25027,6 +25057,8 @@ export namespace Prisma {
     googleTagHeader?: StringNullableFilter<"SystemSetting"> | string | null
     googleTagBody?: StringNullableFilter<"SystemSetting"> | string | null
     googleTagFooter?: StringNullableFilter<"SystemSetting"> | string | null
+    contactLeadEmail?: StringNullableFilter<"SystemSetting"> | string | null
+    referralEmail?: StringNullableFilter<"SystemSetting"> | string | null
     phone?: StringNullableFilter<"SystemSetting"> | string | null
     email?: StringNullableFilter<"SystemSetting"> | string | null
     address?: StringNullableFilter<"SystemSetting"> | string | null
@@ -25046,6 +25078,8 @@ export namespace Prisma {
     googleTagHeader?: SortOrderInput | SortOrder
     googleTagBody?: SortOrderInput | SortOrder
     googleTagFooter?: SortOrderInput | SortOrder
+    contactLeadEmail?: SortOrderInput | SortOrder
+    referralEmail?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
@@ -25071,6 +25105,8 @@ export namespace Prisma {
     googleTagHeader?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     googleTagBody?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     googleTagFooter?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
+    contactLeadEmail?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
+    referralEmail?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     phone?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     email?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     address?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
@@ -26728,6 +26764,8 @@ export namespace Prisma {
     googleTagHeader?: string | null
     googleTagBody?: string | null
     googleTagFooter?: string | null
+    contactLeadEmail?: string | null
+    referralEmail?: string | null
     phone?: string | null
     email?: string | null
     address?: string | null
@@ -26747,6 +26785,8 @@ export namespace Prisma {
     googleTagHeader?: string | null
     googleTagBody?: string | null
     googleTagFooter?: string | null
+    contactLeadEmail?: string | null
+    referralEmail?: string | null
     phone?: string | null
     email?: string | null
     address?: string | null
@@ -26766,6 +26806,8 @@ export namespace Prisma {
     googleTagHeader?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagBody?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagFooter?: NullableStringFieldUpdateOperationsInput | string | null
+    contactLeadEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    referralEmail?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26785,6 +26827,8 @@ export namespace Prisma {
     googleTagHeader?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagBody?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagFooter?: NullableStringFieldUpdateOperationsInput | string | null
+    contactLeadEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    referralEmail?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26804,6 +26848,8 @@ export namespace Prisma {
     googleTagHeader?: string | null
     googleTagBody?: string | null
     googleTagFooter?: string | null
+    contactLeadEmail?: string | null
+    referralEmail?: string | null
     phone?: string | null
     email?: string | null
     address?: string | null
@@ -26823,6 +26869,8 @@ export namespace Prisma {
     googleTagHeader?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagBody?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagFooter?: NullableStringFieldUpdateOperationsInput | string | null
+    contactLeadEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    referralEmail?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26842,6 +26890,8 @@ export namespace Prisma {
     googleTagHeader?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagBody?: NullableStringFieldUpdateOperationsInput | string | null
     googleTagFooter?: NullableStringFieldUpdateOperationsInput | string | null
+    contactLeadEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    referralEmail?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28072,6 +28122,8 @@ export namespace Prisma {
     googleTagHeader?: SortOrder
     googleTagBody?: SortOrder
     googleTagFooter?: SortOrder
+    contactLeadEmail?: SortOrder
+    referralEmail?: SortOrder
     phone?: SortOrder
     email?: SortOrder
     address?: SortOrder
@@ -28091,6 +28143,8 @@ export namespace Prisma {
     googleTagHeader?: SortOrder
     googleTagBody?: SortOrder
     googleTagFooter?: SortOrder
+    contactLeadEmail?: SortOrder
+    referralEmail?: SortOrder
     phone?: SortOrder
     email?: SortOrder
     address?: SortOrder
@@ -28110,6 +28164,8 @@ export namespace Prisma {
     googleTagHeader?: SortOrder
     googleTagBody?: SortOrder
     googleTagFooter?: SortOrder
+    contactLeadEmail?: SortOrder
+    referralEmail?: SortOrder
     phone?: SortOrder
     email?: SortOrder
     address?: SortOrder

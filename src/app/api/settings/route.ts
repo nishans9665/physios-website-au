@@ -53,6 +53,8 @@ export async function PUT(req: Request) {
       instagramUrl,
       linkedinUrl,
       youtubeUrl,
+      contactLeadEmail,
+      referralEmail,
     } = body;
 
     // Upsert a single config record with fixed ID "settings"
@@ -72,6 +74,8 @@ export async function PUT(req: Request) {
         instagramUrl: instagramUrl !== undefined ? instagramUrl : undefined,
         linkedinUrl: linkedinUrl !== undefined ? linkedinUrl : undefined,
         youtubeUrl: youtubeUrl !== undefined ? youtubeUrl : undefined,
+        contactLeadEmail: contactLeadEmail !== undefined ? contactLeadEmail : undefined,
+        referralEmail: referralEmail !== undefined ? referralEmail : undefined,
       },
       create: {
         id: "settings",
@@ -88,6 +92,8 @@ export async function PUT(req: Request) {
         instagramUrl: instagramUrl || "",
         linkedinUrl: linkedinUrl || "",
         youtubeUrl: youtubeUrl || "",
+        contactLeadEmail: contactLeadEmail || "",
+        referralEmail: referralEmail || "",
       },
     });
 
