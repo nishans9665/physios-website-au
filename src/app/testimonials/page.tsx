@@ -117,16 +117,20 @@ export default function TestimonialsPage() {
       <section className="py-12 bg-white border-b border-light">
         <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-12 text-center">
           <div>
-            <p className="text-3xl font-serif font-bold text-primary">4.9/5</p>
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Average Rating</p>
-          </div>
-          <div>
             <p className="text-3xl font-serif font-bold text-primary">500+</p>
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Five Star Reviews</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Happy Patients</p>
           </div>
           <div>
-            <p className="text-3xl font-serif font-bold text-primary">100%</p>
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Client Satisfaction</p>
+            <p className="text-3xl font-serif font-bold text-primary">10+</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Years Experience</p>
+          </div>
+          <div>
+            <p className="text-3xl font-serif font-bold text-primary">100+</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Rehabilitation Programs</p>
+          </div>
+          <div>
+            <p className="text-3xl font-serif font-bold text-primary">2000+</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Mobile Sessions</p>
           </div>
         </div>
       </section>
@@ -186,6 +190,26 @@ export default function TestimonialsPage() {
             </motion.div>
           ))
         )}
+        </div>
+      </section>
+
+      {/* Video Testimonial */}
+      <section className="section-padding bg-white pb-0">
+        <div className="max-w-4xl mx-auto text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-dark mb-4">Watch a Client's Journey</h2>
+          <p className="text-gray-600 text-lg">Hear directly from one of our valued clients about their experience with our physiotherapy services.</p>
+        </div>
+        <div className="max-w-4xl mx-auto rounded-[40px] overflow-hidden shadow-2xl relative aspect-video">
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/4KRFn2IWzMM" 
+            title="Client Testimonial Video" 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowFullScreen
+            className="absolute top-0 left-0 w-full h-full"
+          ></iframe>
         </div>
       </section>
 

@@ -10,10 +10,12 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/autoplay";
-import hero1 from "@/assets/hero/hero-1.png";
-import hero2 from "@/assets/hero/hero-2.png";
-import hero3 from "@/assets/hero/hero-3.png";
-import hero4 from "@/assets/hero/gallery-home.png";
+import hero1 from "@/assets/hero/hero-img-1.jpeg";
+import hero2 from "@/assets/hero/hero-img-2.jpeg";
+import hero3 from "@/assets/hero/hero-img-3.jpeg";
+import hero4 from "@/assets/hero/hero-img-4.jpeg";
+import hero5 from "@/assets/hero/hero-img-5.jpeg";
+
 
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
@@ -114,8 +116,8 @@ const Hero = () => {
                       hero1,
                       hero2,
                       hero3,
-                      hero4
-                    ].map((src, index) => (
+                      hero4,
+                      hero5                    ].map((src, index) => (
                       <SwiperSlide key={index} className="w-full h-full relative">
                         <Image
                           src={src}

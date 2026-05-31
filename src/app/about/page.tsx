@@ -48,15 +48,15 @@ export default function AboutPage() {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Founded on the principle that healthcare should be accessible, compassionate, and personalized. We bring professional physiotherapy directly to you.
           </p>
-        </div> 
-      </section> 
+        </div>
+      </section>
 
       {/* Founder Section */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative w-full aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl">
             <Image
-              src="/images/about-physio.png"
+              src="/images/Our_Founder.jpeg"
               alt="Udayamali Pathirana"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -147,13 +147,13 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg">
-              <Image src="/images/hero.png" alt="Physio action" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
+              <Image src="/images/about/about-gallery-1.jpeg" alt="Physio action" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg">
-              <Image src="/images/gallery-home.png" alt="Home visit" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
+              <Image src="/images/about/about-gallery-2.jpeg" alt="Home visit" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg">
-              <Image src="/images/gallery-telehealth.png" alt="Telehealth" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
+              <Image src="/images/about/about-gallery-3.jpeg" alt="Telehealth" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
           </div>
         </div>
