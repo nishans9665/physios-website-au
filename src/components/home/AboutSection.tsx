@@ -17,7 +17,7 @@ const AboutSection = () => {
             className="relative z-10 rounded-[60px] overflow-hidden aspect-[4/5] shadow-2xl"
           >
             <Image
-              src="/images/Udayamali_Pathirana.jpeg"
+              src="/images/Udayamali_Pathirana.png"
               alt="Udayamali Pathirana - Lead Physiotherapist"
               fill
               className="object-cover"
