@@ -539,10 +539,10 @@ export default function AdminSettingsPage() {
                       <Mail size={14} className="text-primary" /> Contact Form Notification Email
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       value={contactLeadEmail}
                       onChange={(e) => setContactLeadEmail(e.target.value)}
-                      placeholder="e.g. leads@yourclinic.com"
+                      placeholder="e.g. leads@yourclinic.com, other@yourclinic.com"
                       className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-sm bg-white"
                     />
                   </div>
@@ -552,10 +552,10 @@ export default function AdminSettingsPage() {
                       <Mail size={14} className="text-primary" /> Appointment Form Notification Email
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       value={referralEmail}
                       onChange={(e) => setReferralEmail(e.target.value)}
-                      placeholder="e.g. bookings@yourclinic.com"
+                      placeholder="e.g. bookings@yourclinic.com, other@yourclinic.com"
                       className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-sm bg-white"
                     />
                   </div>
