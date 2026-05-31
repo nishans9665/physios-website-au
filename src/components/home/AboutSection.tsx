@@ -17,13 +17,13 @@ const AboutSection = () => {
             className="relative z-10 rounded-[60px] overflow-hidden aspect-[4/5] shadow-2xl"
           >
             <Image
-              src="/images/about-physio.png"
+              src="/images/Udayamali_Pathirana.jpeg"
               alt="Udayamali Pathirana - Lead Physiotherapist"
               fill
               className="object-cover"
             />
           </motion.div>
-          
+           
           {/* Experience Badge */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
