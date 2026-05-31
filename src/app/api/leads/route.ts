@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendContactLeadEmail } from "@/lib/nodemailer";
 
 // GET all leads
 export async function GET() {
@@ -32,6 +33,17 @@ export async function POST(req: Request) {
         serviceInterest: data.serviceInterest || null,
         status: "NEW",
       },
+    });
+
+    // Send email notification to admin asynchronously
+    sendContactLeadEmail({
+      fullName: newLead.fullName,
+      email: newLead.email,
+      phoneNumber: newLead.phoneNumber,
+      message: newLead.message,
+      serviceInterest: newLead.serviceInterest,
+    }).catch((err) => {
+      console.error("Failed to send contact lead email:", err);
     });
 
     return NextResponse.json({ success: true, lead: newLead }, { status: 201 });

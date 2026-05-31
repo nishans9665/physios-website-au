@@ -118,6 +118,10 @@ export default function AdminSettingsPage() {
   const [address, setAddress] = useState("");
   const [clinicHours, setClinicHours] = useState("");
 
+  // Notification Emails
+  const [contactLeadEmail, setContactLeadEmail] = useState("");
+  const [referralEmail, setReferralEmail] = useState("");
+
   // Social URLs
   const [facebookUrl, setFacebookUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
@@ -150,6 +154,8 @@ export default function AdminSettingsPage() {
         setEmail(data.email || "");
         setAddress(data.address || "");
         setClinicHours(data.clinicHours || "");
+        setContactLeadEmail(data.contactLeadEmail || "");
+        setReferralEmail(data.referralEmail || "");
         setFacebookUrl(data.facebookUrl || "");
         setInstagramUrl(data.instagramUrl || "");
         setLinkedinUrl(data.linkedinUrl || "");
@@ -185,6 +191,8 @@ export default function AdminSettingsPage() {
           email,
           address,
           clinicHours,
+          contactLeadEmail,
+          referralEmail,
           facebookUrl,
           instagramUrl,
           linkedinUrl,
@@ -508,6 +516,47 @@ export default function AdminSettingsPage() {
                       onChange={(e) => setClinicHours(e.target.value)}
                       placeholder="Mon - Fri: 8:00 AM - 6:00 PM&#10;Sat: 9:00 AM - 1:00 PM&#10;Sun: Closed"
                       className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-sm resize-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* PANEL 5: Notification Emails */}
+              <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xs space-y-5">
+                <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+                  <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl shrink-0">
+                    <Mail size={20} />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-dark text-base">Notification Emails</h2>
+                    <p className="text-gray-400 text-xs mt-0.5">Where should form submissions be sent?</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-400 flex items-center gap-1.5">
+                      <Mail size={14} className="text-primary" /> Contact Form Notification Email
+                    </label>
+                    <input
+                      type="email"
+                      value={contactLeadEmail}
+                      onChange={(e) => setContactLeadEmail(e.target.value)}
+                      placeholder="e.g. leads@yourclinic.com"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-sm bg-white"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-400 flex items-center gap-1.5">
+                      <Mail size={14} className="text-primary" /> Appointment Form Notification Email
+                    </label>
+                    <input
+                      type="email"
+                      value={referralEmail}
+                      onChange={(e) => setReferralEmail(e.target.value)}
+                      placeholder="e.g. bookings@yourclinic.com"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-sm bg-white"
                     />
                   </div>
                 </div>

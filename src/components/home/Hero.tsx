@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Phone, MessageSquare, Calendar, ShieldCheck, Truck, Video, UserRound } from "lucide-react";
+import { Activity, HeartPulse, Calendar, ShieldCheck, Truck, Video, UserRound } from "lucide-react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
@@ -137,7 +137,7 @@ const Hero = () => {
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-6 -right-6 w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-primary z-20 cursor-pointer hover:scale-110 transition-transform"
             >
-              <MessageSquare size={28} />
+              <Activity size={28} />
             </motion.div>
             
             <motion.div
@@ -145,7 +145,7 @@ const Hero = () => {
               transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
               className="absolute top-1/2 -left-8 w-14 h-14 bg-primary rounded-2xl shadow-xl flex items-center justify-center text-white z-20 cursor-pointer hover:scale-110 transition-transform"
             >
-              <Phone size={24} />
+              <HeartPulse size={24} />
             </motion.div>
 
             <motion.div

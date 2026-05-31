@@ -289,6 +289,10 @@ model SystemSetting {
   googleTagBody      String?  @db.Text
   googleTagFooter    String?  @db.Text
   
+  // Notification Emails
+  contactLeadEmail   String?
+  referralEmail      String?
+  
   // Site Contact Details
   phone              String?
   email              String?

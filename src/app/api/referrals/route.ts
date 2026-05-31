@@ -223,10 +223,7 @@ export async function POST(req: Request) {
     // 3. Send nodemailer details in a secure, non-blocking background thread
     sendReferralEmails({
       referralId: result.id,
-      clientName: data.client.fullName,
-      clientEmail: data.client.email,
-      referrerName: data.referrer?.referrerName || "Self Referral",
-      paymentType: data.paymentType,
+      data: data,
     }).catch(err => console.error("Nodemailer dispatch error:", err));
 
     return NextResponse.json({ success: true, referralId: result.id }, { status: 201 });
