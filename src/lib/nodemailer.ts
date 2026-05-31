@@ -12,9 +12,9 @@ export async function sendReferralEmails({
   const clientEmail = data.client?.email || "";
   const referrerName = data.referrer?.referrerName || "Self Referral";
   const paymentType = data.paymentType || "Unknown";
-  
+
   const settings = await prisma.systemSetting.findUnique({ where: { id: "settings" } });
-  
+
   const host = process.env.SMTP_HOST || "mail-au.smtp2go.com";
   const port = parseInt(process.env.SMTP_PORT || "2525");
   const user = process.env.SMTP_USER;
@@ -212,7 +212,7 @@ export async function sendContactLeadEmail({
   const pass = process.env.SMTP_PASS;
   const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
   const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
-  const adminEmail = settings?.contactLeadEmail || process.env.SMTP_ADMIN_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
+  const adminEmail = settings?.contactLeadEmail || process.env.SMTP_ADMIN_EMAIL || "info@thecarefirstphysiotherapyservice.com.au";
 
   const emailDetailsHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
