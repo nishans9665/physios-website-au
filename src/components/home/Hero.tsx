@@ -10,11 +10,11 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/autoplay";
-import hero1 from "@/assets/hero/hero-img-1.jpeg";
-import hero2 from "@/assets/hero/hero-img-2.jpeg";
-import hero3 from "@/assets/hero/hero-img-3.jpeg";
-import hero4 from "@/assets/hero/hero-img-4.jpeg";
-import hero5 from "@/assets/hero/hero-img-5.jpeg";
+import hero1 from "@/assets/hero/hero-img-1.png";
+import hero2 from "@/assets/hero/hero-img-2.png";
+import hero3 from "@/assets/hero/hero-img-3.png";
+import hero4 from "@/assets/hero/hero-img-4.png";
+import hero5 from "@/assets/hero/hero-img-5.png";
 
 
 const Hero = () => {
