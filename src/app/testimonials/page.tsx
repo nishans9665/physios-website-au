@@ -128,10 +128,10 @@ export default function TestimonialsPage() {
             <p className="text-3xl font-serif font-bold text-primary">100+</p>
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Rehabilitation Programs</p>
           </div>
-          <div>
+          {/* <div>
             <p className="text-3xl font-serif font-bold text-primary">2000+</p>
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Mobile Sessions</p>
-          </div>
+          </div> */}
         </div>
       </section>
 
