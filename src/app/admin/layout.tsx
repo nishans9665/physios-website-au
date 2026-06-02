@@ -124,7 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <Menu size={20} className="text-gray-600" />
           </button>
-
+ 
           <div className="flex-1" />
 
           <div className="flex items-center gap-4">

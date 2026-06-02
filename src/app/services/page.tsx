@@ -4,18 +4,19 @@ import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { 
-  ShieldCheck, 
-  UserRound, 
-  Activity, 
-  Brain, 
-  HeartPulse, 
-  PersonStanding, 
-  Truck, 
+import {
+  ShieldCheck,
+  UserRound,
+  Activity,
+  Brain,
+  HeartPulse,
+  PersonStanding,
+  Truck,
   Video,
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const mainServices = [
   {
@@ -23,12 +24,14 @@ const mainServices = [
     title: "Mobile Physiotherapy",
     description: "We bring our expert clinic services directly to the comfort and safety of your home.",
     icon: Truck,
+    image: "/images/Mobile Physiotherapy.png",
   },
   {
     id: "telehealth-physiotherapy",
     title: "Telehealth Physiotherapy",
     description: "Professional consultations and exercise supervision via secure video platforms.",
     icon: Video,
+    image: "/images/Telehealth_Physiotherapy1.png",
   }
 ];
 
@@ -81,7 +84,7 @@ export default function ServicesPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      
+
       {/* Header */}
       <section className="pt-40 pb-20 bg-secondary/30 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
@@ -111,21 +114,32 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group p-10 rounded-[32px] bg-light hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl scroll-mt-32 border border-transparent"
+                className="group flex flex-col rounded-[32px] bg-light hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl scroll-mt-32 border border-transparent overflow-hidden"
               >
-                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-primary mb-8 shadow-sm group-hover:text-primary transition-all">
-                  <service.icon size={40} />
+                <div className="relative w-full h-100 overflow-hidden">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
                 </div>
-                <h2 className="text-3xl font-bold text-dark group-hover:text-white mb-6 leading-tight">{service.title}</h2>
-                <p className="text-gray-600 group-hover:text-white/90 text-lg mb-8 leading-relaxed">
-                  {service.description}
-                </p>
-                <Link
-                  href="/contact"
-                  className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary group-hover:text-white hover:gap-4 transition-all"
-                >
-                  Learn More <ArrowRight size={18} />
-                </Link>
+                <div className="p-10 pt-0 flex-1 flex flex-col relative z-10">
+                  <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-primary mb-8 shadow-sm group-hover:text-primary transition-all -mt-10 border-4 border-light group-hover:border-primary">
+                    <service.icon size={40} />
+                  </div>
+                  <h2 className="text-3xl font-bold text-dark group-hover:text-white mb-6 leading-tight">{service.title}</h2>
+                  <p className="text-gray-600 group-hover:text-white/90 text-lg mb-8 leading-relaxed flex-1">
+                    {service.description}
+                  </p>
+                  <Link
+                    href="/contact"
+                    className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary group-hover:text-white hover:gap-4 transition-all"
+                  >
+                    Learn More <ArrowRight size={18} />
+                  </Link>
+                </div>
               </motion.div>
             ))}
           </div>

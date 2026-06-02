@@ -55,7 +55,7 @@ const Navbar = () => {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-semibold text-dark hover:text-primary transition-colors relative group"
+              className="text-[15px] font-semibold text-dark hover:text-primary transition-colors relative group"
             >
               {link.name}
               <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
