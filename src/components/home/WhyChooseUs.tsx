@@ -41,26 +41,31 @@ const WhyChooseUs = () => {
   return (
     <section className="section-padding bg-light relative">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row items-end justify-between mb-16 gap-6">
-          <div className="max-w-2xl">
-            <motion.span
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              className="text-primary font-bold uppercase tracking-widest text-sm"
-            >
-              Why Choose Us
-            </motion.span>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl font-serif font-bold text-dark mt-4"
-            >
-              Experience the Highest Standard of Professional Care
-            </motion.h2>
-          </div>
-          <p className="text-gray-600 max-w-sm">
+        <div className="flex flex-col items-center text-center mb-16 max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2 rounded-full mb-6"
+          >
+            <span className="font-bold uppercase tracking-widest text-[16px]">Why Choose Us</span>
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-serif font-bold text-dark mb-6 leading-tight"
+          >
+            Experience the Highest Standard of Professional Care
+          </motion.h2>
+          
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-gray-600 text-lg"
+          >
             We are committed to providing the Brisbane community with accessible, high-quality physiotherapy services.
-          </p>
+          </motion.p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
