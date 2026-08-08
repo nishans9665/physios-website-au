@@ -55,6 +55,11 @@ export async function PUT(req: Request) {
       youtubeUrl,
       contactLeadEmail,
       referralEmail,
+      consultationFee,
+      bankName,
+      accountName,
+      bsbNumber,
+      accountNumber,
     } = body;
 
     // Upsert a single config record with fixed ID "settings"
@@ -76,6 +81,11 @@ export async function PUT(req: Request) {
         youtubeUrl: youtubeUrl !== undefined ? youtubeUrl : undefined,
         contactLeadEmail: contactLeadEmail !== undefined ? contactLeadEmail : undefined,
         referralEmail: referralEmail !== undefined ? referralEmail : undefined,
+        consultationFee: consultationFee !== undefined ? parseFloat(consultationFee) : undefined,
+        bankName: bankName !== undefined ? bankName : undefined,
+        accountName: accountName !== undefined ? accountName : undefined,
+        bsbNumber: bsbNumber !== undefined ? bsbNumber : undefined,
+        accountNumber: accountNumber !== undefined ? accountNumber : undefined,
       },
       create: {
         id: "settings",
@@ -94,6 +104,11 @@ export async function PUT(req: Request) {
         youtubeUrl: youtubeUrl || "",
         contactLeadEmail: contactLeadEmail || "",
         referralEmail: referralEmail || "",
+        consultationFee: consultationFee !== undefined ? parseFloat(consultationFee) : 150.0,
+        bankName: bankName || "National Australia Bank (NAB)",
+        accountName: accountName || "The Care First Physiotherapy",
+        bsbNumber: bsbNumber || "084-004",
+        accountNumber: accountNumber || "1234 5678 9",
       },
     });
 
