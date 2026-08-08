@@ -382,6 +382,10 @@ exports.Prisma.SystemSettingScalarFieldEnum = {
   bsbNumber: 'bsbNumber',
   accountNumber: 'accountNumber',
   consultationFee: 'consultationFee',
+  initialConsultationFee: 'initialConsultationFee',
+  followupConsultationFee: 'followupConsultationFee',
+  ndisRate: 'ndisRate',
+  telehealthFee: 'telehealthFee',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

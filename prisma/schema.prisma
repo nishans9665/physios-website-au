@@ -350,7 +350,11 @@ model SystemSetting {
   accountName        String?  @default("The Care First Physiotherapy")
   bsbNumber          String?  @default("084-004")
   accountNumber      String?  @default("1234 5678 9")
-  consultationFee    Float    @default(150.0)
+  consultationFee         Float    @default(150.0)
+  initialConsultationFee  Float    @default(180.0)
+  followupConsultationFee Float    @default(130.0)
+  ndisRate                Float    @default(193.99)
+  telehealthFee           Float    @default(120.0)
   
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

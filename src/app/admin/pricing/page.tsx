@@ -25,10 +25,6 @@ export default function AdminPricingPage() {
 
   // Pricing Parameters
   const [consultationFee, setConsultationFee] = useState<number | string>(150);
-  const [initialConsultationFee, setInitialConsultationFee] = useState<number | string>(180);
-  const [followupConsultationFee, setFollowupConsultationFee] = useState<number | string>(130);
-  const [ndisRate, setNdisRate] = useState<number | string>(193.99);
-  const [telehealthFee, setTelehealthFee] = useState<number | string>(120);
 
   // Bank Transfer Parameters
   const [bankName, setBankName] = useState("National Australia Bank (NAB)");
@@ -188,70 +184,6 @@ export default function AdminPricingPage() {
                     <p className="text-[11px] text-gray-500">
                       This fee is automatically loaded into online referral intake for private clients.
                     </p>
-                  </div>
-
-                  {/* Initial Assessment Fee */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase text-gray-500">Initial Assessment Fee ($ AUD)</label>
-                    <div className="relative">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={initialConsultationFee}
-                        onChange={(e) => setInitialConsultationFee(e.target.value)}
-                        placeholder="180.00"
-                        className="w-full pl-8 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#799A29] text-sm text-dark bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Follow-up Fee */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase text-gray-500">Follow-up Consultation Fee ($ AUD)</label>
-                    <div className="relative">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={followupConsultationFee}
-                        onChange={(e) => setFollowupConsultationFee(e.target.value)}
-                        placeholder="130.00"
-                        className="w-full pl-8 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#799A29] text-sm text-dark bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  {/* NDIS Hourly Support Rate */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase text-gray-500">NDIS Support Hourly Rate ($ AUD)</label>
-                    <div className="relative">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={ndisRate}
-                        onChange={(e) => setNdisRate(e.target.value)}
-                        placeholder="193.99"
-                        className="w-full pl-8 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#799A29] text-sm text-dark bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Telehealth Consultation Fee */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase text-gray-500">Telehealth Session Fee ($ AUD)</label>
-                    <div className="relative">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={telehealthFee}
-                        onChange={(e) => setTelehealthFee(e.target.value)}
-                        placeholder="120.00"
-                        className="w-full pl-8 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#799A29] text-sm text-dark bg-white"
-                      />
-                    </div>
                   </div>
                 </div>
               </div>

@@ -22213,10 +22213,18 @@ export namespace Prisma {
 
   export type SystemSettingAvgAggregateOutputType = {
     consultationFee: number | null
+    initialConsultationFee: number | null
+    followupConsultationFee: number | null
+    ndisRate: number | null
+    telehealthFee: number | null
   }
 
   export type SystemSettingSumAggregateOutputType = {
     consultationFee: number | null
+    initialConsultationFee: number | null
+    followupConsultationFee: number | null
+    ndisRate: number | null
+    telehealthFee: number | null
   }
 
   export type SystemSettingMinAggregateOutputType = {
@@ -22241,6 +22249,10 @@ export namespace Prisma {
     bsbNumber: string | null
     accountNumber: string | null
     consultationFee: number | null
+    initialConsultationFee: number | null
+    followupConsultationFee: number | null
+    ndisRate: number | null
+    telehealthFee: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -22267,6 +22279,10 @@ export namespace Prisma {
     bsbNumber: string | null
     accountNumber: string | null
     consultationFee: number | null
+    initialConsultationFee: number | null
+    followupConsultationFee: number | null
+    ndisRate: number | null
+    telehealthFee: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -22293,6 +22309,10 @@ export namespace Prisma {
     bsbNumber: number
     accountNumber: number
     consultationFee: number
+    initialConsultationFee: number
+    followupConsultationFee: number
+    ndisRate: number
+    telehealthFee: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -22301,10 +22321,18 @@ export namespace Prisma {
 
   export type SystemSettingAvgAggregateInputType = {
     consultationFee?: true
+    initialConsultationFee?: true
+    followupConsultationFee?: true
+    ndisRate?: true
+    telehealthFee?: true
   }
 
   export type SystemSettingSumAggregateInputType = {
     consultationFee?: true
+    initialConsultationFee?: true
+    followupConsultationFee?: true
+    ndisRate?: true
+    telehealthFee?: true
   }
 
   export type SystemSettingMinAggregateInputType = {
@@ -22329,6 +22357,10 @@ export namespace Prisma {
     bsbNumber?: true
     accountNumber?: true
     consultationFee?: true
+    initialConsultationFee?: true
+    followupConsultationFee?: true
+    ndisRate?: true
+    telehealthFee?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -22355,6 +22387,10 @@ export namespace Prisma {
     bsbNumber?: true
     accountNumber?: true
     consultationFee?: true
+    initialConsultationFee?: true
+    followupConsultationFee?: true
+    ndisRate?: true
+    telehealthFee?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -22381,6 +22417,10 @@ export namespace Prisma {
     bsbNumber?: true
     accountNumber?: true
     consultationFee?: true
+    initialConsultationFee?: true
+    followupConsultationFee?: true
+    ndisRate?: true
+    telehealthFee?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -22494,6 +22534,10 @@ export namespace Prisma {
     bsbNumber: string | null
     accountNumber: string | null
     consultationFee: number
+    initialConsultationFee: number
+    followupConsultationFee: number
+    ndisRate: number
+    telehealthFee: number
     createdAt: Date
     updatedAt: Date
     _count: SystemSettingCountAggregateOutputType | null
@@ -22539,6 +22583,10 @@ export namespace Prisma {
     bsbNumber?: boolean
     accountNumber?: boolean
     consultationFee?: boolean
+    initialConsultationFee?: boolean
+    followupConsultationFee?: boolean
+    ndisRate?: boolean
+    telehealthFee?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["systemSetting"]>
@@ -22567,11 +22615,15 @@ export namespace Prisma {
     bsbNumber?: boolean
     accountNumber?: boolean
     consultationFee?: boolean
+    initialConsultationFee?: boolean
+    followupConsultationFee?: boolean
+    ndisRate?: boolean
+    telehealthFee?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SystemSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maintenanceMode" | "maintenanceMessage" | "googleTagHeader" | "googleTagBody" | "googleTagFooter" | "contactLeadEmail" | "referralEmail" | "phone" | "email" | "address" | "clinicHours" | "facebookUrl" | "instagramUrl" | "linkedinUrl" | "youtubeUrl" | "bankName" | "accountName" | "bsbNumber" | "accountNumber" | "consultationFee" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSetting"]>
+  export type SystemSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maintenanceMode" | "maintenanceMessage" | "googleTagHeader" | "googleTagBody" | "googleTagFooter" | "contactLeadEmail" | "referralEmail" | "phone" | "email" | "address" | "clinicHours" | "facebookUrl" | "instagramUrl" | "linkedinUrl" | "youtubeUrl" | "bankName" | "accountName" | "bsbNumber" | "accountNumber" | "consultationFee" | "initialConsultationFee" | "followupConsultationFee" | "ndisRate" | "telehealthFee" | "createdAt" | "updatedAt", ExtArgs["result"]["systemSetting"]>
 
   export type $SystemSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SystemSetting"
@@ -22598,6 +22650,10 @@ export namespace Prisma {
       bsbNumber: string | null
       accountNumber: string | null
       consultationFee: number
+      initialConsultationFee: number
+      followupConsultationFee: number
+      ndisRate: number
+      telehealthFee: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["systemSetting"]>
@@ -22990,6 +23046,10 @@ export namespace Prisma {
     readonly bsbNumber: FieldRef<"SystemSetting", 'String'>
     readonly accountNumber: FieldRef<"SystemSetting", 'String'>
     readonly consultationFee: FieldRef<"SystemSetting", 'Float'>
+    readonly initialConsultationFee: FieldRef<"SystemSetting", 'Float'>
+    readonly followupConsultationFee: FieldRef<"SystemSetting", 'Float'>
+    readonly ndisRate: FieldRef<"SystemSetting", 'Float'>
+    readonly telehealthFee: FieldRef<"SystemSetting", 'Float'>
     readonly createdAt: FieldRef<"SystemSetting", 'DateTime'>
     readonly updatedAt: FieldRef<"SystemSetting", 'DateTime'>
   }
@@ -24585,6 +24645,10 @@ export namespace Prisma {
     bsbNumber: 'bsbNumber',
     accountNumber: 'accountNumber',
     consultationFee: 'consultationFee',
+    initialConsultationFee: 'initialConsultationFee',
+    followupConsultationFee: 'followupConsultationFee',
+    ndisRate: 'ndisRate',
+    telehealthFee: 'telehealthFee',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -26547,6 +26611,10 @@ export namespace Prisma {
     bsbNumber?: StringNullableFilter<"SystemSetting"> | string | null
     accountNumber?: StringNullableFilter<"SystemSetting"> | string | null
     consultationFee?: FloatFilter<"SystemSetting"> | number
+    initialConsultationFee?: FloatFilter<"SystemSetting"> | number
+    followupConsultationFee?: FloatFilter<"SystemSetting"> | number
+    ndisRate?: FloatFilter<"SystemSetting"> | number
+    telehealthFee?: FloatFilter<"SystemSetting"> | number
     createdAt?: DateTimeFilter<"SystemSetting"> | Date | string
     updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
   }
@@ -26573,6 +26641,10 @@ export namespace Prisma {
     bsbNumber?: SortOrderInput | SortOrder
     accountNumber?: SortOrderInput | SortOrder
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _relevance?: SystemSettingOrderByRelevanceInput
@@ -26603,6 +26675,10 @@ export namespace Prisma {
     bsbNumber?: StringNullableFilter<"SystemSetting"> | string | null
     accountNumber?: StringNullableFilter<"SystemSetting"> | string | null
     consultationFee?: FloatFilter<"SystemSetting"> | number
+    initialConsultationFee?: FloatFilter<"SystemSetting"> | number
+    followupConsultationFee?: FloatFilter<"SystemSetting"> | number
+    ndisRate?: FloatFilter<"SystemSetting"> | number
+    telehealthFee?: FloatFilter<"SystemSetting"> | number
     createdAt?: DateTimeFilter<"SystemSetting"> | Date | string
     updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
   }, "id">
@@ -26629,6 +26705,10 @@ export namespace Prisma {
     bsbNumber?: SortOrderInput | SortOrder
     accountNumber?: SortOrderInput | SortOrder
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SystemSettingCountOrderByAggregateInput
@@ -26663,6 +26743,10 @@ export namespace Prisma {
     bsbNumber?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     accountNumber?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
     consultationFee?: FloatWithAggregatesFilter<"SystemSetting"> | number
+    initialConsultationFee?: FloatWithAggregatesFilter<"SystemSetting"> | number
+    followupConsultationFee?: FloatWithAggregatesFilter<"SystemSetting"> | number
+    ndisRate?: FloatWithAggregatesFilter<"SystemSetting"> | number
+    telehealthFee?: FloatWithAggregatesFilter<"SystemSetting"> | number
     createdAt?: DateTimeWithAggregatesFilter<"SystemSetting"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SystemSetting"> | Date | string
   }
@@ -28470,6 +28554,10 @@ export namespace Prisma {
     bsbNumber?: string | null
     accountNumber?: string | null
     consultationFee?: number
+    initialConsultationFee?: number
+    followupConsultationFee?: number
+    ndisRate?: number
+    telehealthFee?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28496,6 +28584,10 @@ export namespace Prisma {
     bsbNumber?: string | null
     accountNumber?: string | null
     consultationFee?: number
+    initialConsultationFee?: number
+    followupConsultationFee?: number
+    ndisRate?: number
+    telehealthFee?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28522,6 +28614,10 @@ export namespace Prisma {
     bsbNumber?: NullableStringFieldUpdateOperationsInput | string | null
     accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     consultationFee?: FloatFieldUpdateOperationsInput | number
+    initialConsultationFee?: FloatFieldUpdateOperationsInput | number
+    followupConsultationFee?: FloatFieldUpdateOperationsInput | number
+    ndisRate?: FloatFieldUpdateOperationsInput | number
+    telehealthFee?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28548,6 +28644,10 @@ export namespace Prisma {
     bsbNumber?: NullableStringFieldUpdateOperationsInput | string | null
     accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     consultationFee?: FloatFieldUpdateOperationsInput | number
+    initialConsultationFee?: FloatFieldUpdateOperationsInput | number
+    followupConsultationFee?: FloatFieldUpdateOperationsInput | number
+    ndisRate?: FloatFieldUpdateOperationsInput | number
+    telehealthFee?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28574,6 +28674,10 @@ export namespace Prisma {
     bsbNumber?: string | null
     accountNumber?: string | null
     consultationFee?: number
+    initialConsultationFee?: number
+    followupConsultationFee?: number
+    ndisRate?: number
+    telehealthFee?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28600,6 +28704,10 @@ export namespace Prisma {
     bsbNumber?: NullableStringFieldUpdateOperationsInput | string | null
     accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     consultationFee?: FloatFieldUpdateOperationsInput | number
+    initialConsultationFee?: FloatFieldUpdateOperationsInput | number
+    followupConsultationFee?: FloatFieldUpdateOperationsInput | number
+    ndisRate?: FloatFieldUpdateOperationsInput | number
+    telehealthFee?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28626,6 +28734,10 @@ export namespace Prisma {
     bsbNumber?: NullableStringFieldUpdateOperationsInput | string | null
     accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     consultationFee?: FloatFieldUpdateOperationsInput | number
+    initialConsultationFee?: FloatFieldUpdateOperationsInput | number
+    followupConsultationFee?: FloatFieldUpdateOperationsInput | number
+    ndisRate?: FloatFieldUpdateOperationsInput | number
+    telehealthFee?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -30020,12 +30132,20 @@ export namespace Prisma {
     bsbNumber?: SortOrder
     accountNumber?: SortOrder
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type SystemSettingAvgOrderByAggregateInput = {
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
   }
 
   export type SystemSettingMaxOrderByAggregateInput = {
@@ -30050,6 +30170,10 @@ export namespace Prisma {
     bsbNumber?: SortOrder
     accountNumber?: SortOrder
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30076,12 +30200,20 @@ export namespace Prisma {
     bsbNumber?: SortOrder
     accountNumber?: SortOrder
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type SystemSettingSumOrderByAggregateInput = {
     consultationFee?: SortOrder
+    initialConsultationFee?: SortOrder
+    followupConsultationFee?: SortOrder
+    ndisRate?: SortOrder
+    telehealthFee?: SortOrder
   }
 
   export type GlobalSupportWorkerOrderByRelevanceInput = {

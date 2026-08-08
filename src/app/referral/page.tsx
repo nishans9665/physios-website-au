@@ -118,7 +118,15 @@ export default function ReferralPage() {
   const [validationError, setValidationError] = useState("");
   const [draftRestored, setDraftRestored] = useState(false);
 
-  // Restore draft on mount
+  // Restore draft and fetch DB settings on mount
+  const [bankDetails, setBankDetails] = useState({
+    bankName: "National Australia Bank (NAB)",
+    accountName: "The Care First Physiotherapy",
+    bsbNumber: "084-004",
+    accountNumber: "1234 5678 9",
+    consultationFee: 150.0,
+  });
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -134,6 +142,21 @@ export default function ReferralPage() {
     } catch (e) {
       console.error("Failed to restore draft:", e);
     }
+
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setBankDetails({
+            bankName: data.bankName || "National Australia Bank (NAB)",
+            accountName: data.accountName || "The Care First Physiotherapy",
+            bsbNumber: data.bsbNumber || "084-004",
+            accountNumber: data.accountNumber || "1234 5678 9",
+            consultationFee: typeof data.consultationFee === "number" ? data.consultationFee : 150.0,
+          });
+        }
+      })
+      .catch((err) => console.error("Failed to fetch intake settings:", err));
   }, []);
 
   const saveDraft = (updatedForm: typeof formData, step: number) => {
@@ -727,7 +750,7 @@ export default function ReferralPage() {
                           </div>
                           <div className="sm:text-right">
                             <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">Consultation Fee</span>
-                            <p className="text-lg font-extrabold text-[#799A29]">$150.00 AUD</p>
+                            <p className="text-lg font-extrabold text-[#799A29]">${bankDetails.consultationFee.toFixed(2)} AUD</p>
                           </div>
                         </div>
                         <p className="text-xs text-gray-500 border-t border-gray-200/60 pt-2.5">
@@ -764,7 +787,7 @@ export default function ReferralPage() {
                         <div className="bg-[#FAFBF9] border border-gray-200 p-6 rounded-2xl space-y-4">
                           <div className="flex justify-between items-center text-xs pb-2 border-b border-gray-200">
                             <span className="font-semibold text-gray-500">Consultation Fee:</span>
-                            <span className="font-bold text-base text-[#799A29]">$150.00 AUD</span>
+                            <span className="font-bold text-base text-[#799A29]">${bankDetails.consultationFee.toFixed(2)} AUD</span>
                           </div>
                           <button type="button" disabled={processingStripe} onClick={handleProceedToStripe} className="w-full py-3.5 bg-[#799A29] text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 hover:opacity-95 shadow-md shadow-[#799A29]/20 disabled:opacity-60 cursor-pointer">
                             {processingStripe ? <><Loader2 className="animate-spin" size={18} /> Connecting to Stripe...</> : <><Lock size={16} /> Proceed to Secure Payment</>}
@@ -775,10 +798,10 @@ export default function ReferralPage() {
                       {formData.paymentMethod === "BANK_TRANSFER" && (
                         <div className="bg-[#FAFBF9] border border-gray-200 p-6 rounded-2xl space-y-4">
                           <div className="grid sm:grid-cols-2 gap-3 text-xs bg-white p-4 rounded-xl border border-gray-100">
-                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">Bank</span><span className="font-bold block text-dark">National Australia Bank (NAB)</span></div>
-                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">Account Name</span><span className="font-bold block text-dark">The Care First Physiotherapy</span></div>
-                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">BSB</span><span className="font-bold block text-dark">084-004</span></div>
-                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">Account Number</span><span className="font-bold block text-dark">1234 5678 9</span></div>
+                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">Bank</span><span className="font-bold block text-dark">{bankDetails.bankName}</span></div>
+                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">Account Name</span><span className="font-bold block text-dark">{bankDetails.accountName}</span></div>
+                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">BSB</span><span className="font-bold block text-dark font-mono">{bankDetails.bsbNumber}</span></div>
+                            <div><span className="text-gray-400 font-semibold uppercase text-[10px]">Account Number</span><span className="font-bold block text-dark font-mono">{bankDetails.accountNumber}</span></div>
                           </div>
 
                           <div className="space-y-3">
