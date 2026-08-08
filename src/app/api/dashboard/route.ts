@@ -26,6 +26,7 @@ export async function GET() {
 
   try {
     const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
@@ -36,10 +37,8 @@ export async function GET() {
       leadsLastMonth,
       totalReferrals,
       referralsLastMonth,
-      totalTestimonials,
-      testimonialsLastMonth,
-      pendingLeads,
-      pendingLeadsLastMonth,
+      totalPaymentsAgg,
+      todayPaymentsAgg,
       recentLeads,
     ] = await Promise.all([
       // Total leads (all time)
@@ -54,21 +53,17 @@ export async function GET() {
       prisma.referral.count({
         where: { createdAt: { gte: startOfLastMonth, lte: endOfLastMonth } },
       }),
-      // Total testimonials
-      prisma.testimonial.count(),
-      // Testimonials last month
-      prisma.testimonial.count({
-        where: { createdAt: { gte: startOfLastMonth, lte: endOfLastMonth } },
+      // Total Revenue (PAID payments)
+      prisma.payment.aggregate({
+        _sum: { amount: true },
+        where: { paymentStatus: "PAID" },
       }),
-      // Pending / new leads this month (pending actions)
-      prisma.contactLead.count({
-        where: { status: "NEW", submissionDate: { gte: startOfThisMonth } },
-      }),
-      // Pending leads last month
-      prisma.contactLead.count({
+      // Today's Payments (PAID payments today)
+      prisma.payment.aggregate({
+        _sum: { amount: true },
         where: {
-          status: "NEW",
-          submissionDate: { gte: startOfLastMonth, lte: endOfLastMonth },
+          paymentStatus: "PAID",
+          createdAt: { gte: startOfToday },
         },
       }),
       // 5 most recent leads for the table
@@ -100,9 +95,9 @@ export async function GET() {
     const referralsThisMonth = await prisma.referral.count({
       where: { createdAt: { gte: startOfThisMonth } },
     });
-    const testimonialsThisMonth = await prisma.testimonial.count({
-      where: { createdAt: { gte: startOfThisMonth } },
-    });
+
+    const totalPayments = totalPaymentsAgg._sum.amount ?? 0;
+    const todayPayments = todayPaymentsAgg._sum.amount ?? 0;
 
     return NextResponse.json({
       stats: {
@@ -110,10 +105,8 @@ export async function GET() {
         leadsTrend: calcTrend(leadsThisMonth, leadsLastMonth),
         totalReferrals,
         referralsTrend: calcTrend(referralsThisMonth, referralsLastMonth),
-        totalTestimonials,
-        testimonialsTrend: calcTrend(testimonialsThisMonth, testimonialsLastMonth),
-        pendingLeads,
-        pendingTrend: calcTrend(pendingLeads, pendingLeadsLastMonth),
+        totalPayments,
+        todayPayments,
       },
       recentLeads,
     });

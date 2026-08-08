@@ -16,6 +16,8 @@ import {
   AlertCircle,
   ExternalLink,
   ClipboardList,
+  DollarSign,
+  CreditCard,
 } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 
@@ -37,10 +39,8 @@ type DashboardStats = {
   leadsTrend: string;
   totalReferrals: number;
   referralsTrend: string;
-  totalTestimonials: number;
-  testimonialsTrend: string;
-  pendingLeads: number;
-  pendingTrend: string;
+  totalPayments: number;
+  todayPayments: number;
 };
 
 type DashboardData = {
@@ -136,7 +136,7 @@ export default function AdminDashboardPage() {
   const statCards = [
     {
       title: "Total Leads",
-      value: stats?.totalLeads ?? 0,
+      value: (stats?.totalLeads ?? 0).toLocaleString(),
       trend: stats?.leadsTrend ?? "0%",
       icon: Users,
       color: "bg-blue-500",
@@ -144,27 +144,27 @@ export default function AdminDashboardPage() {
     },
     { 
       title: "Total Appointments",
-      value: stats?.totalReferrals ?? 0,
+      value: (stats?.totalReferrals ?? 0).toLocaleString(),
       trend: stats?.referralsTrend ?? "0%",
       icon: ClipboardList,
       color: "bg-primary",
       href: "/admin/referrals",
     },
     {
-      title: "Testimonials",
-      value: stats?.totalTestimonials ?? 0,
-      trend: stats?.testimonialsTrend ?? "0%",
-      icon: Star,
-      color: "bg-purple-500",
-      href: "/admin/testimonials",
+      title: "Total Revenue",
+      value: `$${(stats?.totalPayments ?? 0).toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      trend: "AUD",
+      icon: DollarSign,
+      color: "bg-[#799A29]",
+      href: "/admin/payments",
     },
     {
-      title: "New Leads This Month",
-      value: stats?.pendingLeads ?? 0,
-      trend: stats?.pendingTrend ?? "0%",
-      icon: ArrowUpRight,
+      title: "Today's Total Payments",
+      value: `$${(stats?.todayPayments ?? 0).toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      trend: "AUD",
+      icon: CreditCard,
       color: "bg-amber-500",
-      href: "/admin/leads",
+      href: "/admin/payments",
     },
   ];
 
