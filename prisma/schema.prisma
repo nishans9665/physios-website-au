@@ -52,6 +52,7 @@ model ContactLead {
   message         String     @db.Text
   serviceInterest String?
   status          LeadStatus @default(NEW)
+  adminNotes      String?    @db.Text
   submissionDate  DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 }

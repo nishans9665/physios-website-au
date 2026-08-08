@@ -139,6 +139,7 @@ exports.Prisma.ContactLeadScalarFieldEnum = {
   message: 'message',
   serviceInterest: 'serviceInterest',
   status: 'status',
+  adminNotes: 'adminNotes',
   submissionDate: 'submissionDate',
   updatedAt: 'updatedAt'
 };
@@ -426,7 +427,8 @@ exports.Prisma.ContactLeadOrderByRelevanceFieldEnum = {
   email: 'email',
   phoneNumber: 'phoneNumber',
   message: 'message',
-  serviceInterest: 'serviceInterest'
+  serviceInterest: 'serviceInterest',
+  adminNotes: 'adminNotes'
 };
 
 exports.Prisma.AppointmentOrderByRelevanceFieldEnum = {

@@ -3682,6 +3682,7 @@ export namespace Prisma {
     message: string | null
     serviceInterest: string | null
     status: $Enums.LeadStatus | null
+    adminNotes: string | null
     submissionDate: Date | null
     updatedAt: Date | null
   }
@@ -3694,6 +3695,7 @@ export namespace Prisma {
     message: string | null
     serviceInterest: string | null
     status: $Enums.LeadStatus | null
+    adminNotes: string | null
     submissionDate: Date | null
     updatedAt: Date | null
   }
@@ -3706,6 +3708,7 @@ export namespace Prisma {
     message: number
     serviceInterest: number
     status: number
+    adminNotes: number
     submissionDate: number
     updatedAt: number
     _all: number
@@ -3720,6 +3723,7 @@ export namespace Prisma {
     message?: true
     serviceInterest?: true
     status?: true
+    adminNotes?: true
     submissionDate?: true
     updatedAt?: true
   }
@@ -3732,6 +3736,7 @@ export namespace Prisma {
     message?: true
     serviceInterest?: true
     status?: true
+    adminNotes?: true
     submissionDate?: true
     updatedAt?: true
   }
@@ -3744,6 +3749,7 @@ export namespace Prisma {
     message?: true
     serviceInterest?: true
     status?: true
+    adminNotes?: true
     submissionDate?: true
     updatedAt?: true
     _all?: true
@@ -3829,6 +3835,7 @@ export namespace Prisma {
     message: string
     serviceInterest: string | null
     status: $Enums.LeadStatus
+    adminNotes: string | null
     submissionDate: Date
     updatedAt: Date
     _count: ContactLeadCountAggregateOutputType | null
@@ -3858,6 +3865,7 @@ export namespace Prisma {
     message?: boolean
     serviceInterest?: boolean
     status?: boolean
+    adminNotes?: boolean
     submissionDate?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["contactLead"]>
@@ -3872,11 +3880,12 @@ export namespace Prisma {
     message?: boolean
     serviceInterest?: boolean
     status?: boolean
+    adminNotes?: boolean
     submissionDate?: boolean
     updatedAt?: boolean
   }
 
-  export type ContactLeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "email" | "phoneNumber" | "message" | "serviceInterest" | "status" | "submissionDate" | "updatedAt", ExtArgs["result"]["contactLead"]>
+  export type ContactLeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "email" | "phoneNumber" | "message" | "serviceInterest" | "status" | "adminNotes" | "submissionDate" | "updatedAt", ExtArgs["result"]["contactLead"]>
 
   export type $ContactLeadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ContactLead"
@@ -3889,6 +3898,7 @@ export namespace Prisma {
       message: string
       serviceInterest: string | null
       status: $Enums.LeadStatus
+      adminNotes: string | null
       submissionDate: Date
       updatedAt: Date
     }, ExtArgs["result"]["contactLead"]>
@@ -4267,6 +4277,7 @@ export namespace Prisma {
     readonly message: FieldRef<"ContactLead", 'String'>
     readonly serviceInterest: FieldRef<"ContactLead", 'String'>
     readonly status: FieldRef<"ContactLead", 'LeadStatus'>
+    readonly adminNotes: FieldRef<"ContactLead", 'String'>
     readonly submissionDate: FieldRef<"ContactLead", 'DateTime'>
     readonly updatedAt: FieldRef<"ContactLead", 'DateTime'>
   }
@@ -24345,6 +24356,7 @@ export namespace Prisma {
     message: 'message',
     serviceInterest: 'serviceInterest',
     status: 'status',
+    adminNotes: 'adminNotes',
     submissionDate: 'submissionDate',
     updatedAt: 'updatedAt'
   };
@@ -24704,7 +24716,8 @@ export namespace Prisma {
     email: 'email',
     phoneNumber: 'phoneNumber',
     message: 'message',
-    serviceInterest: 'serviceInterest'
+    serviceInterest: 'serviceInterest',
+    adminNotes: 'adminNotes'
   };
 
   export type ContactLeadOrderByRelevanceFieldEnum = (typeof ContactLeadOrderByRelevanceFieldEnum)[keyof typeof ContactLeadOrderByRelevanceFieldEnum]
@@ -25135,6 +25148,7 @@ export namespace Prisma {
     message?: StringFilter<"ContactLead"> | string
     serviceInterest?: StringNullableFilter<"ContactLead"> | string | null
     status?: EnumLeadStatusFilter<"ContactLead"> | $Enums.LeadStatus
+    adminNotes?: StringNullableFilter<"ContactLead"> | string | null
     submissionDate?: DateTimeFilter<"ContactLead"> | Date | string
     updatedAt?: DateTimeFilter<"ContactLead"> | Date | string
   }
@@ -25147,6 +25161,7 @@ export namespace Prisma {
     message?: SortOrder
     serviceInterest?: SortOrderInput | SortOrder
     status?: SortOrder
+    adminNotes?: SortOrderInput | SortOrder
     submissionDate?: SortOrder
     updatedAt?: SortOrder
     _relevance?: ContactLeadOrderByRelevanceInput
@@ -25163,6 +25178,7 @@ export namespace Prisma {
     message?: StringFilter<"ContactLead"> | string
     serviceInterest?: StringNullableFilter<"ContactLead"> | string | null
     status?: EnumLeadStatusFilter<"ContactLead"> | $Enums.LeadStatus
+    adminNotes?: StringNullableFilter<"ContactLead"> | string | null
     submissionDate?: DateTimeFilter<"ContactLead"> | Date | string
     updatedAt?: DateTimeFilter<"ContactLead"> | Date | string
   }, "id">
@@ -25175,6 +25191,7 @@ export namespace Prisma {
     message?: SortOrder
     serviceInterest?: SortOrderInput | SortOrder
     status?: SortOrder
+    adminNotes?: SortOrderInput | SortOrder
     submissionDate?: SortOrder
     updatedAt?: SortOrder
     _count?: ContactLeadCountOrderByAggregateInput
@@ -25193,6 +25210,7 @@ export namespace Prisma {
     message?: StringWithAggregatesFilter<"ContactLead"> | string
     serviceInterest?: StringNullableWithAggregatesFilter<"ContactLead"> | string | null
     status?: EnumLeadStatusWithAggregatesFilter<"ContactLead"> | $Enums.LeadStatus
+    adminNotes?: StringNullableWithAggregatesFilter<"ContactLead"> | string | null
     submissionDate?: DateTimeWithAggregatesFilter<"ContactLead"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ContactLead"> | Date | string
   }
@@ -26907,6 +26925,7 @@ export namespace Prisma {
     message: string
     serviceInterest?: string | null
     status?: $Enums.LeadStatus
+    adminNotes?: string | null
     submissionDate?: Date | string
     updatedAt?: Date | string
   }
@@ -26919,6 +26938,7 @@ export namespace Prisma {
     message: string
     serviceInterest?: string | null
     status?: $Enums.LeadStatus
+    adminNotes?: string | null
     submissionDate?: Date | string
     updatedAt?: Date | string
   }
@@ -26931,6 +26951,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     serviceInterest?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
     submissionDate?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26943,6 +26964,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     serviceInterest?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
     submissionDate?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26955,6 +26977,7 @@ export namespace Prisma {
     message: string
     serviceInterest?: string | null
     status?: $Enums.LeadStatus
+    adminNotes?: string | null
     submissionDate?: Date | string
     updatedAt?: Date | string
   }
@@ -26967,6 +26990,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     serviceInterest?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
     submissionDate?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26979,6 +27003,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     serviceInterest?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
     submissionDate?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28985,6 +29010,7 @@ export namespace Prisma {
     message?: SortOrder
     serviceInterest?: SortOrder
     status?: SortOrder
+    adminNotes?: SortOrder
     submissionDate?: SortOrder
     updatedAt?: SortOrder
   }
@@ -28997,6 +29023,7 @@ export namespace Prisma {
     message?: SortOrder
     serviceInterest?: SortOrder
     status?: SortOrder
+    adminNotes?: SortOrder
     submissionDate?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29009,6 +29036,7 @@ export namespace Prisma {
     message?: SortOrder
     serviceInterest?: SortOrder
     status?: SortOrder
+    adminNotes?: SortOrder
     submissionDate?: SortOrder
     updatedAt?: SortOrder
   }

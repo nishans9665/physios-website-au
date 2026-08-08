@@ -12,7 +12,11 @@ import {
   X, 
   User, 
   Briefcase, 
-  FileText 
+  FileText,
+  MessageSquare,
+  Save,
+  Loader2,
+  CheckCircle2
 } from "lucide-react";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,6 +29,7 @@ type Lead = {
   message: string;
   serviceInterest: string | null;
   status: "NEW" | "CONTACTED" | "PENDING" | "CONVERTED";
+  adminNotes?: string | null;
   submissionDate: string;
 };
 
@@ -35,6 +40,17 @@ export default function LeadsPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
+
+  // Notes state for modal
+  const [modalAdminNotes, setModalAdminNotes] = useState("");
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [notesSavedSuccess, setNotesSavedSuccess] = useState(false);
+
+  useEffect(() => {
+    if (selectedLead) {
+      setModalAdminNotes(selectedLead.adminNotes || "");
+    }
+  }, [selectedLead]);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -89,6 +105,28 @@ export default function LeadsPage() {
       fetchLeads();
     } catch (error) {
       console.error("Failed to delete lead");
+    }
+  };
+
+  const handleSaveAdminNotes = async () => {
+    if (!selectedLead) return;
+    setSavingNotes(true);
+    try {
+      const res = await fetch(`/api/leads/${selectedLead.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminNotes: modalAdminNotes }),
+      });
+      if (res.ok) {
+        setNotesSavedSuccess(true);
+        setTimeout(() => setNotesSavedSuccess(false), 3000);
+        setSelectedLead((prev) => (prev ? { ...prev, adminNotes: modalAdminNotes } : null));
+        fetchLeads();
+      }
+    } catch (err) {
+      console.error("Failed to save lead notes", err);
+    } finally {
+      setSavingNotes(false);
     }
   };
 
@@ -384,6 +422,48 @@ export default function LeadsPage() {
                   </div>
                   <div className="text-sm text-gray-600 leading-relaxed bg-white p-4 rounded-xl border border-gray-100 whitespace-pre-wrap">
                     {selectedLead.message}
+                  </div>
+                </div>
+
+                {/* Comments / Admin Reference Notes Card */}
+                <div className="bg-[#FAFBF9] p-5 rounded-2xl border border-gray-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
+                      <MessageSquare size={16} />
+                      <span>Comments & User Reference Notes</span>
+                    </div>
+                    {notesSavedSuccess && (
+                      <span className="flex items-center gap-1 text-xs text-emerald-600 font-bold bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                        <CheckCircle2 size={13} /> Notes Saved!
+                      </span>
+                    )}
+                  </div>
+
+                  <textarea
+                    rows={3}
+                    value={modalAdminNotes}
+                    onChange={(e) => setModalAdminNotes(e.target.value)}
+                    placeholder="Type internal comments, user call reference details, or follow-up notes to save for this lead..."
+                    className="w-full p-3.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-xs bg-white resize-none"
+                  />
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      disabled={savingNotes}
+                      onClick={handleSaveAdminNotes}
+                      className="px-4 py-2 bg-primary text-white font-bold rounded-xl text-xs flex items-center gap-1.5 hover:bg-primary/95 transition-all cursor-pointer border-none shadow-xs disabled:opacity-50"
+                    >
+                      {savingNotes ? (
+                        <>
+                          <Loader2 className="animate-spin" size={14} /> Saving Notes...
+                        </>
+                      ) : (
+                        <>
+                          <Save size={14} /> Save Comment Notes
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
