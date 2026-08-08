@@ -343,6 +343,8 @@ export async function sendPaymentReceiptEmail({
   const pass = process.env.SMTP_PASS;
   const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
   const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
+  const adminEmail = settings?.referralEmail || process.env.SMTP_ADMIN_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const methodText = paymentMethod === "CARD" ? "Card Payment (Stripe)" : "Online Bank Transfer";
 
   const receiptHtml = `
@@ -393,21 +395,92 @@ export async function sendPaymentReceiptEmail({
     </div>
   `;
 
-  if (user && pass && customerEmail) {
+  const adminNotificationHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="background-color: #799A29; padding: 24px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">Payment Received & Verified</h1>
+        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Reference: ${paymentReference}</p>
+      </div>
+      <div style="padding: 24px;">
+        <p style="margin: 0 0 16px 0;">Hello Accounts & Admin Team,</p>
+        <p style="margin: 0 0 20px 0;">A client payment has been successfully received and verified on the system.</p>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; width: 40%; font-size: 14px;">Client Name:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${customerName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Client Email:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${customerEmail}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Payment Reference:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: bold; color: #799A29;">${paymentReference}</td>
+          </tr>
+          ${bookingReference ? `
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Booking Reference:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${bookingReference}</td>
+          </tr>
+          ` : ""}
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Payment Method:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${methodText}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Payment Date:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${paymentDate}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Amount Received:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: bold; color: #799A29;">$${amount.toFixed(2)} AUD</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Status:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;"><span style="background-color: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 9999px; font-size: 12px; font-weight: bold;">PAID</span></td>
+          </tr>
+        </table>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${appUrl}/admin/payments" style="background-color: #799A29; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; display: inline-block;">View Payment Management Dashboard</a>
+        </div>
+      </div>
+      <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb;">
+        &copy; ${new Date().getFullYear()} The Care First Physiotherapy Service. All rights reserved.
+      </div>
+    </div>
+  `;
+
+  if (user && pass) {
     const transporter = nodemailer.createTransport({ host, port, secure: port === 465, auth: { user, pass } });
     try {
-      await transporter.sendMail({
-        from: `"${fromName}" <${fromEmail}>`,
-        to: customerEmail,
-        subject: `Payment Receipt – The Care First – ${paymentReference}`,
-        html: receiptHtml,
-      });
-      console.log(`Payment receipt email sent to ${customerEmail}`);
+      // 1. Send receipt to Client
+      if (customerEmail) {
+        await transporter.sendMail({
+          from: `"${fromName}" <${fromEmail}>`,
+          to: customerEmail,
+          subject: `Payment Receipt – The Care First – ${paymentReference}`,
+          html: receiptHtml,
+        });
+      }
+
+      // 2. Send notification to Admin
+      if (adminEmail) {
+        await transporter.sendMail({
+          from: `"${fromName}" <${fromEmail}>`,
+          to: adminEmail,
+          subject: `[Payment Received] ${customerName} – ${paymentReference} ($${amount.toFixed(2)} AUD)`,
+          html: adminNotificationHtml,
+        });
+      }
+
+      console.log(`Payment receipt sent to client (${customerEmail}) and admin (${adminEmail})`);
     } catch (err) {
       console.error("Failed to send payment receipt email:", err);
     }
   } else {
-    console.log("DRY RUN: Payment receipt email for", customerEmail, paymentReference);
+    console.log("DRY RUN: Payment receipt email for client", customerEmail, "and admin", adminEmail, paymentReference);
   }
 }
 
@@ -422,12 +495,15 @@ export async function sendBankTransferSubmittedEmail({
   paymentReference: string;
   amount: number;
 }) {
+  const settings = await prisma.systemSetting.findUnique({ where: { id: "settings" } });
   const host = process.env.SMTP_HOST || "mail-au.smtp2go.com";
   const port = parseInt(process.env.SMTP_PORT || "2525");
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
   const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
+  const adminEmail = settings?.referralEmail || process.env.SMTP_ADMIN_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   const emailHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
@@ -452,20 +528,78 @@ export async function sendBankTransferSubmittedEmail({
     </div>
   `;
 
-  if (user && pass && customerEmail) {
+  const adminNotificationHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="background-color: #799A29; padding: 24px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">New Bank Slip Submitted</h1>
+        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Reference: ${paymentReference}</p>
+      </div>
+      <div style="padding: 24px;">
+        <p style="margin: 0 0 16px 0;">Hello Accounts & Admin Team,</p>
+        <p style="margin: 0 0 16px 0;">A client has uploaded a bank transfer payment slip requiring verification.</p>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; width: 40%; font-size: 14px;">Client Name:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${customerName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Client Email:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${customerEmail}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Payment Reference:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: bold; color: #799A29;">${paymentReference}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Amount:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: bold;">$${amount.toFixed(2)} AUD</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Status:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;"><span style="background-color: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 9999px; font-size: 12px; font-weight: bold;">PENDING VERIFICATION</span></td>
+          </tr>
+        </table>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${appUrl}/admin/payments" style="background-color: #799A29; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; display: inline-block;">Review & Verify in Admin Dashboard</a>
+        </div>
+      </div>
+      <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb;">
+        &copy; ${new Date().getFullYear()} The Care First Physiotherapy Service. All rights reserved.
+      </div>
+    </div>
+  `;
+
+  if (user && pass) {
     const transporter = nodemailer.createTransport({ host, port, secure: port === 465, auth: { user, pass } });
     try {
-      await transporter.sendMail({
-        from: `"${fromName}" <${fromEmail}>`,
-        to: customerEmail,
-        subject: `Payment Slip Received – Pending Verification – ${paymentReference}`,
-        html: emailHtml,
-      });
+      // 1. Send to Customer
+      if (customerEmail) {
+        await transporter.sendMail({
+          from: `"${fromName}" <${fromEmail}>`,
+          to: customerEmail,
+          subject: `Payment Slip Received – Pending Verification – ${paymentReference}`,
+          html: emailHtml,
+        });
+      }
+
+      // 2. Send to Admin
+      if (adminEmail) {
+        await transporter.sendMail({
+          from: `"${fromName}" <${fromEmail}>`,
+          to: adminEmail,
+          subject: `[New Bank Slip Submitted] ${customerName} – ${paymentReference}`,
+          html: adminNotificationHtml,
+        });
+      }
+
+      console.log(`Bank transfer submission emails sent to customer (${customerEmail}) and admin (${adminEmail})`);
     } catch (err) {
       console.error("Failed to send bank transfer submission email:", err);
     }
   } else {
-    console.log("DRY RUN: Bank transfer submission email for", customerEmail, paymentReference);
+    console.log("DRY RUN: Bank transfer submission email for client", customerEmail, "and admin", adminEmail, paymentReference);
   }
 }
 
