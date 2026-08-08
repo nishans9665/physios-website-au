@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, Users, Calendar, MessageSquare, 
   Settings, LogOut, Menu, X, FileText, Image as ImageIcon,
-  ShieldCheck, HelpCircle, ClipboardList, UserCog
+  ShieldCheck, HelpCircle, ClipboardList, UserCog, CreditCard
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ const sidebarLinks = [
   { name: "Dashboard",        href: "/admin/dashboard",        icon: LayoutDashboard },
   { name: "Leads",            href: "/admin/leads",            icon: Users },
   { name: "Appointments",     href: "/admin/referrals",        icon: Calendar },
+  { name: "Payments",         href: "/admin/payments",         icon: CreditCard },
   { name: "Testimonials",     href: "/admin/testimonials",     icon: MessageSquare },
   { name: "Users",            href: "/admin/users",            icon: UserCog },
   { name: "Settings",         href: "/admin/settings",         icon: Settings },

@@ -168,6 +168,7 @@ model Referral {
   goals                    ReferralGoals?
   documents                UploadedDocument[]
   adminNotes               AdminNotes[]
+  payment                  Payment?
 }
 
 model ReferralClient {
@@ -281,6 +282,47 @@ model AdminNotes {
   updatedAt  DateTime @updatedAt
 }
 
+enum PaymentMethod {
+  CARD
+  BANK_TRANSFER
+}
+
+enum PaymentGateway {
+  STRIPE
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  PENDING_VERIFICATION
+  FAILED
+  REJECTED
+  CANCELLED
+}
+
+model Payment {
+  id                      String         @id @default(uuid())
+  referralId              String         @unique
+  referral                Referral       @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  paymentReference        String         @unique // e.g. PAY-XXXXXXXX
+  amount                  Float
+  currency                String         @default("AUD")
+  paymentMethod           PaymentMethod
+  paymentGateway          PaymentGateway
+  paymentStatus           PaymentStatus  @default(PENDING)
+  stripePaymentIntentId   String?
+  stripeCheckoutSessionId String?
+  bankTransferReference   String?
+  paymentSlip             String?
+  adminNotes              String?        @db.Text
+  rejectionReason         String?        @db.Text
+  paidAt                  DateTime?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+}
+
 model SystemSetting {
   id                 String   @id @default("settings")
   maintenanceMode    Boolean  @default(false)
@@ -302,6 +344,13 @@ model SystemSetting {
   instagramUrl       String?
   linkedinUrl        String?
   youtubeUrl         String?
+  
+  // Bank Transfer & Payment Configs
+  bankName           String?  @default("National Australia Bank (NAB)")
+  accountName        String?  @default("The Care First Physiotherapy")
+  bsbNumber          String?  @default("084-004")
+  accountNumber      String?  @default("1234 5678 9")
+  consultationFee    Float    @default(150.0)
   
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

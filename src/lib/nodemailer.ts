@@ -315,3 +315,216 @@ export async function sendContactLeadEmail({
     console.log("----------------------------------------------------");
   }
 }
+
+// ─── PAYMENT EMAIL NOTIFICATIONS ──────────────────────────────────────────────
+
+export async function sendPaymentReceiptEmail({
+  customerName,
+  customerEmail,
+  paymentReference,
+  amount,
+  paymentMethod,
+  paymentDate,
+  bookingReference,
+}: {
+  customerName: string;
+  customerEmail: string;
+  paymentReference: string;
+  amount: number;
+  paymentMethod: "CARD" | "BANK_TRANSFER";
+  paymentDate: string;
+  bookingReference?: string;
+}) {
+  const settings = await prisma.systemSetting.findUnique({ where: { id: "settings" } });
+
+  const host = process.env.SMTP_HOST || "mail-au.smtp2go.com";
+  const port = parseInt(process.env.SMTP_PORT || "2525");
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
+  const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
+  const methodText = paymentMethod === "CARD" ? "Card Payment (Stripe)" : "Online Bank Transfer";
+
+  const receiptHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="background-color: #799A29; padding: 24px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">Payment Receipt</h1>
+        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Reference: ${paymentReference}</p>
+      </div>
+      <div style="padding: 24px;">
+        <p style="margin: 0 0 16px 0;">Dear ${customerName},</p>
+        <p style="margin: 0 0 16px 0;">Thank you for your payment. Your payment has been successfully received and verified.</p>
+        
+        <h3 style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #799A29; border-bottom: 2px solid #e5e7eb; padding-bottom: 4px;">Payment Details</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; width: 40%; font-size: 14px;">Payment Reference:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: bold; color: #799A29;">${paymentReference}</td>
+          </tr>
+          ${bookingReference ? `
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Booking Reference:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${bookingReference}</td>
+          </tr>
+          ` : ""}
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Payment Method:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${methodText}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Payment Date:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;">${paymentDate}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Amount Paid:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: bold;">$${amount.toFixed(2)} AUD</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: bold; font-size: 14px;">Status:</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px;"><span style="background-color: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 9999px; font-size: 12px; font-weight: bold;">PAID</span></td>
+          </tr>
+        </table>
+
+        <p style="margin: 0 0 8px 0; font-size: 13px; color: #6b7280;">Our clinical intake coordinator will reach out to schedule your appointment dates. Thank you for choosing The Care First Physiotherapy Service.</p>
+      </div>
+      <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb;">
+        &copy; ${new Date().getFullYear()} The Care First Physiotherapy Service. All rights reserved.
+      </div>
+    </div>
+  `;
+
+  if (user && pass && customerEmail) {
+    const transporter = nodemailer.createTransport({ host, port, secure: port === 465, auth: { user, pass } });
+    try {
+      await transporter.sendMail({
+        from: `"${fromName}" <${fromEmail}>`,
+        to: customerEmail,
+        subject: `Payment Receipt – The Care First – ${paymentReference}`,
+        html: receiptHtml,
+      });
+      console.log(`Payment receipt email sent to ${customerEmail}`);
+    } catch (err) {
+      console.error("Failed to send payment receipt email:", err);
+    }
+  } else {
+    console.log("DRY RUN: Payment receipt email for", customerEmail, paymentReference);
+  }
+}
+
+export async function sendBankTransferSubmittedEmail({
+  customerName,
+  customerEmail,
+  paymentReference,
+  amount,
+}: {
+  customerName: string;
+  customerEmail: string;
+  paymentReference: string;
+  amount: number;
+}) {
+  const host = process.env.SMTP_HOST || "mail-au.smtp2go.com";
+  const port = parseInt(process.env.SMTP_PORT || "2525");
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
+  const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
+
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="background-color: #799A29; padding: 24px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">Payment Slip Submitted</h1>
+        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Reference: ${paymentReference}</p>
+      </div>
+      <div style="padding: 24px;">
+        <p style="margin: 0 0 16px 0;">Dear ${customerName},</p>
+        <p style="margin: 0 0 16px 0;">Your bank transfer details and payment slip have been submitted successfully and are currently <strong>Pending Verification</strong>.</p>
+        
+        <div style="background-color: #fef3c7; border: 1px solid #fde68a; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+          <h4 style="margin: 0 0 6px 0; font-size: 14px; font-weight: bold; color: #92400e;">Status: Pending Verification</h4>
+          <p style="margin: 0; font-size: 13px; color: #78350f;">Our accounts team will verify your transfer against our bank records and confirm your booking shortly. Amount: <strong>$${amount.toFixed(2)} AUD</strong>.</p>
+        </div>
+
+        <p style="margin: 0 0 8px 0; font-size: 13px; color: #6b7280;">Once verified, a formal payment receipt will be sent to your email.</p>
+      </div>
+      <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb;">
+        &copy; ${new Date().getFullYear()} The Care First Physiotherapy Service. All rights reserved.
+      </div>
+    </div>
+  `;
+
+  if (user && pass && customerEmail) {
+    const transporter = nodemailer.createTransport({ host, port, secure: port === 465, auth: { user, pass } });
+    try {
+      await transporter.sendMail({
+        from: `"${fromName}" <${fromEmail}>`,
+        to: customerEmail,
+        subject: `Payment Slip Received – Pending Verification – ${paymentReference}`,
+        html: emailHtml,
+      });
+    } catch (err) {
+      console.error("Failed to send bank transfer submission email:", err);
+    }
+  } else {
+    console.log("DRY RUN: Bank transfer submission email for", customerEmail, paymentReference);
+  }
+}
+
+export async function sendBankTransferRejectedEmail({
+  customerName,
+  customerEmail,
+  paymentReference,
+  rejectionReason,
+}: {
+  customerName: string;
+  customerEmail: string;
+  paymentReference: string;
+  rejectionReason?: string;
+}) {
+  const host = process.env.SMTP_HOST || "mail-au.smtp2go.com";
+  const port = parseInt(process.env.SMTP_PORT || "2525");
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "noreply@thecarefirstphysiotherapyservice.com.au";
+  const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
+
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="background-color: #dc2626; padding: 24px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: white;">Payment Verification Update</h1>
+        <p style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Reference: ${paymentReference}</p>
+      </div>
+      <div style="padding: 24px;">
+        <p style="margin: 0 0 16px 0;">Dear ${customerName},</p>
+        <p style="margin: 0 0 16px 0;">We were unable to verify your bank transfer payment for reference <strong>${paymentReference}</strong>.</p>
+        
+        ${rejectionReason ? `
+        <div style="background-color: #fef2f2; border: 1px solid #fecaca; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+          <h4 style="margin: 0 0 6px 0; font-size: 14px; font-weight: bold; color: #991b1b;">Reason for Rejection:</h4>
+          <p style="margin: 0; font-size: 13px; color: #7f1d1d;">${rejectionReason}</p>
+        </div>
+        ` : ""}
+
+        <p style="margin: 0 0 16px 0; font-size: 14px;">Please check your payment transfer details or resubmit a valid payment slip. Alternatively, you can pay using a credit/debit card.</p>
+      </div>
+      <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb;">
+        &copy; ${new Date().getFullYear()} The Care First Physiotherapy Service. All rights reserved.
+      </div>
+    </div>
+  `;
+
+  if (user && pass && customerEmail) {
+    const transporter = nodemailer.createTransport({ host, port, secure: port === 465, auth: { user, pass } });
+    try {
+      await transporter.sendMail({
+        from: `"${fromName}" <${fromEmail}>`,
+        to: customerEmail,
+        subject: `Payment Verification Unsuccessful – ${paymentReference}`,
+        html: emailHtml,
+      });
+    } catch (err) {
+      console.error("Failed to send bank transfer rejection email:", err);
+    }
+  } else {
+    console.log("DRY RUN: Bank transfer rejection email for", customerEmail, paymentReference);
+  }
+}
