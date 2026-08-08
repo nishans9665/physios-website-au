@@ -26,6 +26,8 @@ import {
   PieChart,
   BarChart3,
   Filter,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { format, isWithinInterval, startOfDay, endOfDay, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, parseISO } from "date-fns";
 
@@ -89,6 +91,14 @@ export default function AdminPaymentsPage() {
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, methodFilter, statusFilter]);
+
   // Report Generator Modal States
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportDatePreset, setReportDatePreset] = useState<DatePreset>("THIS_MONTH");
@@ -96,6 +106,14 @@ export default function AdminPaymentsPage() {
   const [reportEndDate, setReportEndDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [reportMethodFilter, setReportMethodFilter] = useState<"ALL" | "CARD" | "BANK_TRANSFER">("ALL");
   const [reportStatusFilter, setReportStatusFilter] = useState<string>("ALL");
+
+  const totalItems = payments.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+  const currentPayments = useMemo(() => {
+    return payments.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [payments, startIndex]);
 
   const fetchPayments = useCallback(async () => {
     setLoading(true);
@@ -549,7 +567,7 @@ export default function AdminPaymentsPage() {
                   </td>
                 </tr>
               ) : (
-                payments.map((p) => {
+                currentPayments.map((p) => {
                   const badge = statusBadgeConfig[p.paymentStatus] || { label: p.paymentStatus, className: "bg-gray-100 text-gray-700" };
                   const clientName = p.referral?.client?.fullName || "Valued Client";
                   const clientEmail = p.referral?.client?.email || "";
@@ -661,6 +679,60 @@ export default function AdminPaymentsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Table Pagination Bar */}
+        {totalItems > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-gray-50/70 border-t border-gray-100 text-xs">
+            <div className="text-gray-500 font-medium">
+              Showing <span className="font-bold text-dark">{startIndex + 1}</span> to{" "}
+              <span className="font-bold text-dark">{endIndex}</span> of{" "}
+              <span className="font-bold text-dark">{totalItems}</span> payment records
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white font-semibold text-gray-600 hover:bg-gray-50 hover:text-dark disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+              >
+                <ChevronLeft size={14} /> Previous
+              </button>
+
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                  .map((page, idx, arr) => {
+                    const prevPage = arr[idx - 1];
+                    const showEllipsis = prevPage && page - prevPage > 1;
+
+                    return (
+                      <React.Fragment key={page}>
+                        {showEllipsis && <span className="px-1 text-gray-400 font-bold">...</span>}
+                        <button
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-8 h-8 rounded-xl font-bold transition-all cursor-pointer ${
+                            currentPage === page
+                              ? "bg-[#799A29] text-white shadow-xs"
+                              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-dark"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      </React.Fragment>
+                    );
+                  })}
+              </div>
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white font-semibold text-gray-600 hover:bg-gray-50 hover:text-dark disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+              >
+                Next <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* REPORT GENERATION MODAL */}
