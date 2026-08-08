@@ -88,6 +88,56 @@ export async function GET(req: Request) {
               }).catch((e) => console.error("Failed sending email receipt on verify:", e));
             }
           }
+        } else {
+          // If paymentRecord was missing, auto-create it now using session metadata / client reference
+          const targetReferralId = session.metadata?.referralId || session.client_reference_id;
+          const payRef = ref || session.metadata?.paymentReference || `PAY-${session.id.slice(-8).toUpperCase()}`;
+          const paidAmount = session.amount_total ? session.amount_total / 100 : 150.0;
+
+          if (targetReferralId) {
+            paymentRecord = await prisma.payment.create({
+              data: {
+                referralId: targetReferralId,
+                paymentReference: payRef,
+                amount: paidAmount,
+                currency: (session.currency || "AUD").toUpperCase(),
+                paymentMethod: "CARD",
+                paymentGateway: "STRIPE",
+                paymentStatus: "PAID",
+                stripeCheckoutSessionId: session.id,
+                stripePaymentIntentId: paymentIntentId,
+                paidAt: new Date(),
+              },
+              include: {
+                referral: {
+                  include: {
+                    client: true,
+                  },
+                },
+              },
+            });
+
+            await prisma.referral.update({
+              where: { id: targetReferralId },
+              data: { status: "APPROVED" },
+            }).catch((e) => console.error("Failed to update referral status on verify create:", e));
+
+            if (clientEmail) {
+              await sendPaymentReceiptEmail({
+                customerName: clientName,
+                customerEmail: clientEmail,
+                paymentReference: payRef,
+                amount: paidAmount,
+                paymentMethod: "CARD",
+                paymentDate: new Date().toLocaleDateString("en-AU", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                }),
+                bookingReference: targetReferralId,
+              }).catch((e) => console.error("Failed sending email receipt on verify create:", e));
+            }
+          }
         }
       }
     }

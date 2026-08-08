@@ -81,6 +81,18 @@ export default async function RootLayout({
   if (settings.maintenanceMode && isPublicRoute) {
     const extensionCleanerScript = `
       (function() {
+        if (typeof window !== 'undefined') {
+          window.addEventListener('unhandledrejection', function(event) {
+            if (
+              (event.reason && event.reason.stack && event.reason.stack.indexOf('chrome-extension://') !== -1) ||
+              (event.reason && event.reason.message && (event.reason.message.indexOf('M_ID') !== -1 || event.reason.message.indexOf("reading 'M_ID'") !== -1))
+            ) {
+              if (typeof event.preventDefault === 'function') event.preventDefault();
+              if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+            }
+          });
+        }
+
         var observer = new MutationObserver(function(mutations) {
           for (var i = 0; i < mutations.length; i++) {
             var m = mutations[i];
@@ -195,6 +207,18 @@ export default async function RootLayout({
 
   const extensionCleanerScript = `
     (function() {
+      if (typeof window !== 'undefined') {
+        window.addEventListener('unhandledrejection', function(event) {
+          if (
+            (event.reason && event.reason.stack && event.reason.stack.indexOf('chrome-extension://') !== -1) ||
+            (event.reason && event.reason.message && (event.reason.message.indexOf('M_ID') !== -1 || event.reason.message.indexOf("reading 'M_ID'") !== -1))
+          ) {
+            if (typeof event.preventDefault === 'function') event.preventDefault();
+            if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+          }
+        });
+      }
+
       var observer = new MutationObserver(function(mutations) {
         for (var i = 0; i < mutations.length; i++) {
           var m = mutations[i];

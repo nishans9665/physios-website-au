@@ -265,7 +265,7 @@ export default function ReferralPage() {
       });
       if (refRes.ok) {
         const refData = await refRes.json();
-        referralId = refData.referral?.id || refData.id || "";
+        referralId = refData.referralId || refData.referral?.id || refData.id || "";
       }
       const res = await fetch("/api/payments/create-stripe-session", {
         method: "POST",
