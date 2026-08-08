@@ -18,7 +18,7 @@ async function verifyAuth() {
   }
 }
 
-// UPDATE a lead's status
+// UPDATE a lead's status or admin notes
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await verifyAuth();
   if (!user) {
@@ -26,12 +26,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
 
   try {
-    const { status } = await req.json();
+    const body = await req.json();
+    const { status, adminNotes } = body;
     const { id } = await params;
+
+    const updateData: any = {};
+    if (status !== undefined) updateData.status = status;
+    if (adminNotes !== undefined) updateData.adminNotes = adminNotes;
 
     const updatedLead = await prisma.contactLead.update({
       where: { id },
-      data: { status },
+      data: updateData,
     });
 
     return NextResponse.json(updatedLead);

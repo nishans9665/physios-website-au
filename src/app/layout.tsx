@@ -79,10 +79,58 @@ export default async function RootLayout({
 
   // RENDER: Maintenance Mode Screen
   if (settings.maintenanceMode && isPublicRoute) {
+    const extensionCleanerScript = `
+      (function() {
+        if (typeof window !== 'undefined') {
+          window.addEventListener('unhandledrejection', function(event) {
+            if (
+              (event.reason && event.reason.stack && event.reason.stack.indexOf('chrome-extension://') !== -1) ||
+              (event.reason && event.reason.message && (event.reason.message.indexOf('M_ID') !== -1 || event.reason.message.indexOf("reading 'M_ID'") !== -1))
+            ) {
+              if (typeof event.preventDefault === 'function') event.preventDefault();
+              if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+            }
+          });
+        }
+
+        var observer = new MutationObserver(function(mutations) {
+          for (var i = 0; i < mutations.length; i++) {
+            var m = mutations[i];
+            if (m.type === 'attributes' && (m.attributeName === 'bis_skin_checked' || m.attributeName === 'bis_register')) {
+              m.target.removeAttribute(m.attributeName);
+            } else if (m.type === 'childList') {
+              for (var j = 0; j < m.addedNodes.length; j++) {
+                var added = m.addedNodes[j];
+                if (added.nodeType === 1) {
+                  if (added.hasAttribute && added.hasAttribute('bis_skin_checked')) added.removeAttribute('bis_skin_checked');
+                  if (added.hasAttribute && added.hasAttribute('bis_register')) added.removeAttribute('bis_register');
+                  var els = added.querySelectorAll ? added.querySelectorAll('[bis_skin_checked], [bis_register]') : [];
+                  for (var k = 0; k < els.length; k++) {
+                    els[k].removeAttribute('bis_skin_checked');
+                    els[k].removeAttribute('bis_register');
+                  }
+                }
+              }
+            }
+          }
+        });
+        observer.observe(document.documentElement, {
+          attributes: true,
+          subtree: true,
+          childList: true,
+          attributeFilter: ['bis_skin_checked', 'bis_register']
+        });
+      })();
+    `;
+
     return (
-      <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-        <head><title>Scheduled Maintenance | The Care First Physiotherapy</title><ScriptInjector content={settings.googleTagHeader} target="head" /></head>
-        <body className="antialiased min-h-screen bg-gradient-to-tr from-secondary/20 via-white to-light flex items-center justify-center p-6 font-sans">
+      <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+        <head>
+          <script dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
+          <title>Scheduled Maintenance | The Care First Physiotherapy</title>
+          <ScriptInjector content={settings.googleTagHeader} target="head" />
+        </head>
+        <body className="antialiased min-h-screen bg-gradient-to-tr from-secondary/20 via-white to-light flex items-center justify-center p-6 font-sans" suppressHydrationWarning>
           <ScriptInjector content={settings.googleTagBody} target="body" />
           <div className="max-w-xl w-full text-center bg-white p-8 md:p-14 rounded-[40px] shadow-2xl border border-gray-100 relative overflow-hidden flex flex-col items-center">
             {/* Elegant Top Decorative Bar */}
@@ -157,11 +205,58 @@ export default async function RootLayout({
     );
   }
 
+  const extensionCleanerScript = `
+    (function() {
+      if (typeof window !== 'undefined') {
+        window.addEventListener('unhandledrejection', function(event) {
+          if (
+            (event.reason && event.reason.stack && event.reason.stack.indexOf('chrome-extension://') !== -1) ||
+            (event.reason && event.reason.message && (event.reason.message.indexOf('M_ID') !== -1 || event.reason.message.indexOf("reading 'M_ID'") !== -1))
+          ) {
+            if (typeof event.preventDefault === 'function') event.preventDefault();
+            if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+          }
+        });
+      }
+
+      var observer = new MutationObserver(function(mutations) {
+        for (var i = 0; i < mutations.length; i++) {
+          var m = mutations[i];
+          if (m.type === 'attributes' && (m.attributeName === 'bis_skin_checked' || m.attributeName === 'bis_register')) {
+            m.target.removeAttribute(m.attributeName);
+          } else if (m.type === 'childList') {
+            for (var j = 0; j < m.addedNodes.length; j++) {
+              var added = m.addedNodes[j];
+              if (added.nodeType === 1) {
+                if (added.hasAttribute && added.hasAttribute('bis_skin_checked')) added.removeAttribute('bis_skin_checked');
+                if (added.hasAttribute && added.hasAttribute('bis_register')) added.removeAttribute('bis_register');
+                var els = added.querySelectorAll ? added.querySelectorAll('[bis_skin_checked], [bis_register]') : [];
+                for (var k = 0; k < els.length; k++) {
+                  els[k].removeAttribute('bis_skin_checked');
+                  els[k].removeAttribute('bis_register');
+                }
+              }
+            }
+          }
+        }
+      });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        subtree: true,
+        childList: true,
+        attributeFilter: ['bis_skin_checked', 'bis_register']
+      });
+    })();
+  `;
+
   // RENDER: Default Web Layout
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <head><ScriptInjector content={settings.googleTagHeader} target="head" /></head>
-      <body className="antialiased">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
+        <ScriptInjector content={settings.googleTagHeader} target="head" />
+      </head>
+      <body className="antialiased" suppressHydrationWarning>
         <ScriptInjector content={settings.googleTagBody} target="body" />
         {children}
         <ScriptInjector content={settings.googleTagFooter} target="body" />

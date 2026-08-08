@@ -139,6 +139,7 @@ exports.Prisma.ContactLeadScalarFieldEnum = {
   message: 'message',
   serviceInterest: 'serviceInterest',
   status: 'status',
+  adminNotes: 'adminNotes',
   submissionDate: 'submissionDate',
   updatedAt: 'updatedAt'
 };
@@ -340,6 +341,26 @@ exports.Prisma.AdminNotesScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  referralId: 'referralId',
+  paymentReference: 'paymentReference',
+  amount: 'amount',
+  currency: 'currency',
+  paymentMethod: 'paymentMethod',
+  paymentGateway: 'paymentGateway',
+  paymentStatus: 'paymentStatus',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  bankTransferReference: 'bankTransferReference',
+  paymentSlip: 'paymentSlip',
+  adminNotes: 'adminNotes',
+  rejectionReason: 'rejectionReason',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SystemSettingScalarFieldEnum = {
   id: 'id',
   maintenanceMode: 'maintenanceMode',
@@ -357,6 +378,15 @@ exports.Prisma.SystemSettingScalarFieldEnum = {
   instagramUrl: 'instagramUrl',
   linkedinUrl: 'linkedinUrl',
   youtubeUrl: 'youtubeUrl',
+  bankName: 'bankName',
+  accountName: 'accountName',
+  bsbNumber: 'bsbNumber',
+  accountNumber: 'accountNumber',
+  consultationFee: 'consultationFee',
+  initialConsultationFee: 'initialConsultationFee',
+  followupConsultationFee: 'followupConsultationFee',
+  ndisRate: 'ndisRate',
+  telehealthFee: 'telehealthFee',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -397,7 +427,8 @@ exports.Prisma.ContactLeadOrderByRelevanceFieldEnum = {
   email: 'email',
   phoneNumber: 'phoneNumber',
   message: 'message',
-  serviceInterest: 'serviceInterest'
+  serviceInterest: 'serviceInterest',
+  adminNotes: 'adminNotes'
 };
 
 exports.Prisma.AppointmentOrderByRelevanceFieldEnum = {
@@ -547,6 +578,19 @@ exports.Prisma.AdminNotesOrderByRelevanceFieldEnum = {
   noteText: 'noteText'
 };
 
+exports.Prisma.PaymentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  referralId: 'referralId',
+  paymentReference: 'paymentReference',
+  currency: 'currency',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  bankTransferReference: 'bankTransferReference',
+  paymentSlip: 'paymentSlip',
+  adminNotes: 'adminNotes',
+  rejectionReason: 'rejectionReason'
+};
+
 exports.Prisma.SystemSettingOrderByRelevanceFieldEnum = {
   id: 'id',
   maintenanceMessage: 'maintenanceMessage',
@@ -562,7 +606,11 @@ exports.Prisma.SystemSettingOrderByRelevanceFieldEnum = {
   facebookUrl: 'facebookUrl',
   instagramUrl: 'instagramUrl',
   linkedinUrl: 'linkedinUrl',
-  youtubeUrl: 'youtubeUrl'
+  youtubeUrl: 'youtubeUrl',
+  bankName: 'bankName',
+  accountName: 'accountName',
+  bsbNumber: 'bsbNumber',
+  accountNumber: 'accountNumber'
 };
 
 exports.Prisma.GlobalSupportWorkerOrderByRelevanceFieldEnum = {
@@ -609,6 +657,26 @@ exports.ReferralStatus = exports.$Enums.ReferralStatus = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CARD: 'CARD',
+  BANK_TRANSFER: 'BANK_TRANSFER'
+};
+
+exports.PaymentGateway = exports.$Enums.PaymentGateway = {
+  STRIPE: 'STRIPE',
+  BANK_TRANSFER: 'BANK_TRANSFER'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  PAID: 'PAID',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  FAILED: 'FAILED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   Admin: 'Admin',
   ContactLead: 'ContactLead',
@@ -629,6 +697,7 @@ exports.Prisma.ModelName = {
   ReferralGoals: 'ReferralGoals',
   UploadedDocument: 'UploadedDocument',
   AdminNotes: 'AdminNotes',
+  Payment: 'Payment',
   SystemSetting: 'SystemSetting',
   GlobalSupportWorker: 'GlobalSupportWorker'
 };

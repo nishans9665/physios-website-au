@@ -39,22 +39,23 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6" suppressHydrationWarning>
+      <div className="w-full max-w-md" suppressHydrationWarning>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          suppressHydrationWarning
           className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
         >
-          <div className="bg-primary p-8 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+          <div className="bg-primary p-8 text-center" suppressHydrationWarning>
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm" suppressHydrationWarning>
               <ShieldCheck size={32} className="text-white" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Admin Portal</h1>
             <p className="text-primary-50 text-sm opacity-90">Sign in to manage The Care First system</p>
           </div>
 
-          <div className="p-8">
+          <div className="p-8" suppressHydrationWarning>
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl text-center">
                 {error}
@@ -86,7 +87,7 @@ export default function AdminLoginPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between pb-2">
+              <div className="flex items-center justify-between pb-2" suppressHydrationWarning>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" className="rounded text-primary focus:ring-primary accent-primary w-4 h-4" />
                   <span className="text-sm text-gray-600">Remember me</span>
@@ -107,7 +108,7 @@ export default function AdminLoginPage() {
           </div>
         </motion.div>
         
-        <p className="text-center text-sm text-gray-500 mt-8">
+        <p className="text-center text-sm text-gray-500 mt-8" suppressHydrationWarning>
           &copy; {new Date().getFullYear()} The Care First. All rights reserved.
         </p>
       </div>

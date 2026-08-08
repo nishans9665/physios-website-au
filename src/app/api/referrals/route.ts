@@ -80,12 +80,20 @@ export async function POST(req: Request) {
 
     // 1. Validation
     if (!data.client?.fullName || !data.client?.email || !data.client?.phoneNumber) {
-      return NextResponse.json({ error: "Missing required client details" }, { status: 400 });
+      return NextResponse.json({ error: "Missing required client details (Full Name, Email, Phone Number)" }, { status: 400 });
     }
 
     if (!data.paymentType) {
       return NextResponse.json({ error: "Missing payment type" }, { status: 400 });
     }
+
+    const safeParseDate = (val: any) => {
+      if (!val) return null;
+      const parsed = new Date(val);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    };
+
+    const dobDate = safeParseDate(data.client.dob) || new Date();
 
     // 2. Perform Transaction to save all models in atomic sync
     const result = await prisma.$transaction(async (tx) => {
@@ -116,7 +124,7 @@ export async function POST(req: Request) {
           email: data.client.email,
           address: data.client.address || "",
           phoneNumber: data.client.phoneNumber,
-          dob: new Date(data.client.dob),
+          dob: dobDate,
           gender: data.client.gender || "Prefer not to answer",
           reasonForReferral: data.client.reasonForReferral || null,
         },
@@ -163,9 +171,9 @@ export async function POST(req: Request) {
           data: {
             referralId: referral.id,
             managementType: data.ndisDetails.managementType || "Self Managed",
-            planStartDate: data.ndisDetails.planStartDate ? new Date(data.ndisDetails.planStartDate) : null,
+            planStartDate: safeParseDate(data.ndisDetails.planStartDate),
             participantId: data.ndisDetails.participantId || null,
-            planEndDate: data.ndisDetails.planEndDate ? new Date(data.ndisDetails.planEndDate) : null,
+            planEndDate: safeParseDate(data.ndisDetails.planEndDate),
             planManagerName: data.ndisDetails.planManagerName || null,
             planManagerContact: data.ndisDetails.planManagerContact || null,
             fundingArea: data.ndisDetails.fundingArea || null,
