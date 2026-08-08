@@ -61,56 +61,50 @@ const PAYMENT_OPTIONS = [
 const APPOINTMENT_TYPES = ["Face to Face", "Telehealth", "No Preference"];
 const STORAGE_KEY = "physio_referral_draft";
 
+const INITIAL_FORM_DATA = {
+  client: {
+    fullName: "",
+    email: "",
+    address: "",
+    phoneNumber: "",
+    dob: "",
+    gender: "Prefer not to answer",
+    reasonForReferral: "",
+  },
+  contact: {
+    contactName: "",
+    email: "",
+    address: "",
+    phoneNumber: "",
+  },
+  paymentType: "Private",
+  paymentMethod: "CARD" as "CARD" | "BANK_TRANSFER",
+  invoiceContactName: "",
+  invoiceEmail: "",
+  paymentSlipUrl: "",
+  paymentReference: "",
+  paymentSubmitted: false,
+  preferredAppointmentType: "Face to Face",
+  unavailability: "",
+  preferredDays: [] as string[],
+  preferredTime: "Morning",
+  ndisDetails: {
+    managementType: "Self Managed",
+    planStartDate: "",
+    participantId: "",
+    planEndDate: "",
+    planManagerName: "",
+    planManagerContact: "",
+    fundingArea: "",
+  },
+  privacyConsent: false,
+  contactConsent: false,
+  medicalConsent: false,
+};
+
 export default function ReferralPage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    // Step 1: Client
-    client: {
-      fullName: "",
-      email: "",
-      address: "",
-      phoneNumber: "",
-      dob: "",
-      gender: "Prefer not to answer",
-      reasonForReferral: "",
-    },
-    // Step 2: Next of Kin
-    contact: {
-      contactName: "",
-      email: "",
-      address: "",
-      phoneNumber: "",
-    },
-
-    // Step 3: Payment
-    paymentType: "Private",
-    paymentMethod: "CARD" as "CARD" | "BANK_TRANSFER",
-    invoiceContactName: "",
-    invoiceEmail: "",
-    paymentSlipUrl: "",
-    paymentReference: "",
-    paymentSubmitted: false,
-
-    // Step 4: Appointment Prefs
-    preferredAppointmentType: "Face to Face",
-    unavailability: "",
-    preferredDays: [] as string[],
-    preferredTime: "Morning",
-    // Step 5: NDIS
-    ndisDetails: {
-      managementType: "Self Managed",
-      planStartDate: "",
-      participantId: "",
-      planEndDate: "",
-      planManagerName: "",
-      planManagerContact: "",
-      fundingArea: "",
-    },
-    // Step 6: Consent
-    privacyConsent: false,
-    contactConsent: false,
-    medicalConsent: false,
-  });
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
   const [paymentSlipFile, setPaymentSlipFile] = useState<File | null>(null);
   const [uploadingSlip, setUploadingSlip] = useState(false);
@@ -119,6 +113,7 @@ export default function ReferralPage() {
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submittedRef, setSubmittedRef] = useState("");
   const [error, setError] = useState("");
   const [validationError, setValidationError] = useState("");
   const [draftRestored, setDraftRestored] = useState(false);
@@ -147,6 +142,11 @@ export default function ReferralPage() {
 
   const clearDraft = () => {
     localStorage.removeItem(STORAGE_KEY);
+    setFormData(INITIAL_FORM_DATA);
+    setPaymentSlipFile(null);
+    setSlipUploadSuccess(false);
+    setUploadingSlip(false);
+    setValidationError("");
   };
 
   const handleSimpleChange = (field: string, value: any) => {
@@ -260,42 +260,73 @@ export default function ReferralPage() {
     }
   };
 
-  const handleUploadPaymentSlip = async () => {
-    if (!paymentSlipFile) return;
+  const handleUploadPaymentSlip = async (fileToUpload?: File) => {
+    const file = fileToUpload || paymentSlipFile;
+    if (!file) return "";
     setUploadingSlip(true);
+    setValidationError("");
     try {
       const uploadData = new FormData();
-      uploadData.append("file", paymentSlipFile);
+      uploadData.append("file", file);
       const res = await fetch("/api/upload", { method: "POST", body: uploadData });
       const data = await res.json();
-      if (!res.ok) throw new Error("Failed to upload");
+      if (!res.ok) throw new Error(data.error || "Failed to upload payment slip");
       setFormData((prev) => ({ ...prev, paymentSlipUrl: data.fileUrl }));
       setSlipUploadSuccess(true);
-    } catch (err) {
-      setValidationError("Failed to upload file.");
+      return data.fileUrl as string;
+    } catch (err: any) {
+      setValidationError(err.message || "Failed to upload payment slip file.");
+      return "";
     } finally {
       setUploadingSlip(false);
     }
   };
 
   const handleBankTransferSubmit = async () => {
-    if (!formData.paymentSlipUrl) return setValidationError("Upload receipt first.");
     setSubmitLoading(true);
+    setValidationError("");
+
     try {
-      const refRes = await fetch("/api/referrals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      let slipUrl = formData.paymentSlipUrl;
+      if (!slipUrl && paymentSlipFile) {
+        slipUrl = await handleUploadPaymentSlip(paymentSlipFile);
+      }
+
+      if (!slipUrl) {
+        setSubmitLoading(false);
+        return setValidationError("Please select and upload a payment slip file first.");
+      }
+
+      const refRes = await fetch("/api/referrals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
       const refData = await refRes.json();
-      const referralId = refData.referral?.id || refData.id;
+      if (!refRes.ok) throw new Error(refData.error || "Failed to save referral details");
+
+      const referralId = refData.referralId || refData.referral?.id || refData.id;
+      if (!referralId) throw new Error("Failed to retrieve valid referral ID");
+
       const btRes = await fetch("/api/payments/bank-transfer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ referralId, clientEmail: formData.client.email, clientName: formData.client.fullName, paymentSlip: formData.paymentSlipUrl }),
+        body: JSON.stringify({
+          referralId,
+          clientEmail: formData.client.email || formData.invoiceEmail,
+          clientName: formData.client.fullName || formData.invoiceContactName,
+          paymentSlip: slipUrl,
+        }),
       });
+
       const btData = await btRes.json();
-      if (!btRes.ok) throw new Error("Submission failed.");
+      if (!btRes.ok) throw new Error(btData.error || "Failed to submit bank transfer.");
+
       clearDraft();
       window.location.href = `/referral/payment-success?ref=${btData.paymentReference}&status=PENDING_VERIFICATION`;
     } catch (err: any) {
-      setValidationError(err.message || "Error submitting.");
+      setValidationError(err.message || "Error submitting bank transfer.");
     } finally {
       setSubmitLoading(false);
     }
@@ -304,11 +335,22 @@ export default function ReferralPage() {
   const handleSubmitDirect = async () => {
     setSubmitLoading(true);
     setError("");
+    setValidationError("");
     try {
-      const res = await fetch("/api/referrals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
-      if (!res.ok) throw new Error("Submission failed.");
+      const res = await fetch("/api/referrals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const resData = await res.json();
+      if (!res.ok) throw new Error(resData.error || "Submission failed.");
+      const generatedRef = resData.referral?.id
+        ? `REF-${resData.referral.id.slice(-8).toUpperCase()}`
+        : `REF-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+      setSubmittedRef(generatedRef);
       clearDraft();
       setSuccess(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -370,9 +412,107 @@ export default function ReferralPage() {
         <div className="bg-white rounded-3xl border border-gray-100 shadow-xl p-6 md:p-10">
           <AnimatePresence mode="wait">
             {success ? (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12 space-y-6">
-                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"><CheckCircle2 size={42} /></div>
-                <h2 className="text-2xl font-bold font-serif">Referral Submitted Successfully!</h2>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-6 space-y-8 max-w-xl mx-auto"
+              >
+                {/* SUCCESS HERO HEADER */}
+                <div className="text-center space-y-4">
+                  <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md shadow-emerald-500/10">
+                    <CheckCircle2 size={44} />
+                  </div>
+                  <div className="space-y-2">
+                    <span className="bg-emerald-100 text-emerald-800 font-bold text-xs uppercase px-3 py-1 rounded-full tracking-wider">
+                      Submission Complete
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-bold font-serif text-dark">
+                      Booking & Referral Submitted!
+                    </h2>
+                    <p className="text-xs md:text-sm text-gray-500 max-w-md mx-auto leading-relaxed">
+                      Thank you. Your details have been received by our clinical intake team.
+                    </p>
+                  </div>
+                </div>
+
+                {/* RECEIPT / REFERENCE CARD */}
+                <div className="bg-[#FAFBF9] border border-gray-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
+                  <div className="flex justify-between items-center pb-3 border-b border-gray-200 text-xs">
+                    <span className="font-bold text-gray-500 uppercase tracking-wider">Reference Code</span>
+                    <span className="font-mono font-bold text-base text-[#799A29]">
+                      {submittedRef || "PAY-PENDING"}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <span className="text-gray-400 font-semibold uppercase text-[10px] block mb-0.5">Client Name</span>
+                      <span className="font-bold text-dark">{formData.client.fullName || "Valued Client"}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 font-semibold uppercase text-[10px] block mb-0.5">Contact Email</span>
+                      <span className="font-bold text-dark truncate block">{formData.client.email || "N/A"}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 font-semibold uppercase text-[10px] block mb-0.5">Payment Option</span>
+                      <span className="font-bold text-dark">{formData.paymentType}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 font-semibold uppercase text-[10px] block mb-0.5">Status</span>
+                      <span className="inline-block px-2.5 py-0.5 rounded-full font-bold text-[10px] bg-amber-100 text-amber-800">
+                        {formData.paymentType === "Private" && formData.paymentMethod === "BANK_TRANSFER"
+                          ? "Pending Verification"
+                          : "Submitted for Review"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-gray-200/60 flex items-center gap-2 text-xs text-gray-500">
+                    <Mail size={15} className="text-[#799A29] shrink-0" />
+                    <span>A confirmation copy has been sent to <strong>{formData.client.email || "your email"}</strong>.</span>
+                  </div>
+                </div>
+
+                {/* NEXT STEPS CHECKLIST */}
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 space-y-3 text-left">
+                  <h4 className="text-xs font-bold uppercase text-[#799A29] tracking-wider">What Happens Next?</h4>
+                  <ul className="space-y-2.5 text-xs text-gray-600">
+                    <li className="flex items-start gap-2.5">
+                      <div className="w-5 h-5 rounded-full bg-[#799A29]/10 text-[#799A29] font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">1</div>
+                      <span><strong>Clinical Assessment:</strong> Our intake team reviews your details within 24 business hours.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <div className="w-5 h-5 rounded-full bg-[#799A29]/10 text-[#799A29] font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">2</div>
+                      <span><strong>Schedule Confirmation:</strong> A clinic administrator will contact you or your NOK to confirm appointment date & time.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <div className="w-5 h-5 rounded-full bg-[#799A29]/10 text-[#799A29] font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">3</div>
+                      <span><strong>Payment Verification:</strong> Payment slips uploaded via Bank Transfer will be verified by finance.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* ACTION BUTTONS */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <a
+                    href="/"
+                    className="w-full py-3.5 border border-gray-200 text-gray-700 font-bold rounded-xl text-xs md:text-sm text-center hover:bg-gray-50 transition-colors"
+                  >
+                    Return to Home
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearDraft();
+                      setSuccess(false);
+                      setSubmittedRef("");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="w-full py-3.5 bg-[#799A29] text-white font-bold rounded-xl text-xs md:text-sm text-center hover:opacity-95 shadow-md shadow-[#799A29]/20 transition-all cursor-pointer"
+                  >
+                    New Booking Referral
+                  </button>
+                </div>
               </motion.div>
             ) : (
               <motion.div key={currentStep} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-8">
@@ -579,10 +719,19 @@ export default function ReferralPage() {
                   {/* STEP 7: Payment & Complete (FINAL STEP FOR PRIVATE BOOKINGS) */}
                   {currentStep === 7 && formData.paymentType === "Private" && (
                     <div className="space-y-6">
-                      <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center gap-3">
-                        <CheckCircle2 className="text-emerald-600 shrink-0" size={20} />
-                        <p className="text-xs text-emerald-800 font-medium">
-                          All form details saved! Please select your payment method below to complete your booking.
+                      <div className="bg-[#FAFBF9] border border-gray-200/80 p-5 rounded-2xl space-y-3">
+                        <div className="flex flex-wrap justify-between items-center gap-2">
+                          <div>
+                            <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">Client Booking</span>
+                            <h4 className="text-base font-bold text-dark">{formData.client.fullName || "Valued Client"}</h4>
+                          </div>
+                          <div className="sm:text-right">
+                            <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">Consultation Fee</span>
+                            <p className="text-lg font-extrabold text-[#799A29]">$150.00 AUD</p>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-500 border-t border-gray-200/60 pt-2.5">
+                          Form details saved. Please select your preferred payment method below to complete your booking intake.
                         </p>
                       </div>
 
@@ -635,20 +784,37 @@ export default function ReferralPage() {
                           <div className="space-y-3">
                             <label className="block text-xs font-bold uppercase text-gray-500">Upload Payment Slip *</label>
                             <div className="flex flex-col sm:flex-row items-center gap-3">
-                              <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" onChange={(e) => { if (e.target.files?.[0]) { setPaymentSlipFile(e.target.files[0]); setSlipUploadSuccess(false); } }} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#799A29]/10 file:text-[#799A29] cursor-pointer" />
-                              {paymentSlipFile && !formData.paymentSlipUrl && (
-                                <button type="button" disabled={uploadingSlip} onClick={handleUploadPaymentSlip} className="px-4 py-2 bg-[#799A29] text-white font-bold rounded-xl text-xs flex items-center gap-1 shrink-0 hover:opacity-90 cursor-pointer">
-                                  {uploadingSlip ? <Loader2 className="animate-spin" size={14} /> : <FileUp size={14} />} Upload
-                                </button>
-                              )}
+                              <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/jpg,application/pdf"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) {
+                                    const file = e.target.files[0];
+                                    setPaymentSlipFile(file);
+                                    setSlipUploadSuccess(false);
+                                    handleUploadPaymentSlip(file);
+                                  }
+                                }}
+                                className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#799A29]/10 file:text-[#799A29] cursor-pointer"
+                              />
                             </div>
+                            {uploadingSlip && (
+                              <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                                <Loader2 size={16} className="animate-spin" /> Uploading receipt slip...
+                              </div>
+                            )}
                             {slipUploadSuccess && formData.paymentSlipUrl && (
                               <div className="flex items-center gap-2 text-xs text-emerald-600 font-semibold bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
                                 <Check size={16} /> Receipt uploaded successfully!
                               </div>
                             )}
-                            <button type="button" disabled={submitLoading || !formData.paymentSlipUrl} onClick={handleBankTransferSubmit} className="w-full py-3.5 bg-[#799A29] text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-[#799A29]/20 disabled:opacity-50 cursor-pointer">
-                              {submitLoading ? <><Loader2 className="animate-spin" size={18} /> Submitting...</> : "Submit Payment"}
+                            <button
+                              type="button"
+                              disabled={submitLoading || uploadingSlip || (!paymentSlipFile && !formData.paymentSlipUrl)}
+                              onClick={handleBankTransferSubmit}
+                              className="w-full py-3.5 bg-[#799A29] text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-[#799A29]/20 disabled:opacity-50 cursor-pointer"
+                            >
+                              {submitLoading ? <><Loader2 className="animate-spin" size={18} /> Submitting Payment...</> : "Submit Payment"}
                             </button>
                           </div>
                         </div>

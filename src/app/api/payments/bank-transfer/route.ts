@@ -6,14 +6,25 @@ import { sendBankTransferSubmittedEmail } from "@/lib/nodemailer";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { referralId, clientEmail, clientName, paymentSlip } = body;
-
-    if (!clientEmail) {
-      return NextResponse.json({ error: "Client email is required" }, { status: 400 });
-    }
+    let { referralId, clientEmail, clientName, paymentSlip } = body;
 
     if (!paymentSlip) {
       return NextResponse.json({ error: "Payment slip upload is required" }, { status: 400 });
+    }
+
+    if (referralId && (!clientEmail || !clientName)) {
+      const ref = await prisma.referral.findUnique({
+        where: { id: referralId },
+        include: { client: true },
+      });
+      if (ref?.client) {
+        clientEmail = clientEmail || ref.client.email;
+        clientName = clientName || ref.client.fullName;
+      }
+    }
+
+    if (!clientEmail) {
+      return NextResponse.json({ error: "Client email is required" }, { status: 400 });
     }
 
     // 1. Fetch System Settings to get payable consultation fee
