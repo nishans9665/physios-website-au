@@ -80,9 +80,9 @@ export default async function RootLayout({
   // RENDER: Maintenance Mode Screen
   if (settings.maintenanceMode && isPublicRoute) {
     return (
-      <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
         <head><title>Scheduled Maintenance | The Care First Physiotherapy</title><ScriptInjector content={settings.googleTagHeader} target="head" /></head>
-        <body className="antialiased min-h-screen bg-gradient-to-tr from-secondary/20 via-white to-light flex items-center justify-center p-6 font-sans">
+        <body className="antialiased min-h-screen bg-gradient-to-tr from-secondary/20 via-white to-light flex items-center justify-center p-6 font-sans" suppressHydrationWarning>
           <ScriptInjector content={settings.googleTagBody} target="body" />
           <div className="max-w-xl w-full text-center bg-white p-8 md:p-14 rounded-[40px] shadow-2xl border border-gray-100 relative overflow-hidden flex flex-col items-center">
             {/* Elegant Top Decorative Bar */}
@@ -159,9 +159,9 @@ export default async function RootLayout({
 
   // RENDER: Default Web Layout
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head><ScriptInjector content={settings.googleTagHeader} target="head" /></head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <ScriptInjector content={settings.googleTagBody} target="body" />
         {children}
         <ScriptInjector content={settings.googleTagFooter} target="body" />
