@@ -16,6 +16,8 @@ import {
   Check,
   X,
   Loader2,
+  Copy,
+  Info,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -62,14 +64,20 @@ export default function AdminPaymentsPage() {
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  // Filter States
+  const [methodFilter, setMethodFilter] = useState<"ALL" | "CARD" | "BANK_TRANSFER">("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Modal State for Preview & Rejection
+  // Modal States
   const [selectedSlip, setSelectedSlip] = useState<string | null>(null);
+  const [selectedStripeRecord, setSelectedStripeRecord] = useState<PaymentRecord | null>(null);
   const [rejectingPayment, setRejectingPayment] = useState<PaymentRecord | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const fetchPayments = useCallback(async () => {
     setLoading(true);
@@ -78,6 +86,7 @@ export default function AdminPaymentsPage() {
     try {
       const url = new URL("/api/admin/payments", window.location.origin);
       if (statusFilter !== "ALL") url.searchParams.set("status", statusFilter);
+      if (methodFilter !== "ALL") url.searchParams.set("method", methodFilter);
       if (searchTerm.trim()) url.searchParams.set("search", searchTerm.trim());
 
       const res = await fetch(url.toString(), { cache: "no-store" });
@@ -90,7 +99,7 @@ export default function AdminPaymentsPage() {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, searchTerm]);
+  }, [statusFilter, methodFilter, searchTerm]);
 
   useEffect(() => {
     fetchPayments();
@@ -146,13 +155,40 @@ export default function AdminPaymentsPage() {
     }
   };
 
+  const handleSyncStripe = async (paymentId: string) => {
+    setSyncingId(paymentId);
+    try {
+      const res = await fetch("/api/admin/payments", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentId, action: "SYNC_STRIPE" }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to sync with Stripe");
+
+      alert(data.message || "Stripe status synced.");
+      fetchPayments();
+    } catch (err: any) {
+      alert(err.message || "Failed to sync Stripe status.");
+    } finally {
+      setSyncingId(null);
+    }
+  };
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(label);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-dark font-serif">Payment Management</h1>
-          <p className="text-gray-500 text-sm mt-1">Verify bank transfers, review Stripe receipts, and manage billing records.</p>
+          <p className="text-gray-500 text-sm mt-1">Verify online Stripe card payments, review bank transfer receipts, and manage billing records.</p>
         </div>
 
         <button
@@ -165,32 +201,59 @@ export default function AdminPaymentsPage() {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center gap-4 justify-between">
-        <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by ref, client name or email..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-primary transition-colors"
-          />
-        </div>
+      <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+        <div className="flex flex-col lg:flex-row items-center gap-4 justify-between">
+          <div className="relative w-full lg:w-80">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search ref, client, email, Stripe ID..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
-          {["ALL", "PENDING_VERIFICATION", "PAID", "REJECTED"].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                statusFilter === status
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              {status === "ALL" ? "All Payments" : statusBadgeConfig[status as PaymentStatus]?.label || status}
-            </button>
-          ))}
+          {/* Payment Method Selector */}
+          <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto">
+            <span className="text-xs font-bold uppercase text-gray-400 mr-1 hidden sm:inline">Method:</span>
+            {[
+              { id: "ALL", label: "All Methods", icon: null },
+              { id: "CARD", label: "Card (Stripe)", icon: CreditCard },
+              { id: "BANK_TRANSFER", label: "Bank Transfer", icon: Landmark },
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setMethodFilter(id as any)}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  methodFilter === id
+                    ? "bg-[#799A29] text-white shadow-sm"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {Icon && <Icon size={14} />}
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Status Selector */}
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto pt-2 lg:pt-0 border-t lg:border-t-0 border-gray-100">
+            <span className="text-xs font-bold uppercase text-gray-400 mr-1 hidden sm:inline">Status:</span>
+            {["ALL", "PENDING_VERIFICATION", "PAID", "PENDING", "REJECTED"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  statusFilter === status
+                    ? "bg-dark text-white shadow-sm"
+                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {status === "ALL" ? "All Statuses" : statusBadgeConfig[status as PaymentStatus]?.label || status}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -212,7 +275,7 @@ export default function AdminPaymentsPage() {
                 <th className="p-4 font-semibold">Amount</th>
                 <th className="p-4 font-semibold">Method</th>
                 <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold">Payment Slip</th>
+                <th className="p-4 font-semibold">Slip / Stripe Details</th>
                 <th className="p-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
@@ -234,7 +297,7 @@ export default function AdminPaymentsPage() {
                   <td colSpan={7} className="p-12 text-center text-gray-400">
                     <div className="flex flex-col items-center gap-2">
                       <CreditCard size={36} className="text-gray-300" />
-                      <p className="font-semibold text-sm">No payment records found.</p>
+                      <p className="font-semibold text-sm">No payment records found matching filters.</p>
                     </div>
                   </td>
                 </tr>
@@ -256,22 +319,20 @@ export default function AdminPaymentsPage() {
                         <p className="text-[11px] text-gray-400">{clientEmail}</p>
                       </td>
 
-                      <td className="p-4 font-bold text-primary text-xs md:text-sm">
+                      <td className="p-4 font-bold text-[#799A29] text-xs md:text-sm">
                         ${p.amount.toFixed(2)} {p.currency}
                       </td>
 
                       <td className="p-4">
-                        <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                        <div className="flex items-center gap-1.5 text-xs text-gray-700">
                           {p.paymentMethod === "CARD" ? (
-                            <>
-                              <CreditCard size={14} className="text-indigo-500 shrink-0" />
-                              <span>Card (Stripe)</span>
-                            </>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                              <CreditCard size={13} /> Card (Stripe)
+                            </span>
                           ) : (
-                            <>
-                              <Landmark size={14} className="text-emerald-500 shrink-0" />
-                              <span>Bank Transfer</span>
-                            </>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                              <Landmark size={13} /> Bank Transfer
+                            </span>
                           )}
                         </div>
                       </td>
@@ -282,11 +343,19 @@ export default function AdminPaymentsPage() {
                         </span>
                       </td>
 
+                      {/* Slip or Stripe details link */}
                       <td className="p-4">
-                        {p.paymentSlip ? (
+                        {p.paymentMethod === "CARD" ? (
+                          <button
+                            onClick={() => setSelectedStripeRecord(p)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <Info size={12} /> Stripe Info
+                          </button>
+                        ) : p.paymentSlip ? (
                           <button
                             onClick={() => setSelectedSlip(p.paymentSlip || null)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-[#799A29]/10 hover:text-[#799A29] rounded-lg transition-colors cursor-pointer"
                           >
                             <Eye size={12} /> View Slip
                           </button>
@@ -296,27 +365,47 @@ export default function AdminPaymentsPage() {
                       </td>
 
                       <td className="p-4 text-right">
-                        {p.paymentStatus === "PENDING_VERIFICATION" && (
-                          <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-2">
+                          {/* Stripe sync button */}
+                          {p.paymentMethod === "CARD" && p.paymentStatus !== "PAID" && (
                             <button
-                              disabled={actionLoading}
-                              onClick={() => handleApprove(p.id)}
-                              className="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                              disabled={syncingId === p.id}
+                              onClick={() => handleSyncStripe(p.id)}
+                              className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
                             >
-                              <Check size={14} /> Approve
+                              <RefreshCw size={13} className={syncingId === p.id ? "animate-spin" : ""} /> Sync Stripe
                             </button>
-                            <button
-                              disabled={actionLoading}
-                              onClick={() => {
-                                setRejectingPayment(p);
-                                setRejectionReason("");
-                              }}
-                              className="px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold hover:bg-rose-100 transition-colors flex items-center gap-1 cursor-pointer"
-                            >
-                              <X size={14} /> Reject
-                            </button>
-                          </div>
-                        )}
+                          )}
+
+                          {/* Bank Transfer Approval buttons */}
+                          {p.paymentStatus === "PENDING_VERIFICATION" && (
+                            <>
+                              <button
+                                disabled={actionLoading}
+                                onClick={() => handleApprove(p.id)}
+                                className="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                              >
+                                <Check size={14} /> Approve
+                              </button>
+                              <button
+                                disabled={actionLoading}
+                                onClick={() => {
+                                  setRejectingPayment(p);
+                                  setRejectionReason("");
+                                }}
+                                className="px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold hover:bg-rose-100 transition-colors flex items-center gap-1 cursor-pointer"
+                              >
+                                <X size={14} /> Reject
+                              </button>
+                            </>
+                          )}
+
+                          {p.paymentStatus === "PAID" && (
+                            <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-bold px-2 py-1 bg-emerald-50 rounded-lg">
+                              <CheckCircle2 size={14} /> Verified
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -327,12 +416,119 @@ export default function AdminPaymentsPage() {
         </div>
       </div>
 
-      {/* Slip Preview Modal */}
+      {/* Stripe Info Modal */}
+      {selectedStripeRecord && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-indigo-100 text-indigo-700 rounded-xl">
+                  <CreditCard size={20} />
+                </div>
+                <h3 className="font-bold text-dark font-serif text-lg">Stripe Payment Details</h3>
+              </div>
+              <button onClick={() => setSelectedStripeRecord(null)} className="text-gray-400 hover:text-dark">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-100 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Payment Reference</span>
+                  <span className="font-mono font-bold text-dark">{selectedStripeRecord.paymentReference}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Client Name</span>
+                  <span className="font-bold text-dark">{selectedStripeRecord.referral?.client?.fullName || "Valued Client"}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Client Email</span>
+                  <span className="font-bold text-dark">{selectedStripeRecord.referral?.client?.email || "N/A"}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Amount Paid</span>
+                  <span className="font-extrabold text-indigo-600 text-sm">${selectedStripeRecord.amount.toFixed(2)} {selectedStripeRecord.currency}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Status</span>
+                  <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${statusBadgeConfig[selectedStripeRecord.paymentStatus]?.className || "bg-gray-100"}`}>
+                    {statusBadgeConfig[selectedStripeRecord.paymentStatus]?.label || selectedStripeRecord.paymentStatus}
+                  </span>
+                </div>
+                {selectedStripeRecord.paidAt && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 font-bold uppercase text-[10px]">Paid At</span>
+                    <span className="font-semibold text-gray-700">{format(new Date(selectedStripeRecord.paidAt), "MMM d, yyyy · h:mm a")}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Stripe Session & Intent IDs */}
+              <div className="space-y-2">
+                <div>
+                  <label className="block text-gray-400 font-bold uppercase text-[10px] mb-1">Stripe Checkout Session ID</label>
+                  <div className="flex items-center justify-between bg-gray-100 p-2.5 rounded-xl border border-gray-200 font-mono text-[11px]">
+                    <span className="truncate max-w-[280px]">{selectedStripeRecord.stripeCheckoutSessionId || "N/A"}</span>
+                    {selectedStripeRecord.stripeCheckoutSessionId && (
+                      <button
+                        onClick={() => copyToClipboard(selectedStripeRecord.stripeCheckoutSessionId!, "session")}
+                        className="text-gray-500 hover:text-indigo-600 flex items-center gap-1 ml-2 shrink-0 cursor-pointer"
+                      >
+                        <Copy size={13} /> {copiedField === "session" ? "Copied!" : "Copy"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-gray-400 font-bold uppercase text-[10px] mb-1">Stripe Payment Intent ID</label>
+                  <div className="flex items-center justify-between bg-gray-100 p-2.5 rounded-xl border border-gray-200 font-mono text-[11px]">
+                    <span className="truncate max-w-[280px]">{selectedStripeRecord.stripePaymentIntentId || "Pending completion"}</span>
+                    {selectedStripeRecord.stripePaymentIntentId && (
+                      <button
+                        onClick={() => copyToClipboard(selectedStripeRecord.stripePaymentIntentId!, "intent")}
+                        className="text-gray-500 hover:text-indigo-600 flex items-center gap-1 ml-2 shrink-0 cursor-pointer"
+                      >
+                        <Copy size={13} /> {copiedField === "intent" ? "Copied!" : "Copy"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+              {selectedStripeRecord.stripePaymentIntentId ? (
+                <a
+                  href={`https://dashboard.stripe.com/payments/${selectedStripeRecord.stripePaymentIntentId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 hover:bg-indigo-700 transition-colors"
+                >
+                  <ExternalLink size={14} /> Open Stripe Dashboard
+                </a>
+              ) : (
+                <span className="text-[11px] text-gray-400 italic">No direct Stripe dashboard link yet</span>
+              )}
+
+              <button
+                onClick={() => setSelectedStripeRecord(null)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-xl text-xs hover:bg-gray-200 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bank Transfer Slip Preview Modal */}
       {selectedSlip && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="font-bold text-dark font-serif text-lg">Payment Slip Preview</h3>
+              <h3 className="font-bold text-dark font-serif text-lg">Bank Transfer Slip Preview</h3>
               <button onClick={() => setSelectedSlip(null)} className="text-gray-400 hover:text-dark">
                 <X size={20} />
               </button>
@@ -351,7 +547,7 @@ export default function AdminPaymentsPage() {
                 href={selectedSlip}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-primary text-white font-bold rounded-xl text-xs flex items-center gap-1.5"
+                className="px-4 py-2 bg-[#799A29] text-white font-bold rounded-xl text-xs flex items-center gap-1.5"
               >
                 <ExternalLink size={14} /> Open Full Size
               </a>
@@ -391,14 +587,14 @@ export default function AdminPaymentsPage() {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => setRejectingPayment(null)}
-                className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl"
+                className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 disabled={actionLoading}
                 onClick={handleConfirmReject}
-                className="px-5 py-2 bg-rose-600 text-white font-bold rounded-xl text-xs hover:bg-rose-700 transition-colors flex items-center gap-1.5"
+                className="px-5 py-2 bg-rose-600 text-white font-bold rounded-xl text-xs hover:bg-rose-700 transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 {actionLoading ? <Loader2 className="animate-spin" size={14} /> : "Confirm Rejection"}
               </button>
