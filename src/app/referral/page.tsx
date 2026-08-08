@@ -166,10 +166,12 @@ export default function ReferralPage() {
   const clearDraft = () => {
     localStorage.removeItem(STORAGE_KEY);
     setFormData(INITIAL_FORM_DATA);
+    setCurrentStep(1);
     setPaymentSlipFile(null);
     setSlipUploadSuccess(false);
     setUploadingSlip(false);
     setValidationError("");
+    setError("");
   };
 
   const handleSimpleChange = (field: string, value: any) => {
@@ -356,6 +358,9 @@ export default function ReferralPage() {
   };
 
   const handleSubmitDirect = async () => {
+    if (!validateStep(1) || !validateStep(3) || !validateStep(6)) {
+      return;
+    }
     setSubmitLoading(true);
     setError("");
     setValidationError("");
@@ -367,7 +372,9 @@ export default function ReferralPage() {
       });
       const resData = await res.json();
       if (!res.ok) throw new Error(resData.error || "Submission failed.");
-      const generatedRef = resData.referral?.id
+      const generatedRef = resData.referralId
+        ? `REF-${resData.referralId.slice(-8).toUpperCase()}`
+        : resData.referral?.id
         ? `REF-${resData.referral.id.slice(-8).toUpperCase()}`
         : `REF-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
       setSubmittedRef(generatedRef);
@@ -375,7 +382,8 @@ export default function ReferralPage() {
       setSuccess(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to submit referral.");
+      setValidationError(err.message || "Failed to submit referral.");
     } finally {
       setSubmitLoading(false);
     }
@@ -527,6 +535,7 @@ export default function ReferralPage() {
                     type="button"
                     onClick={() => {
                       clearDraft();
+                      setCurrentStep(1);
                       setSuccess(false);
                       setSubmittedRef("");
                       window.scrollTo({ top: 0, behavior: "smooth" });
