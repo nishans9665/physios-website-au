@@ -18,10 +18,38 @@ import {
   Loader2,
   CheckCircle2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Plus
 } from "lucide-react";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+
+type LeadComment = {
+  id: string;
+  authorName: string;
+  noteText: string;
+  createdAt: string;
+};
+
+const parseLeadComments = (rawNotes?: string | null, submissionDate?: string): LeadComment[] => {
+  if (!rawNotes || !rawNotes.trim()) return [];
+  try {
+    const parsed = JSON.parse(rawNotes);
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch (e) {
+    // If raw string note exists (legacy data), convert to single note entry
+  }
+  return [
+    {
+      id: "legacy-1",
+      authorName: "Admin",
+      noteText: rawNotes,
+      createdAt: submissionDate || new Date().toISOString(),
+    },
+  ];
+};
 
 type Lead = {
   id: string;
@@ -43,8 +71,9 @@ export default function LeadsPage() {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
-  // Notes state for modal
-  const [modalAdminNotes, setModalAdminNotes] = useState("");
+  // Notes state for modal (multi-comment thread)
+  const [leadComments, setLeadComments] = useState<LeadComment[]>([]);
+  const [newCommentInput, setNewCommentInput] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesSavedSuccess, setNotesSavedSuccess] = useState(false);
 
@@ -58,7 +87,8 @@ export default function LeadsPage() {
 
   useEffect(() => {
     if (selectedLead) {
-      setModalAdminNotes(selectedLead.adminNotes || "");
+      setLeadComments(parseLeadComments(selectedLead.adminNotes, selectedLead.submissionDate));
+      setNewCommentInput("");
     }
   }, [selectedLead]);
 
@@ -118,23 +148,62 @@ export default function LeadsPage() {
     }
   };
 
-  const handleSaveAdminNotes = async () => {
+  const handleAddCommentNote = async () => {
+    if (!selectedLead || !newCommentInput.trim()) return;
+    setSavingNotes(true);
+
+    const newCommentObj: LeadComment = {
+      id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `note-${Date.now()}`,
+      authorName: currentUser?.name || "Admin",
+      noteText: newCommentInput.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedList = [newCommentObj, ...leadComments];
+    const jsonNotesString = JSON.stringify(updatedList);
+
+    try {
+      const res = await fetch(`/api/leads/${selectedLead.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminNotes: jsonNotesString }),
+      });
+      if (res.ok) {
+        setLeadComments(updatedList);
+        setNewCommentInput("");
+        setNotesSavedSuccess(true);
+        setTimeout(() => setNotesSavedSuccess(false), 3000);
+        setSelectedLead((prev) => (prev ? { ...prev, adminNotes: jsonNotesString } : null));
+        fetchLeads();
+      }
+    } catch (err) {
+      console.error("Failed to save lead comment note", err);
+    } finally {
+      setSavingNotes(false);
+    }
+  };
+
+  const handleDeleteCommentNote = async (commentId: string) => {
     if (!selectedLead) return;
+    if (!confirm("Are you sure you want to delete this comment note?")) return;
+
+    const updatedList = leadComments.filter((c) => c.id !== commentId);
+    const jsonNotesString = updatedList.length > 0 ? JSON.stringify(updatedList) : "";
+
     setSavingNotes(true);
     try {
       const res = await fetch(`/api/leads/${selectedLead.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adminNotes: modalAdminNotes }),
+        body: JSON.stringify({ adminNotes: jsonNotesString }),
       });
       if (res.ok) {
-        setNotesSavedSuccess(true);
-        setTimeout(() => setNotesSavedSuccess(false), 3000);
-        setSelectedLead((prev) => (prev ? { ...prev, adminNotes: modalAdminNotes } : null));
+        setLeadComments(updatedList);
+        setSelectedLead((prev) => (prev ? { ...prev, adminNotes: jsonNotesString } : null));
         fetchLeads();
       }
     } catch (err) {
-      console.error("Failed to save lead notes", err);
+      console.error("Failed to delete comment note", err);
     } finally {
       setSavingNotes(false);
     }
@@ -496,44 +565,83 @@ export default function LeadsPage() {
                 </div>
 
                 {/* Comments / Admin Reference Notes Card */}
-                <div className="bg-[#FAFBF9] p-5 rounded-2xl border border-gray-200 space-y-3">
+                <div className="bg-[#FAFBF9] p-5 rounded-2xl border border-gray-200 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
                       <MessageSquare size={16} />
-                      <span>Comments & User Reference Notes</span>
+                      <span>Comments & User Reference Notes {leadComments.length > 0 ? `(${leadComments.length})` : ""}</span>
                     </div>
                     {notesSavedSuccess && (
                       <span className="flex items-center gap-1 text-xs text-emerald-600 font-bold bg-emerald-100 px-2.5 py-0.5 rounded-full">
-                        <CheckCircle2 size={13} /> Notes Saved!
+                        <CheckCircle2 size={13} /> Comment Added!
                       </span>
                     )}
                   </div>
 
-                  <textarea
-                    rows={3}
-                    value={modalAdminNotes}
-                    onChange={(e) => setModalAdminNotes(e.target.value)}
-                    placeholder="Type internal comments, user call reference details, or follow-up notes to save for this lead..."
-                    className="w-full p-3.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-xs bg-white resize-none"
-                  />
+                  {/* Add New Comment Box */}
+                  <div className="space-y-2">
+                    <textarea
+                      rows={3}
+                      value={newCommentInput}
+                      onChange={(e) => setNewCommentInput(e.target.value)}
+                      placeholder="Type internal comment, user call reference details, or follow-up note to add to this lead thread..."
+                      className="w-full p-3.5 border border-gray-200 rounded-xl focus:outline-none focus:border-primary text-xs bg-white resize-none"
+                    />
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        disabled={savingNotes || !newCommentInput.trim()}
+                        onClick={handleAddCommentNote}
+                        className="px-4 py-2 bg-primary text-white font-bold rounded-xl text-xs flex items-center gap-1.5 hover:bg-primary/95 transition-all cursor-pointer border-none shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {savingNotes ? (
+                          <>
+                            <Loader2 className="animate-spin" size={14} /> Saving Note...
+                          </>
+                        ) : (
+                          <>
+                            <Plus size={14} /> Add Comment Note
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
 
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      disabled={savingNotes}
-                      onClick={handleSaveAdminNotes}
-                      className="px-4 py-2 bg-primary text-white font-bold rounded-xl text-xs flex items-center gap-1.5 hover:bg-primary/95 transition-all cursor-pointer border-none shadow-xs disabled:opacity-50"
-                    >
-                      {savingNotes ? (
-                        <>
-                          <Loader2 className="animate-spin" size={14} /> Saving Notes...
-                        </>
-                      ) : (
-                        <>
-                          <Save size={14} /> Save Comment Notes
-                        </>
-                      )}
-                    </button>
+                  {/* Comments Thread List */}
+                  <div className="pt-2 border-t border-gray-200/60">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Comment History & Notes Thread</label>
+                    {leadComments.length > 0 ? (
+                      <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                        {leadComments.map((comment) => (
+                          <div key={comment.id} className="bg-white p-3.5 rounded-xl border border-gray-200/80 shadow-2xs space-y-1.5 relative group">
+                            <div className="flex justify-between items-center text-[11px]">
+                              <div className="flex items-center gap-1.5 text-gray-700 font-bold">
+                                <User size={13} className="text-primary" />
+                                <span>{comment.authorName}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-400 text-[10px]">
+                                  {format(new Date(comment.createdAt), "dd MMM yyyy 'at' hh:mm a")}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteCommentNote(comment.id)}
+                                  className="text-gray-300 hover:text-red-600 transition-colors cursor-pointer border-none bg-transparent p-0"
+                                  title="Delete Comment Note"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            </div>
+                            <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{comment.noteText}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-5 bg-white rounded-xl border border-dashed border-gray-200 text-gray-400 text-xs">
+                        No internal comments recorded yet. Type a note above and click "Add Comment Note" to start the thread.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
