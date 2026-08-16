@@ -180,7 +180,11 @@ export type ReferralStatus = (typeof ReferralStatus)[keyof typeof ReferralStatus
 
 export const PaymentMethod: {
   CARD: 'CARD',
-  BANK_TRANSFER: 'BANK_TRANSFER'
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CASH: 'CASH',
+  CHEQUE: 'CHEQUE',
+  EFTPOS: 'EFTPOS',
+  OTHER: 'OTHER'
 };
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
@@ -188,7 +192,9 @@ export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 export const PaymentGateway: {
   STRIPE: 'STRIPE',
-  BANK_TRANSFER: 'BANK_TRANSFER'
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  MANUAL: 'MANUAL',
+  CASH: 'CASH'
 };
 
 export type PaymentGateway = (typeof PaymentGateway)[keyof typeof PaymentGateway]

@@ -21,7 +21,11 @@ import {
   Printer,
   ChevronRight,
   ChevronLeft,
-  ClipboardList
+  ClipboardList,
+  CreditCard,
+  CheckCircle2,
+  Loader2,
+  DollarSign
 } from "lucide-react";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -103,6 +107,66 @@ export default function ReferralsPage() {
   // Note writing state
   const [newNote, setNewNote] = useState("");
   const [noteLoading, setNoteLoading] = useState(false);
+
+  // Manual Payment Collection Modal States
+  const [manualPaymentModalReferral, setManualPaymentModalReferral] = useState<Referral | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState("150.00");
+  const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "CASH" | "CARD" | "CHEQUE" | "OTHER">("BANK_TRANSFER");
+  const [paymentStatus, setPaymentStatus] = useState<"PAID" | "PENDING_VERIFICATION" | "PENDING">("PAID");
+  const [paymentReference, setPaymentReference] = useState("");
+  const [paymentNotes, setPaymentNotes] = useState("");
+  const [sendReceiptEmail, setSendReceiptEmail] = useState(true);
+  const [paymentSubmitting, setPaymentSubmitting] = useState(false);
+  const [paymentSuccessMsg, setPaymentSuccessMsg] = useState("");
+
+  const handleOpenManualPaymentModal = (ref: Referral) => {
+    setManualPaymentModalReferral(ref);
+    setPaymentAmount("150.00");
+    setPaymentMethod("BANK_TRANSFER");
+    setPaymentStatus("PAID");
+    const randCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    setPaymentReference(`PAY-MANUAL-${randCode}`);
+    setPaymentNotes(`Manual payment recorded for ${ref.client?.fullName || "Valued Client"}`);
+    setSendReceiptEmail(true);
+    setPaymentSuccessMsg("");
+  };
+
+  const handleRecordManualPayment = async () => {
+    if (!manualPaymentModalReferral) return;
+    setPaymentSubmitting(true);
+    setPaymentSuccessMsg("");
+
+    try {
+      const res = await fetch("/api/admin/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          referralId: manualPaymentModalReferral.id,
+          amount: parseFloat(paymentAmount) || 150.0,
+          paymentMethod,
+          paymentStatus,
+          paymentReference,
+          adminNotes: paymentNotes,
+          sendReceiptEmail,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to record manual payment");
+
+      setPaymentSuccessMsg(data.message || "Manual payment recorded successfully!");
+      setTimeout(() => {
+        setManualPaymentModalReferral(null);
+        setPaymentSuccessMsg("");
+      }, 1500);
+
+      fetchReferrals();
+    } catch (err: any) {
+      alert(err.message || "Failed to record manual payment");
+    } finally {
+      setPaymentSubmitting(false);
+    }
+  };
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -342,15 +406,22 @@ export default function ReferralsPage() {
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <button 
+                          onClick={() => handleOpenManualPaymentModal(ref)}
+                          className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-200 cursor-pointer"
+                          title="Record / Collect Manual Payment (Bank Transfer, Cash, Card)"
+                        >
+                          <CreditCard size={18} />
+                        </button>
+                        <button 
                           onClick={() => setSelectedId(ref.id)}
-                          className="p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-xl transition-all duration-200"
+                          className="p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-xl transition-all duration-200 cursor-pointer"
                           title="Open Details Chart"
                         >
                           <Eye size={18} />
                         </button>
                         <button 
                           onClick={() => deleteReferral(ref.id)}
-                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200"
+                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200 cursor-pointer"
                           title="Delete Intake"
                         >
                           <Trash2 size={18} />
@@ -740,6 +811,161 @@ export default function ReferralsPage() {
         )}
       </AnimatePresence>
 
+      {/* MANUAL PAYMENT COLLECTION MODAL */}
+      <AnimatePresence>
+        {manualPaymentModalReferral && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0" onClick={() => setManualPaymentModalReferral(null)} />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl relative z-10 flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className="bg-[#799A29] p-6 text-white flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold font-serif text-white">Record & Collect Payment</h3>
+                  <p className="text-white/80 text-xs mt-1">
+                    Client: <span className="font-bold underline">{manualPaymentModalReferral.client?.fullName || "Valued Client"}</span> ({manualPaymentModalReferral.paymentType})
+                  </p>
+                </div>
+                <button
+                  onClick={() => setManualPaymentModalReferral(null)}
+                  className="w-9 h-9 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center justify-center transition-all cursor-pointer border-none"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Modal Content Form */}
+              <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                {paymentSuccessMsg && (
+                  <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-xs rounded-xl flex items-center gap-2">
+                    <CheckCircle2 size={16} /> {paymentSuccessMsg}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase text-gray-400 mb-1">
+                    Payment Method <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value as any)}
+                    className="w-full p-3 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#799A29] bg-white cursor-pointer"
+                  >
+                    <option value="BANK_TRANSFER">Bank Transfer</option>
+                    <option value="CASH">Cash</option>
+                    <option value="CARD">Card / EFTPOS</option>
+                    <option value="CHEQUE">Cheque</option>
+                    <option value="OTHER">Other Manual Payment</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase text-gray-400 mb-1">
+                      Amount ($ AUD) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={paymentAmount}
+                      onChange={(e) => setPaymentAmount(e.target.value)}
+                      className="w-full p-3 border border-gray-200 rounded-xl text-xs font-bold focus:outline-none focus:border-[#799A29]"
+                      placeholder="150.00"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase text-gray-400 mb-1">
+                      Payment Status <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={paymentStatus}
+                      onChange={(e) => setPaymentStatus(e.target.value as any)}
+                      className="w-full p-3 border border-gray-200 rounded-xl text-xs font-bold focus:outline-none focus:border-[#799A29] bg-white cursor-pointer"
+                    >
+                      <option value="PAID">PAID (Verified)</option>
+                      <option value="PENDING_VERIFICATION">Pending Verification</option>
+                      <option value="PENDING">Pending Payment</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase text-gray-400 mb-1">
+                    Payment Reference Code / Receipt #
+                  </label>
+                  <input
+                    type="text"
+                    value={paymentReference}
+                    onChange={(e) => setPaymentReference(e.target.value)}
+                    className="w-full p-3 border border-gray-200 rounded-xl text-xs font-mono font-bold focus:outline-none focus:border-[#799A29]"
+                    placeholder="PAY-MANUAL-XXXXXX"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase text-gray-400 mb-1">
+                    Admin Notes / Payment Reference Details
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={paymentNotes}
+                    onChange={(e) => setPaymentNotes(e.target.value)}
+                    placeholder="Add cash collection note or bank transfer transaction reference..."
+                    className="w-full p-3 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#799A29] resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="sendReceiptEmail"
+                    checked={sendReceiptEmail}
+                    onChange={(e) => setSendReceiptEmail(e.target.checked)}
+                    className="w-4 h-4 text-[#799A29] accent-[#799A29] rounded cursor-pointer"
+                  />
+                  <label htmlFor="sendReceiptEmail" className="text-xs text-gray-600 font-semibold cursor-pointer">
+                    Send automated payment receipt email to client ({manualPaymentModalReferral.client?.email || "No email"})
+                  </label>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-5 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setManualPaymentModalReferral(null)}
+                  className="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 rounded-xl text-xs transition-colors cursor-pointer border-none"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  disabled={paymentSubmitting}
+                  onClick={handleRecordManualPayment}
+                  className="px-5 py-2.5 bg-[#799A29] text-white font-bold rounded-xl text-xs flex items-center gap-2 hover:bg-[#688523] transition-all cursor-pointer border-none shadow-md disabled:opacity-50"
+                >
+                  {paymentSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin" size={14} /> Saving Payment...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} /> Record Payment
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

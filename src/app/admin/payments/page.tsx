@@ -32,7 +32,7 @@ import {
 import { format, isWithinInterval, startOfDay, endOfDay, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, parseISO } from "date-fns";
 
 type PaymentStatus = "PENDING" | "PROCESSING" | "PAID" | "PENDING_VERIFICATION" | "FAILED" | "REJECTED" | "CANCELLED";
-type PaymentMethod = "CARD" | "BANK_TRANSFER";
+type PaymentMethod = "CARD" | "BANK_TRANSFER" | "CASH" | "CHEQUE" | "EFTPOS" | "OTHER";
 
 interface PaymentRecord {
   id: string;
@@ -78,7 +78,7 @@ export default function AdminPaymentsPage() {
   const [error, setError] = useState("");
   
   // Filter States
-  const [methodFilter, setMethodFilter] = useState<"ALL" | "CARD" | "BANK_TRANSFER">("ALL");
+  const [methodFilter, setMethodFilter] = useState<"ALL" | "CARD" | "BANK_TRANSFER" | "CASH" | "CHEQUE" | "EFTPOS" | "OTHER">("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -268,6 +268,9 @@ export default function AdminPaymentsPage() {
     const bankPayments = filteredReportPayments.filter((p) => p.paymentMethod === "BANK_TRANSFER");
     const bankAmount = bankPayments.reduce((acc, p) => acc + p.amount, 0);
 
+    const cashPayments = filteredReportPayments.filter((p) => p.paymentMethod === "CASH");
+    const cashAmount = cashPayments.reduce((acc, p) => acc + p.amount, 0);
+
     const avgAmount = totalCount > 0 ? totalAmount / totalCount : 0;
 
     return {
@@ -281,6 +284,8 @@ export default function AdminPaymentsPage() {
       stripeAmount,
       bankCount: bankPayments.length,
       bankAmount,
+      cashCount: cashPayments.length,
+      cashAmount,
       avgAmount,
     };
   }, [filteredReportPayments]);
@@ -348,7 +353,7 @@ export default function AdminPaymentsPage() {
             .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #799A29; padding-bottom: 15px; margin-bottom: 20px; }
             .title { font-size: 22px; font-weight: bold; color: #111827; }
             .subtitle { font-size: 12px; color: #6b7280; margin-top: 4px; }
-            .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
+            .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 25px; }
             .stat-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 12px 16px; border-radius: 12px; }
             .stat-label { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #6b7280; }
             .stat-val { font-size: 18px; font-weight: bold; color: #799A29; margin-top: 4px; }
@@ -384,12 +389,16 @@ export default function AdminPaymentsPage() {
               <div class="stat-val" style="color:#059669;">$${reportStats.paidAmount.toFixed(2)} (${reportStats.paidCount})</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">Stripe Card Revenue</div>
+              <div class="stat-label">Stripe Card</div>
               <div class="stat-val" style="color:#4f46e5;">$${reportStats.stripeAmount.toFixed(2)} (${reportStats.stripeCount})</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">Bank Transfer Revenue</div>
+              <div class="stat-label">Bank Transfer</div>
               <div class="stat-val" style="color:#0284c7;">$${reportStats.bankAmount.toFixed(2)} (${reportStats.bankCount})</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Cash & Manual</div>
+              <div class="stat-val" style="color:#d97706;">$${reportStats.cashAmount.toFixed(2)} (${reportStats.cashCount})</div>
             </div>
           </div>
 
@@ -413,7 +422,7 @@ export default function AdminPaymentsPage() {
                   <td>${p.referral?.client?.fullName || "Valued Client"}<br><span style="color:#6b7280; font-size:10px;">${p.referral?.client?.email || ""}</span></td>
                   <td>${format(new Date(p.createdAt), "MMM d, yyyy h:mm a")}</td>
                   <td><strong>$${p.amount.toFixed(2)} ${p.currency}</strong></td>
-                  <td>${p.paymentMethod === "CARD" ? "Card (Stripe)" : "Bank Transfer"}</td>
+                  <td>${p.paymentMethod === "CARD" ? "Card (Stripe)" : p.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : p.paymentMethod === "CASH" ? "Cash" : p.paymentMethod === "CHEQUE" ? "Cheque" : p.paymentMethod === "EFTPOS" ? "EFTPOS" : "Manual Payment"}</td>
                   <td><span class="badge ${p.paymentStatus === "PAID" ? "paid" : p.paymentStatus === "REJECTED" ? "rejected" : "pending"}">${p.paymentStatus}</span></td>
                 </tr>
               `
@@ -486,6 +495,9 @@ export default function AdminPaymentsPage() {
               { id: "ALL", label: "All Methods", icon: null },
               { id: "CARD", label: "Card (Stripe)", icon: CreditCard },
               { id: "BANK_TRANSFER", label: "Bank Transfer", icon: Landmark },
+              { id: "CASH", label: "Cash", icon: DollarSign },
+              { id: "CHEQUE", label: "Cheque", icon: FileText },
+              { id: "OTHER", label: "Other", icon: Info },
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -594,9 +606,17 @@ export default function AdminPaymentsPage() {
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
                               <CreditCard size={13} /> Card (Stripe)
                             </span>
-                          ) : (
+                          ) : p.paymentMethod === "BANK_TRANSFER" ? (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
                               <Landmark size={13} /> Bank Transfer
+                            </span>
+                          ) : p.paymentMethod === "CASH" ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                              <DollarSign size={13} /> Cash Payment
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                              <FileText size={13} /> {p.paymentMethod}
                             </span>
                           )}
                         </div>
@@ -804,6 +824,10 @@ export default function AdminPaymentsPage() {
                       <option value="ALL">All Methods</option>
                       <option value="CARD">Card (Stripe)</option>
                       <option value="BANK_TRANSFER">Bank Transfer</option>
+                      <option value="CASH">Cash</option>
+                      <option value="CHEQUE">Cheque</option>
+                      <option value="EFTPOS">EFTPOS</option>
+                      <option value="OTHER">Other Manual</option>
                     </select>
                   </div>
                   <div>
@@ -825,29 +849,35 @@ export default function AdminPaymentsPage() {
             </div>
 
             {/* Financial KPI Summary Cards */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-[#FAFBF9] p-4 rounded-2xl border border-gray-200/80">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="bg-[#FAFBF9] p-3.5 rounded-2xl border border-gray-200/80">
                 <span className="text-[10px] font-bold uppercase text-gray-400 tracking-wider block">Total Revenue</span>
-                <p className="text-xl font-extrabold text-[#799A29] mt-1">${reportStats.totalAmount.toFixed(2)} AUD</p>
-                <p className="text-[11px] text-gray-400 mt-0.5">{reportStats.totalCount} Total Transactions</p>
+                <p className="text-lg font-extrabold text-[#799A29] mt-1">${reportStats.totalAmount.toFixed(2)} AUD</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">{reportStats.totalCount} Transactions</p>
               </div>
 
-              <div className="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-100">
-                <span className="text-[10px] font-bold uppercase text-emerald-700 tracking-wider block">Verified Paid Revenue</span>
-                <p className="text-xl font-extrabold text-emerald-800 mt-1">${reportStats.paidAmount.toFixed(2)} AUD</p>
-                <p className="text-[11px] text-emerald-600 mt-0.5">{reportStats.paidCount} Verified Payments</p>
+              <div className="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
+                <span className="text-[10px] font-bold uppercase text-emerald-700 tracking-wider block">Verified Paid</span>
+                <p className="text-lg font-extrabold text-emerald-800 mt-1">${reportStats.paidAmount.toFixed(2)} AUD</p>
+                <p className="text-[10px] text-emerald-600 mt-0.5">{reportStats.paidCount} Verified</p>
               </div>
 
-              <div className="bg-indigo-50/60 p-4 rounded-2xl border border-indigo-100">
-                <span className="text-[10px] font-bold uppercase text-indigo-700 tracking-wider block">Stripe Online Revenue</span>
-                <p className="text-xl font-extrabold text-indigo-800 mt-1">${reportStats.stripeAmount.toFixed(2)} AUD</p>
-                <p className="text-[11px] text-indigo-600 mt-0.5">{reportStats.stripeCount} Card Payments</p>
+              <div className="bg-indigo-50/60 p-3.5 rounded-2xl border border-indigo-100">
+                <span className="text-[10px] font-bold uppercase text-indigo-700 tracking-wider block">Stripe Card</span>
+                <p className="text-lg font-extrabold text-indigo-800 mt-1">${reportStats.stripeAmount.toFixed(2)} AUD</p>
+                <p className="text-[10px] text-indigo-600 mt-0.5">{reportStats.stripeCount} Card</p>
               </div>
 
-              <div className="bg-sky-50/60 p-4 rounded-2xl border border-sky-100">
-                <span className="text-[10px] font-bold uppercase text-sky-700 tracking-wider block">Bank Transfer Revenue</span>
-                <p className="text-xl font-extrabold text-sky-800 mt-1">${reportStats.bankAmount.toFixed(2)} AUD</p>
-                <p className="text-[11px] text-sky-600 mt-0.5">{reportStats.bankCount} Bank Deposits</p>
+              <div className="bg-sky-50/60 p-3.5 rounded-2xl border border-sky-100">
+                <span className="text-[10px] font-bold uppercase text-sky-700 tracking-wider block">Bank Transfer</span>
+                <p className="text-lg font-extrabold text-sky-800 mt-1">${reportStats.bankAmount.toFixed(2)} AUD</p>
+                <p className="text-[10px] text-sky-600 mt-0.5">{reportStats.bankCount} Deposits</p>
+              </div>
+
+              <div className="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-100">
+                <span className="text-[10px] font-bold uppercase text-amber-800 tracking-wider block">Cash & Manual</span>
+                <p className="text-lg font-extrabold text-amber-900 mt-1">${reportStats.cashAmount.toFixed(2)} AUD</p>
+                <p className="text-[10px] text-amber-700 mt-0.5">{reportStats.cashCount} Manual</p>
               </div>
             </div>
 
@@ -882,7 +912,19 @@ export default function AdminPaymentsPage() {
                           <td className="p-3 font-semibold">{p.referral?.client?.fullName || "Valued Client"}</td>
                           <td className="p-3 text-gray-500">{format(new Date(p.createdAt), "MMM d, yyyy")}</td>
                           <td className="p-3 font-bold text-[#799A29]">${p.amount.toFixed(2)}</td>
-                          <td className="p-3">{p.paymentMethod === "CARD" ? "Card (Stripe)" : "Bank Transfer"}</td>
+                          <td className="p-3 font-semibold">
+                            {p.paymentMethod === "CARD"
+                              ? "Card (Stripe)"
+                              : p.paymentMethod === "BANK_TRANSFER"
+                              ? "Bank Transfer"
+                              : p.paymentMethod === "CASH"
+                              ? "Cash"
+                              : p.paymentMethod === "CHEQUE"
+                              ? "Cheque"
+                              : p.paymentMethod === "EFTPOS"
+                              ? "EFTPOS"
+                              : "Manual"}
+                          </td>
                           <td className="p-3">
                             <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${statusBadgeConfig[p.paymentStatus]?.className || "bg-gray-100"}`}>
                               {p.paymentStatus}

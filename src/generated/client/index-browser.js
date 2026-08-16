@@ -659,12 +659,18 @@ exports.ReferralStatus = exports.$Enums.ReferralStatus = {
 
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   CARD: 'CARD',
-  BANK_TRANSFER: 'BANK_TRANSFER'
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CASH: 'CASH',
+  CHEQUE: 'CHEQUE',
+  EFTPOS: 'EFTPOS',
+  OTHER: 'OTHER'
 };
 
 exports.PaymentGateway = exports.$Enums.PaymentGateway = {
   STRIPE: 'STRIPE',
-  BANK_TRANSFER: 'BANK_TRANSFER'
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  MANUAL: 'MANUAL',
+  CASH: 'CASH'
 };
 
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {

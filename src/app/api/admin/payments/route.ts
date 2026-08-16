@@ -220,3 +220,115 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: error.message || "Failed to update payment status" }, { status: 500 });
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { referralId, amount, paymentMethod, paymentStatus, paymentReference, adminNotes, sendReceiptEmail } = body;
+
+    if (!referralId) {
+      return NextResponse.json({ error: "Referral ID is required" }, { status: 400 });
+    }
+
+    const referral = await prisma.referral.findUnique({
+      where: { id: referralId },
+      include: { client: true },
+    });
+
+    if (!referral) {
+      return NextResponse.json({ error: "Referral record not found" }, { status: 404 });
+    }
+
+    const existingPayment = await prisma.payment.findUnique({
+      where: { referralId },
+    });
+
+    const { randomBytes } = await import("node:crypto");
+    const refCode = randomBytes(4).toString("hex").toUpperCase();
+
+    const numAmount = parseFloat(amount) || 150.0;
+    const finalMethod = (paymentMethod || "CASH").toUpperCase();
+    const finalStatus = paymentStatus || "PAID";
+
+    let gateway: any = "MANUAL";
+    if (finalMethod === "CARD") gateway = "STRIPE";
+    else if (finalMethod === "BANK_TRANSFER") gateway = "BANK_TRANSFER";
+    else gateway = "MANUAL";
+
+    let payment;
+    if (existingPayment) {
+      const finalRef = (paymentReference && paymentReference.trim() !== "")
+        ? paymentReference.trim()
+        : existingPayment.paymentReference;
+
+      payment = await prisma.payment.update({
+        where: { id: existingPayment.id },
+        data: {
+          paymentReference: finalRef,
+          amount: numAmount,
+          currency: "AUD",
+          paymentMethod: finalMethod as any,
+          paymentGateway: gateway,
+          paymentStatus: finalStatus as any,
+          adminNotes: adminNotes || undefined,
+          paidAt: finalStatus === "PAID" ? (existingPayment.paidAt || new Date()) : null,
+        },
+      });
+    } else {
+      const finalRef = paymentReference?.trim() || `PAY-MANUAL-${refCode}`;
+      payment = await prisma.payment.create({
+        data: {
+          referralId,
+          paymentReference: finalRef,
+          amount: numAmount,
+          currency: "AUD",
+          paymentMethod: finalMethod as any,
+          paymentGateway: gateway,
+          paymentStatus: finalStatus as any,
+          adminNotes: adminNotes || undefined,
+          paidAt: finalStatus === "PAID" ? new Date() : null,
+        },
+      });
+    }
+
+    // Update referral status to APPROVED if paid
+    if (finalStatus === "PAID") {
+      await prisma.referral.update({
+        where: { id: referralId },
+        data: { status: "APPROVED" },
+      }).catch((e) => console.error("Failed to update referral status on manual payment:", e));
+    }
+
+    // Send receipt email if requested and client email is present
+    const clientEmail = referral.client?.email;
+    const clientName = referral.client?.fullName || "Valued Client";
+
+    if (sendReceiptEmail && clientEmail && finalStatus === "PAID") {
+      await sendPaymentReceiptEmail({
+        customerName: clientName,
+        customerEmail: clientEmail,
+        paymentReference: payment.paymentReference,
+        amount: numAmount,
+        paymentMethod: finalMethod === "CARD" ? "CARD" : "BANK_TRANSFER",
+        paymentDate: new Date().toLocaleDateString("en-AU", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+        bookingReference: referralId,
+      }).catch((e) => console.error("Failed to send receipt email for manual payment:", e));
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `Manual payment of $${numAmount.toFixed(2)} AUD recorded as ${finalStatus}`,
+      payment,
+    });
+  } catch (error: any) {
+    console.error("Error creating/updating manual payment:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to record manual payment" },
+      { status: 500 }
+    );
+  }
+}
