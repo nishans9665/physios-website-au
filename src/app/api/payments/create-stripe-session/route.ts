@@ -4,34 +4,25 @@ import Stripe from "stripe";
 import { randomBytes } from "node:crypto";
 
 function getAppUrl(req: Request): string {
-  // 1. Check request origin header if available (from client-side fetch)
-  const origin = req.headers.get("origin");
-  if (origin && origin !== "null" && !origin.includes("localhost")) {
-    return origin.replace(/\/$/, "");
-  }
-
-  // 2. Check host header (host / x-forwarded-host)
-  const host = req.headers.get("host") || req.headers.get("x-forwarded-host");
-  const proto = req.headers.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
-  if (host && !host.includes("localhost")) {
-    return `${proto}://${host}`.replace(/\/$/, "");
-  }
-
-  // 3. Fallback to NEXT_PUBLIC_APP_URL environment variable if specified
+  // 1. Read NEXT_PUBLIC_APP_URL environment variable (.env)
   if (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim()) {
     return process.env.NEXT_PUBLIC_APP_URL.trim().replace(/\/$/, "");
   }
 
-  // 4. Fallback to local origin / host if present
+  // 2. Read dynamically from request origin header
+  const origin = req.headers.get("origin");
   if (origin && origin !== "null") {
     return origin.replace(/\/$/, "");
   }
 
+  // 3. Read dynamically from request host header
+  const host = req.headers.get("host") || req.headers.get("x-forwarded-host");
+  const proto = req.headers.get("x-forwarded-proto") || "https";
   if (host) {
     return `${proto}://${host}`.replace(/\/$/, "");
   }
 
-  return "http://localhost:3000";
+  throw new Error("NEXT_PUBLIC_APP_URL environment variable is not defined in .env file");
 }
 
 export async function POST(req: Request) {
