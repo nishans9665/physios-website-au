@@ -405,13 +405,15 @@ export default function ReferralsPage() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <button 
-                          onClick={() => handleOpenManualPaymentModal(ref)}
-                          className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-200 cursor-pointer"
-                          title="Record / Collect Manual Payment (Bank Transfer, Cash, Card)"
-                        >
-                          <CreditCard size={18} />
-                        </button>
+                        {ref.paymentType?.toLowerCase() !== "private" && (
+                          <button 
+                            onClick={() => handleOpenManualPaymentModal(ref)}
+                            className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-200 cursor-pointer"
+                            title="Record / Collect Manual Payment (Bank Transfer, Cash, Card)"
+                          >
+                            <CreditCard size={18} />
+                          </button>
+                        )}
                         <button 
                           onClick={() => setSelectedId(ref.id)}
                           className="p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-xl transition-all duration-200 cursor-pointer"
