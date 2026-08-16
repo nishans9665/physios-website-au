@@ -3,6 +3,37 @@ import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { randomBytes } from "node:crypto";
 
+function getAppUrl(req: Request): string {
+  // 1. Check request origin header if available (from client-side fetch)
+  const origin = req.headers.get("origin");
+  if (origin && origin !== "null" && !origin.includes("localhost")) {
+    return origin.replace(/\/$/, "");
+  }
+
+  // 2. Check host header (host / x-forwarded-host)
+  const host = req.headers.get("host") || req.headers.get("x-forwarded-host");
+  const proto = req.headers.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
+  if (host && !host.includes("localhost")) {
+    return `${proto}://${host}`.replace(/\/$/, "");
+  }
+
+  // 3. Fallback to NEXT_PUBLIC_APP_URL environment variable if specified
+  if (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim()) {
+    return process.env.NEXT_PUBLIC_APP_URL.trim().replace(/\/$/, "");
+  }
+
+  // 4. Fallback to local origin / host if present
+  if (origin && origin !== "null") {
+    return origin.replace(/\/$/, "");
+  }
+
+  if (host) {
+    return `${proto}://${host}`.replace(/\/$/, "");
+  }
+
+  return "http://localhost:3000";
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -21,7 +52,7 @@ export async function POST(req: Request) {
     const refCode = randomBytes(4).toString("hex").toUpperCase();
     const paymentReference = `PAY-${refCode}`;
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = getAppUrl(req);
 
     // 3. Upsert Payment Record in DB as PENDING
     let paymentRecord;
