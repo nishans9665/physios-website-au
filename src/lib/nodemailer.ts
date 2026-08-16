@@ -331,7 +331,7 @@ export async function sendPaymentReceiptEmail({
   customerEmail: string;
   paymentReference: string;
   amount: number;
-  paymentMethod: "CARD" | "BANK_TRANSFER";
+  paymentMethod: "CARD" | "BANK_TRANSFER" | "CASH" | "CHEQUE" | "EFTPOS" | "OTHER" | string;
   paymentDate: string;
   bookingReference?: string;
 }) {
@@ -345,7 +345,18 @@ export async function sendPaymentReceiptEmail({
   const fromName = process.env.SMTP_FROM_NAME || "The Care First Physiotherapy Service";
   const adminEmail = settings?.referralEmail || process.env.SMTP_ADMIN_EMAIL || "community@thecarefirstphysiotherapyservice.com.au";
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
-  const methodText = paymentMethod === "CARD" ? "Card Payment (Stripe)" : "Online Bank Transfer";
+  const methodText =
+    paymentMethod === "CARD"
+      ? "Card Payment (Stripe)"
+      : paymentMethod === "BANK_TRANSFER"
+      ? "Online Bank Transfer"
+      : paymentMethod === "CASH"
+      ? "Cash Payment"
+      : paymentMethod === "CHEQUE"
+      ? "Cheque"
+      : paymentMethod === "EFTPOS"
+      ? "EFTPOS Card"
+      : "Manual Payment";
 
   const receiptHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">

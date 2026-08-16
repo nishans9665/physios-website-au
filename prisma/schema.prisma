@@ -286,11 +286,17 @@ model AdminNotes {
 enum PaymentMethod {
   CARD
   BANK_TRANSFER
+  CASH
+  CHEQUE
+  EFTPOS
+  OTHER
 }
 
 enum PaymentGateway {
   STRIPE
   BANK_TRANSFER
+  MANUAL
+  CASH
 }
 
 enum PaymentStatus {
