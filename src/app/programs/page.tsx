@@ -76,7 +76,7 @@ export default function ProgramsPage() {
           </div>
           <div className="flex-1 relative w-full aspect-[4/3] rounded-[40px] overflow-hidden shadow-2xl">
             <Image
-              src="/images/Strength-&-Balance-Program.png"
+              src="/images/Strength-&-Balance-Program-new.webp"
               alt="Elderly group exercise session"
               fill
               className="object-cover"
