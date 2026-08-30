@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CheckCircle2, Calendar, Target, TrendingUp, Users, Home } from "lucide-react";
 import Link from "next/link";
+import ProgramImageSlider from "@/components/programs/ProgramImageSlider";
 
 const benefits = [
   "Significant reduction in fall risk",
@@ -74,14 +75,7 @@ export default function ProgramsPage() {
               Enroll in Program
             </Link>
           </div>
-          <div className="flex-1 relative w-full aspect-[4/3] rounded-[40px] overflow-hidden shadow-2xl">
-            <Image
-              src="/images/Strength-&-Balance-Program-new.webp"
-              alt="Elderly group exercise session"
-              fill
-              className="object-cover"
-            />
-          </div>
+          <ProgramImageSlider />
         </div>
       </section>
 

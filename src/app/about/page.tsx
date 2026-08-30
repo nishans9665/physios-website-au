@@ -56,7 +56,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative w-full aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl">
             <Image
-              src="/images/Our_Founder.png"
+              src="/images/meet_consultunt-new.webp"
               alt="Udayamali Pathirana"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
