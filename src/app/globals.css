@@ -65,3 +65,50 @@ h6 {
 .btn-secondary {
   @apply border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:bg-primary/5 hover:scale-105 active:scale-95;
 }
+
+/* Custom Swiper pagination and navigation styles for Program Image Slider */
+.program-swiper .swiper-pagination-bullet {
+  background: #ffffff;
+  opacity: 0.6;
+  width: 10px;
+  height: 10px;
+  transition: all 0.3s ease;
+}
+
+.program-swiper .swiper-pagination-bullet-active {
+  background: #40B6C0;
+  opacity: 1;
+  width: 28px;
+  border-radius: 5px;
+}
+
+.program-swiper .swiper-button-next,
+.program-swiper .swiper-button-prev {
+  color: #1D1D1D;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.program-swiper:hover .swiper-button-next,
+.program-swiper:hover .swiper-button-prev {
+  opacity: 1;
+}
+
+.program-swiper .swiper-button-next:hover,
+.program-swiper .swiper-button-prev:hover {
+  background: #ffffff;
+  transform: scale(1.1);
+  color: #40B6C0;
+}
+
+.program-swiper .swiper-button-next::after,
+.program-swiper .swiper-button-prev::after {
+  font-size: 18px;
+  font-weight: bold;
+}
