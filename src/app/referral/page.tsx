@@ -35,7 +35,7 @@ const STEPS = [
   "Client Details",
   "Next of Kin",
   "Payment Details",
-  "Appointment Prefs",
+  "Appointment Preference",
   "NDIS Details",
   "Consent & Review",
   "Payment & Complete",
@@ -53,11 +53,11 @@ const PAYMENT_OPTIONS = [
   "CHSP Provider",
   "NDIS",
   "Medicare",
-  "CDM/EPC",
-  "Home Care Package",
+  "DVA",
+  "Support At Home",
   "Other",
 ];
-
+ 
 const APPOINTMENT_TYPES = ["Face to Face", "Telehealth", "No Preference"];
 const STORAGE_KEY = "physio_referral_draft";
 
@@ -288,6 +288,30 @@ export default function ReferralPage() {
   const handleUploadPaymentSlip = async (fileToUpload?: File) => {
     const file = fileToUpload || paymentSlipFile;
     if (!file) return "";
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".pdf"];
+    const DISALLOWED_PATTERNS = ["php", "js", "ts", "html", "htm", "py", "sh", "bat", "cmd", "exe", "vbs", "ps1", "asp", "aspx", "jsp", "cgi", "svg"];
+
+    const fileExt = ("." + (file.name.split(".").pop() || "")).toLowerCase();
+    const parts = file.name.toLowerCase().split(".");
+
+    if (file.size > MAX_FILE_SIZE) {
+      setValidationError("File size exceeds 10MB limit. Please select a smaller file.");
+      return "";
+    }
+
+    if (!ALLOWED_EXTENSIONS.includes(fileExt)) {
+      setValidationError("Invalid file type. Only JPEG, PNG, and PDF files are allowed.");
+      return "";
+    }
+
+    const hasScriptExt = parts.some(part => DISALLOWED_PATTERNS.includes(part));
+    if (hasScriptExt) {
+      setValidationError("Security alert: Executable or script files are strictly prohibited.");
+      return "";
+    }
+
     setUploadingSlip(true);
     setValidationError("");
     try {
@@ -818,7 +842,7 @@ export default function ReferralPage() {
                             <div className="flex flex-col sm:flex-row items-center gap-3">
                               <input
                                 type="file"
-                                accept="image/jpeg,image/png,image/jpg,application/pdf"
+                                accept=".jpeg,.jpg,.png,.pdf,image/jpeg,image/png,application/pdf"
                                 onChange={(e) => {
                                   if (e.target.files?.[0]) {
                                     const file = e.target.files[0];
