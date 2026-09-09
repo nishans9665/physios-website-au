@@ -126,11 +126,32 @@ export default async function RootLayout({
     return (
       <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
         <head>
+          {/* Google Tag Manager */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MM7KT24C');`,
+            }}
+          />
+          {/* End Google Tag Manager */}
           <script dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
           <title>Scheduled Maintenance | The Care First Physiotherapy</title>
           <ScriptInjector content={settings.googleTagHeader} target="head" />
         </head>
         <body className="antialiased min-h-screen bg-gradient-to-tr from-secondary/20 via-white to-light flex items-center justify-center p-6 font-sans" suppressHydrationWarning>
+          {/* Google Tag Manager (noscript) */}
+          <noscript>
+            <iframe
+              src="https://www.googletagmanager.com/ns.html?id=GTM-MM7KT24C"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+          {/* End Google Tag Manager (noscript) */}
           <ScriptInjector content={settings.googleTagBody} target="body" />
           <div className="max-w-xl w-full text-center bg-white p-8 md:p-14 rounded-[40px] shadow-2xl border border-gray-100 relative overflow-hidden flex flex-col items-center">
             {/* Elegant Top Decorative Bar */}
@@ -253,10 +274,31 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head>
+        {/* Google Tag Manager */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MM7KT24C');`,
+          }}
+        />
+        {/* End Google Tag Manager */}
         <script dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
         <ScriptInjector content={settings.googleTagHeader} target="head" />
       </head>
       <body className="antialiased" suppressHydrationWarning>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-MM7KT24C"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
         <ScriptInjector content={settings.googleTagBody} target="body" />
         {children}
         <ScriptInjector content={settings.googleTagFooter} target="body" />
