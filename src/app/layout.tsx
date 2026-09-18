@@ -35,7 +35,7 @@ function ScriptInjector({ content, target }: { content: string | null | undefine
     })();
   `;
 
-  return <script dangerouslySetInnerHTML={{ __html: jsCode }} />;
+  return <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: jsCode }} />;
 }
 
 const inter = Inter({
@@ -125,9 +125,10 @@ export default async function RootLayout({
 
     return (
       <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
-        <head>
+        <head suppressHydrationWarning>
           {/* Google Tag Manager */}
           <script
+            suppressHydrationWarning
             dangerouslySetInnerHTML={{
               __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -137,7 +138,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             }}
           />
           {/* End Google Tag Manager */}
-          <script dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
+          <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
           <title>Scheduled Maintenance | The Care First Physiotherapy</title>
           <ScriptInjector content={settings.googleTagHeader} target="head" />
         </head>
@@ -273,9 +274,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   // RENDER: Default Web Layout
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
-      <head>
+      <head suppressHydrationWarning>
         {/* Google Tag Manager */}
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -285,7 +287,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
         {/* End Google Tag Manager */}
-        <script dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: extensionCleanerScript }} />
         <ScriptInjector content={settings.googleTagHeader} target="head" />
       </head>
       <body className="antialiased" suppressHydrationWarning>

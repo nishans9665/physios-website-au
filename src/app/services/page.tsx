@@ -193,7 +193,7 @@ export default function ServicesPage() {
             Book an initial assessment with our expert physiotherapists today.
           </p>
           <Link href="/referral" className="btn-primary inline-block">
-            Book Appointment
+            Send us a message
           </Link>
         </div>
       </section>
