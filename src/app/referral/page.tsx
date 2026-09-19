@@ -402,9 +402,11 @@ export default function ReferralPage() {
         ? `REF-${resData.referral.id.slice(-8).toUpperCase()}`
         : `REF-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
       setSubmittedRef(generatedRef);
+      const clientName = formData.client.fullName;
+      const clientEmail = formData.client.email;
+      const paymentType = formData.paymentType;
       clearDraft();
-      setSuccess(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.location.href = `/referral/thank-you?ref=${encodeURIComponent(generatedRef)}&name=${encodeURIComponent(clientName)}&email=${encodeURIComponent(clientEmail)}&paymentType=${encodeURIComponent(paymentType)}`;
     } catch (err: any) {
       setError(err.message || "Failed to submit referral.");
       setValidationError(err.message || "Failed to submit referral.");
