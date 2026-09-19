@@ -3,16 +3,19 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Phone, Calendar } from "lucide-react";
+import { Menu, X, Phone, Calendar, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/care-first-logo.png";
 
-const navLinks = [
+const primaryLinks = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
   { name: "Services", href: "/services" },
   { name: "Strength & Balance Program", href: "/programs" },
+];
+
+const moreSubLinks = [
   { name: "Testimonials", href: "/testimonials" },
   { name: "Contact Us", href: "/contact" },
 ];
@@ -20,6 +23,7 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("+61 431 949 491");
 
   useEffect(() => {
@@ -62,7 +66,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-4 xl:gap-7">
-          {navLinks.map((link) => (
+          {primaryLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
@@ -72,22 +76,63 @@ const Navbar = () => {
               <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
+
+          {/* More Dropdown */}
+          <div
+            className="relative py-2"
+            onMouseEnter={() => setMoreDropdownOpen(true)}
+            onMouseLeave={() => setMoreDropdownOpen(false)}
+          >
+            <button
+              type="button"
+              className="text-[14px] xl:text-[15px] font-semibold text-dark hover:text-primary transition-colors flex items-center gap-1 cursor-pointer whitespace-nowrap"
+            >
+              More
+              <ChevronDown
+                size={15}
+                className={cn(
+                  "transition-transform duration-200 text-gray-500 group-hover:text-primary",
+                  moreDropdownOpen && "rotate-180"
+                )}
+              />
+            </button>
+            <AnimatePresence>
+              {moreDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-0 top-full mt-1 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
+                >
+                  {moreSubLinks.map((subLink) => (
+                    <Link
+                      key={subLink.name}
+                      href={subLink.href}
+                      className="block px-4 py-2.5 text-xs xl:text-sm font-semibold text-dark hover:text-primary hover:bg-[#FAFBF9] transition-colors"
+                      onClick={() => setMoreDropdownOpen(false)}
+                    >
+                      {subLink.name}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* CTA Buttons */}
         <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0 ml-4 lg:ml-6">
-          {/* Direct Call Button (Theme Green, Icon default, expands smoothly on Hover) */}
-          <div className="group relative flex items-center shrink-0">
-            <a
-              href={`tel:${phoneNumber.replace(/[^0-9+]/g, "")}`}
-              className="flex items-center gap-2.5 bg-primary hover:bg-primary/90 text-white h-11 rounded-full px-3.5 group-hover:px-5 shadow-md hover:shadow-primary/30 transition-all duration-300 ease-out overflow-hidden max-w-[44px] group-hover:max-w-[210px] cursor-pointer shrink-0"
-            >
-              <Phone size={18} className="shrink-0 text-white transition-transform duration-300 group-hover:scale-110" />
-              <span className="whitespace-nowrap text-xs xl:text-sm font-semibold tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
-                {phoneNumber}
-              </span>
-            </a>
-          </div>
+          {/* Direct Call Button (Theme Green, Always Open) */}
+          <a
+            href={`tel:${phoneNumber.replace(/[^0-9+]/g, "")}`}
+            className="flex items-center gap-2.5 bg-primary hover:bg-primary/90 text-white h-11 rounded-full px-4 xl:px-5 shadow-md hover:shadow-primary/30 transition-all duration-300 cursor-pointer shrink-0"
+          >
+            <Phone size={18} className="shrink-0 text-white" />
+            <span className="whitespace-nowrap text-xs xl:text-sm font-semibold tracking-wide">
+              {phoneNumber}
+            </span>
+          </a>
 
           {/* Book Appointment Button (Calendar Icon) */}
           <Link href="/referral" className="btn-primary flex items-center gap-2 text-xs xl:text-sm px-5 xl:px-7 py-2.5 shrink-0">
@@ -116,7 +161,7 @@ const Navbar = () => {
             className="lg:hidden glass border-t border-white/20 overflow-hidden"
           >
             <div className="flex flex-col p-6 gap-4">
-              {navLinks.map((link) => (
+              {primaryLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
@@ -126,6 +171,22 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
+
+              <div className="pt-2 border-t border-gray-200/50">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-400 block mb-2">More Pages</span>
+                <div className="flex flex-col gap-3 pl-2">
+                  {moreSubLinks.map((subLink) => (
+                    <Link
+                      key={subLink.name}
+                      href={subLink.href}
+                      className="text-base font-semibold text-dark hover:text-primary transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {subLink.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
               {/* Direct Call Button Mobile */}
               <a
