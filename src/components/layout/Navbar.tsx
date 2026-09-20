@@ -51,7 +51,7 @@ const Navbar = () => {
         scrolled ? "glass py-3 shadow-md" : "bg-transparent py-5"
       )}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group shrink-0">
           <Image
@@ -59,7 +59,7 @@ const Navbar = () => {
             alt="The Care First Physiotherapy"
             width={280}
             height={120}
-            className="h-16 md:h-18 w-auto object-contain"
+            className="h-13 sm:h-16 md:h-18 w-auto object-contain"
             priority
           />
         </Link>
@@ -141,14 +141,27 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          className="lg:hidden text-dark p-2"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        {/* Mobile Header Controls: Direct Call Button & Toggle Menu */}
+        <div className="flex lg:hidden items-center gap-2 sm:gap-3 shrink-0">
+          {/* Direct Call Button for Mobile View */}
+          <a
+            href={`tel:${phoneNumber.replace(/[^0-9+]/g, "")}`}
+            className="flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-white text-[12px] sm:text-sm font-bold px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full shadow-md hover:shadow-primary/30 transition-all duration-300 active:scale-95 shrink-0"
+            aria-label={`Call ${phoneNumber}`}
+          >
+            <Phone size={14} className="shrink-0 fill-current" />
+            <span className="whitespace-nowrap font-semibold">{phoneNumber}</span>
+          </a>
+
+          {/* Mobile Toggle */}
+          <button
+            className="text-dark p-1.5 sm:p-2 rounded-xl hover:bg-gray-100/50 transition-colors shrink-0"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
